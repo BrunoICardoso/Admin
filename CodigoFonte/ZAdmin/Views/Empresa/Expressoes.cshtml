@@ -1,0 +1,288 @@
+﻿
+@{
+    ViewBag.Title = "Expressões";
+}
+<style>
+    .txtArea {
+        margin-bottom: 25px;
+    }
+
+    .btnMargin {
+        margin-right: 5px;
+    }
+</style>
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Expressões da Empresa</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/Home">Home</a>
+            </li>
+            <li>
+                <a href="/Empresa/">Empresa</a>
+            </li>
+            <li class="active">
+                <strong>Expressões</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+
+    </div>
+</div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+
+    <div class="row">
+        <div class="col-lg-12">
+
+
+            <div class="ibox float-e-margins">
+
+                <div class="ibox-title">
+                    <h5>Expressões da Empresa</h5>
+                </div>
+                <div class="ibox-content">
+
+                    <form class="form-horizontal">
+
+                        <div class="form-group" id="formularioPadrao">
+
+                            <div id="mensagens" style="margin: 0 75% 0 25%; width:30%;">
+
+                                <div id="divVerificando" style="display:none;">Verificando expressão... Aguarde!<br></div>
+
+                                <div class="alert alert-success alert-dismissable" style="display:none;">
+                                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                                    Expressão passou no teste.
+                                </div>
+
+                                <div class="alert alert-danger alert-dismissable" style="display:none;">
+                                    <button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+                                    Expressão <b>NÃO</b> passou no teste.
+                                </div>
+                            </div>
+
+
+                            <label class="col-lg-2 control-label">Expressão</label>
+                            <div class="col-lg-6 idExpressaoEmpresa" data-idexpressao="0">
+
+                                <textarea class="form-control txtArea txtAreaExpressao" rows="3"></textarea>
+                                <button class="btn btn-primary pull-right" type="button" onclick="ExcluirExpressao(this)">Excluir</button>
+                                <button class="btn btn-primary pull-right btnMargin" type="button" onclick="TestarExpressao(this)">Testar</button>
+                                <button class="btn btn-primary pull-right btnMargin" type="button" onclick="SalvarExpressao(this)">Salvar</button>
+
+                            </div>
+                        </div>
+
+                        <div class="expressoes"></div>
+
+                    </form>
+
+                    <div class="row">
+                        <br />
+                        <div class="col-lg-8">
+                            <button class="btn btn-white pull-right" onclick="cancelar()" type="submit">Cancelar</button>
+
+                            <button class="btn btn-primary pull-right btnMargin" type="submit" onclick="NovaExpressao()">Nova Expressão</button>
+
+                        </div>
+                    </div>
+
+                </div>
+
+
+
+            </div>
+
+
+
+        </div>
+    </div>
+
+
+</div>
+
+
+@section styles {
+    <link href="~/Content/SweetAlert/sweetalert.css" rel="stylesheet" />
+    <link href="~/Content/plugins/jasny/jasny-bootstrap.min.css" rel="stylesheet" />
+    <style type="text/css"></style>
+}
+
+
+@section scripts {
+    @Scripts.Render("~/plugins/sweetAlert")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    <script src="~/Scripts/validacoes.js"></script>
+
+
+    <script>
+
+        $(document).ready(function () {
+
+            carregaExpressoes();
+        });
+
+        function carregaExpressoes(){
+
+            var uri = "/api/EmpresaAPI/GetRetornaExpressoes?idEmpresa="+@ViewBag.idEmpresa;
+
+            $.getJSON(uri)
+               .done(function (data) {
+
+                   if(data.length > 0){
+                       $("#formularioPadrao").hide();
+                   }
+
+                   $.each(data, function (key, item) {
+
+                       $('<div>', { html: formataItemResultadoExpressao(item) }).appendTo($('.expressoes'));
+
+                   });
+
+               });
+        }
+
+        function formataItemResultadoExpressao(item){
+
+            return "<div class='form-group'>" +
+                   "<label class='col-lg-2 control-label'>Expressão</label>"+
+                   "<div class='col-lg-6 idExpressaoEmpresa' data-idexpressao='"+ item.idExpressao +"'>"+
+                   "<textarea class='form-control txtArea txtAreaExpressao' rows='3'>"+ item.expressao +"</textarea>"+
+                   "<button class='btn btn-primary pull-right' type='button' onclick='ExcluirExpressao(this)'>Excluir</button>"+
+                   "<button class='btn btn-primary pull-right btnMargin' type='button' onclick='TestarExpressao(this)'>Testar</button>"+
+                   "<button class='btn btn-primary pull-right btnMargin' type='button' onclick='SalvarExpressao(this)'>Salvar</button>"+
+                   "</div></div>";
+        }
+
+        function SalvarExpressao(btn) {
+
+            var idExpressao = $(btn).parent().attr("data-idexpressao");
+            var expressao = $(btn).parent().find(".txtAreaExpressao").val();
+
+            var expressao = {
+                idEmpresa: @ViewBag.idEmpresa,
+                expressao: expressao,
+                idexpressao: idExpressao
+            }
+
+            var retornoIdExpressao;
+
+            $.ajax({
+                type: "POST",
+                url: "/api/EmpresaAPI/SalvarExpressao",
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(expressao),
+                async: false
+            }).done(function (id) {
+                retornoIdExpressao = id;
+                swal("Expressão salva!", "", "success");
+            });
+
+            $(btn).parent().attr("data-idexpressao", retornoIdExpressao);
+        }
+
+        function ExcluirExpressao(btn) {
+
+            swal({
+                title: "Você realmente deseja excluir esta expressão?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Sim, excluir!",
+                cancelButtonText: "Não, cancelar!",
+                closeOnConfirm: false,
+                closeOnCancel: true
+            },
+                function(isConfirm){
+                    if (isConfirm) {
+                        var idExpressao = $(btn).parent().attr("data-idexpressao");
+
+                        if(idExpressao!=0){
+                            $.ajax({
+                                type: "POST",
+                                url: "/api/EmpresaAPI/excluirExpressao/?idExpressao=" + idExpressao,
+                            });
+                        }
+                        $(btn).parent().parent().remove();
+                        swal("Expressão excluida!", "","success");
+                    }
+                });
+        }
+
+        function TestarExpressao(btn) {
+            $('.alert.alert-success').hide();
+            $('.alert.alert-danger').hide();
+            $('#divVerificando').show();
+
+            var key = "2e9ee79e-7a4f-4f2f-bca3-25402e113997";
+
+            var Consulta = {
+                key: key,
+                query: $(btn).parent().find(".txtAreaExpressao").val(),
+                offset: 0,
+                defaultOperator: "AND"
+            }
+
+            //console.log(JSON.stringify(Consulta));
+            /*
+            $.ajax({
+                url: "http://data.knewin.com/news",
+                type: "POST",
+                data: JSON.stringify(Consulta),
+                dataType: 'json',
+                contentType: "application/json;charset=UTF-8",
+                success: function(data) {
+                    console.log(data);
+                }
+            }).done(function(data){
+                alert("resultado: "+data.num_docs);
+            });
+            */
+
+            $.ajax({
+                url: "/api/EmpresaAPI/TestarEmpressao",
+                type: "POST",
+                data: JSON.stringify(Consulta),
+                dataType: 'json',
+                contentType: "application/json;charset=UTF-8",
+                success: function(data) {
+                    console.log(data);
+                }
+            }).done(function(data){
+                $('#divVerificando').hide();
+
+                if(data==true){
+                    $('.alert.alert-success').show();
+                    $('.alert.alert-danger').hide();
+                } else {
+                    $('.alert.alert-success').hide()
+                    $('.alert.alert-danger').show();
+                }
+
+            });
+
+        }
+
+        function NovaExpressao() {
+            $('<div>', { html: "<div class='form-group'>" +
+            "<label class='col-lg-2 control-label'>Expressão</label>"+
+            "<div class='col-lg-6 idExpressaEmpresa' data-idexpressao='"+ 0 +"'>"+
+            "<textarea class='form-control txtArea txtAreaExpressao' rows='3'></textarea>"+
+            "<button class='btn btn-primary pull-right' type='button' onclick='ExcluirExpressao(this)'>Excluir</button>"+
+            "<button class='btn btn-primary pull-right btnMargin' type='button' onclick='TestarExpressao(this)'>Testar</button>"+
+            "<button class='btn btn-primary pull-right btnMargin' type='button' onclick='SalvarExpressao(this)'>Salvar</button>"+
+            "</div></div>" }).appendTo($('.expressoes'));
+        }
+
+        function cancelar() {
+            window.location = "/Empresa/"
+        }
+
+
+    </script>
+
+}

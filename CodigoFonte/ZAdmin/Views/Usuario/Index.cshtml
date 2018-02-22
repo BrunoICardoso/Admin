@@ -1,0 +1,312 @@
+﻿@{
+    ViewBag.Title = "Usuarios";
+}
+
+<style>
+    .slick_demo_2 .ibox-content {
+        margin: 0 5px;
+        padding: 5px;
+    }
+
+    .paginacao {
+        padding-top: 15px;
+        border-top: solid 1px #DDD;
+    }
+</style>
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Usuários</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/Home">Home</a>
+            </li>
+            <li class="active">
+                <strong>Usuários</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+
+    </div>
+</div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <button type="button" id="btnAdicionarUsuario" onclick="CadastrarUsuario()" class="btn btn-default btn-xs btn-add-table"><i class="fa fa-plus"></i> Adicionar usuário</button>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="font-noraml">Cliente</label>
+                                <div class="input-group">
+                                    <select data-placeholder="Selecione um cliente" id="cmbCliente" class="chosen-select" name="cliente" style="width:250px" tabindex="2"></select>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+
+
+
+                        <table class="tabela-listar footable table table-stripped toggle-arrow-tiny footable-loaded tablet breakpoint" data-page-size="8">
+                            <thead>
+                                <tr>
+
+                                    <th data-toggle="true" class="footable-visible footable-sortable footable-first-column">Cliente<span class="footable-sort-indicator"></span></th>
+                                    <th class="footable-visible footable-sortable">Nome<span class="footable-sort-indicator"></span></th>
+                                    <th class="footable-visible footable-sortable">E-mail<span class="footable-sort-indicator"></span></th>
+                                    <th class="footable-visible footable-sortable">Status<span class="footable-sort-indicator"></span></th>
+                                    <th class="footable-visible footable-sortable footable-last-column">Ações<span class="footable-sort-indicator"></span></th>
+
+                                </tr>
+
+                            </thead>
+                            <tbody id="usuarios"></tbody>
+                            <tfoot>
+                            </tfoot>
+                        </table>
+
+                        <div class="paginacao">
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section styles {
+
+    <link href="~/Content/SweetAlert/sweetalert.css" rel="stylesheet" />
+    <link href="~/Content/plugins/chosen/bootstrap-chosen-bootstrap-chosen.css" rel="stylesheet" />
+
+}
+
+@section scripts {
+
+    <script src="~/Scripts/plugins/paginacao/paginacao.js"></script>
+    @Scripts.Render("~/plugins/sweetAlert")
+    @Scripts.Render("~/plugins/chosen")
+
+
+    <script>
+
+        var paginaAtual = 1;
+
+        var paginacao = new Paginacao();
+        var totalRegistros;
+
+        var idcliente = 0;
+        var idClienteAtual = 0;
+
+
+        $(document).ready(function () {
+
+            carregardropdown();
+
+            CarregarUsuarios(idcliente, paginaAtual);
+
+
+            var config = {
+                '.chosen-select': {},
+                '.chosen-select-deselect': { allow_single_deselect: true },
+                '.chosen-select-no-single': { disable_search_threshold: 10 },
+                '.chosen-select-no-results': { no_results_text: 'Oops, nothing found!' },
+                '.chosen-select-width': { width: "95%" }
+            }
+            for (var selector in config) {
+                $(selector).chosen(config[selector]);
+            }
+
+
+        });
+
+        $("#cmbCliente").chosen().change(function () {
+            var idcliente = $(this).val();
+            idClienteAtual = idcliente;
+            paginaAtual = 1;
+            //$('#cmbEmpresa').val("0").trigger('chosen:updated');
+            CarregarUsuarios(idClienteAtual, paginaAtual);
+        });
+
+        function carregardropdown() {
+
+            var uri = "/api/UsuarioAPI/GetRetornaClientes";
+
+            $.getJSON(uri)
+                .done(function (data) {
+
+                    $("#cmbCliente").empty();
+                    $("#cmbCliente").append("<option value=" + 0 + ">" + "Selecione um cliente" + "</option>");
+                    $.each(data, function (key, item) {
+                        $("#cmbCliente").append("<option value=" + item.idcliente + ">" + item.nome + "</option>");
+                        $("#cmbCliente").trigger('chosen:updated');
+                    });
+                });
+
+
+
+        }
+
+        //idsetor, idempresa, pagina, qtdpagina
+        function CarregarUsuarios(idcliente, pagina) {
+
+            var pagina = pagina;
+            var regporpagina = 10;
+
+            var uri = "/api/UsuarioAPI/Get";
+            uri = uri + "?idcliente=" + idcliente + "&pagina=" + pagina + "&qtdPorPagina=" + regporpagina;
+
+            $.getJSON(uri)
+                .done(function (data) {
+
+                    $("#usuarios").empty();
+
+                    $.each(data.Usuarios, function (key, item) {
+                        $('<tr>', { html: formataLinhaUsuario(item) }).appendTo($('#usuarios'));
+                    });
+
+                    totalRegistros = data.TotalUsuarios;
+
+                    paginacao.CriaPaginacao(".paginacao", parseInt((totalRegistros / 10) + 0.9), totalRegistros, paginaAtual);
+                    paginacao.setMudouPagina(mudouPagina);
+
+                });
+
+        }
+
+        //function CriaPaginacao(totalPaginas) {
+
+        //    $('.tabela-paginacao').empty();
+
+
+        //    $(".tabela-paginacao").append("<li id='btnprev' class='footable-page-arrow'><a data-page='Prev' onclick='Prev()'>‹</a></li>");
+
+        //    for (var i = 1; i <= totalPaginas; i++) {
+
+        //        if (i == paginaAtual) {
+        //            $(".tabela-paginacao").append("<li class='footable-page active'><a data-page='1' onclick='Paginar(" + i + ")'>" + i + "</a></li>");
+        //        }
+        //        else {
+        //            $(".tabela-paginacao").append("<li class='footable-page'><a data-page='1' onclick='Paginar(" + i + ")'>" + i + "</a></li>");
+        //        }
+        //    }
+
+        //    $(".tabela-paginacao").append("<li id='btnnext' class='footable-page-arrow'><a data-page='Next' onclick='Next(" + totalPaginas + ")'>›</a></li>");
+
+        //    if (paginaAtual == 1) {
+
+        //        $('#btnprev').addClass('disabled');
+        //    }
+        //    if (paginaAtual == totalPaginas) {
+
+        //        $('#btnnext').addClass('disabled');
+        //    }
+
+
+        function mudouPagina(pagina) {
+            paginaAtual = pagina;
+            CarregarUsuarios(idClienteAtual, pagina);
+        }
+
+
+        //}
+
+        //function Next(totalPaginas) {
+        //    if (paginaAtual < totalPaginas) {
+        //        Paginar(paginaAtual + 1);
+        //    }
+        //}
+
+        //function Prev() {
+        //    if (paginaAtual > 1) {
+        //        Paginar(paginaAtual - 1);
+        //    }
+        //}
+
+        //function Paginar(numPagina) {
+
+        //    paginaAtual = numPagina;
+        //    CarregarMarcas(idsetorAtual,idempresaAtual,numPagina, 10);
+
+        //}
+
+
+        function formataLinhaUsuario(item) {
+            var status;
+            if (item.ativo == true) {
+                status = "Ativo";
+            } else {
+                status = "Inativo";
+            }
+            return "<td>" + item.nomeCliente + "</td><td>" + item.nome + "</td><td>" + item.email + "</td> <td>" + status + "</td> <td> <span class='btnEditar btn-acoes-table' onclick='EditarUsuario(" + item.idusuario + ")' ><a onclick='EditarUsuario'><i class='fa fa-wrench' /> Editar<a/></span> <span class='btnExcluir btn-acoes-table' Onclick='MensagemExcluirUsuario(" + item.idusuario + ")'><a onclick='ExcluirUsuario'><i class='fa fa-times' /> Excluir </a></span> </td>";
+        }
+
+
+        function CadastrarUsuario() {
+            window.location = "/Usuario/Cadastrar";
+        }
+
+
+        function EditarUsuario(idUsuario) {
+            window.location = "/Usuario/Editar/" + idUsuario;
+        }
+
+
+        var idUsuarioExcluir = 0;
+
+        function MensagemExcluirUsuario(idUsuario) {
+            idUsuarioExcluir = idUsuario;
+
+            swal({
+                title: "Excluir Usuário?",
+                text: "Você tem certeza que deseja excluir este usuário?",
+                type: "warning",
+                showCancelButton: true,
+                cancelButtonText: "Cancelar",
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Sim",
+                closeOnConfirm: false
+            },
+                    function () {
+                        btnExcluirUsuario();
+                    });
+        }
+
+        //Função chamado ao confirmar a exclusão
+        function btnExcluirUsuario() {
+            ExcluirUsuario(idUsuarioExcluir);
+        }
+
+
+        //Função que exclui do banco
+        function ExcluirUsuario(idUsuario) {
+            $.ajax({
+                type: "DELETE",
+                dataType: "json",
+                url: "/api/UsuarioAPI/Delete/" + idUsuario,
+                success: function (data) {
+                    swal("Deletado!", "Usuário deletado.", "success");
+                    CarregarUsuarios(idClienteAtual, paginaAtual, 10);
+                },
+                error: function (error) {
+                    jsonValue = jQuery.parseJSON(error.responseText);
+                }
+            });
+        }
+
+    </script>
+
+}
+
+
+
+

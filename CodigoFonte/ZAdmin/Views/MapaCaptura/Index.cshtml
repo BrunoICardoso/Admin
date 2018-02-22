@@ -1,0 +1,620 @@
+﻿@{
+    ViewBag.Title = "MAPA captura";
+}
+
+<style>
+    .ajuda-tooltip {
+        margin: -20px 0 20px 0;
+    }
+
+    .tooltip-diahora {
+        text-align: left;
+    }
+
+    .bookmark-pos {
+        font-family: 'Glyphicons Halflings';
+        font-style: normal;
+        margin-left: 3px;
+        height: 3px;
+        float: right;
+        margin-top: -2px;
+    }
+
+    .icon-bookmark:before {
+        content: "\e044";
+        color: #1ab394;
+    }
+
+    .icon-bookmark-red:before {
+        content: "\e044";
+        color: #ff0000;
+    }
+
+    .bookmark-pos-red {
+        position: relative;
+        top: 1px;
+        display: inline-block;
+        font-family: 'Glyphicons Halflings';
+        font-style: normal;
+        font-weight: 400;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    .btn-captura {
+        color: white;
+        background: #8e8888;
+        border: 1px solid #e7eaec;
+    }
+
+        .btn-captura:hover {
+            background: #1ab394;
+            color: white;
+        }
+
+
+    .slick_demo_2 .ibox-content {
+        margin: 0 5px;
+        padding: 5px;
+    }
+
+    #btnPesquisarMapa {
+        margin-top: 22px;
+    }
+
+    .tabela-paginacao {
+        margin-bottom: 20px;
+    }
+</style>
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Mapa captura</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/Home">Home</a>
+            </li>
+            <li class="active">
+                <strong>Mapa captura</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+    </div>
+</div>
+
+<div class="row wrapper wrapper-content animated fadeInRight">
+
+
+    <div class="col-md-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-content">
+                <div class="row">
+
+                    <div class="col-md-6">
+                        <label>Procurar</label>
+                        <input type="text" id="txtFiltro" class="form-control" />
+                    </div>
+                    <div class="col-md-3">
+                        <label>Data inicial</label>
+                        <div id="mapafiltro-datainicial" class="filtro-mapa-data input-group date">
+                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" id="txtDataInicial" class="form-control">
+                        </div>
+
+                    </div>
+                    <div class="col-md-3 form-group">
+                        <label>Data final</label>
+                        <div id="mapafiltro-datafinal" class="filtro-mapa-data input-group date">
+                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" id="txtDataFinal" class="form-control">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-3">
+                        <label class="font-noraml">Empresa</label>
+                        <select data-placeholder="Selecione uma empresa" id="cmbEmpresa" class="chosen-select-width" name="setor" tabindex="2"></select>
+                    </div>
+
+                    <div class="col-md-2">
+                        <label class="font-noraml">Vinculo</label>
+                        <select data-placeholder="Selecione uma empresa" id="cmbVinculacao" class="chosen-select-width" name="setor" tabindex="2">
+                            <option value="T">Todas</option>
+                            <option value="V">Vinculadas</option>
+                            <option value="NV">Não vinculadas</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="font-noraml">Capturas</label>
+                        <select data-placeholder="Selecione uma captura" id="cmbCapturas" class="chosen-select-width" name="setor" tabindex="2"></select>
+                    </div>
+
+                    <div class="col-md-2">
+                        <label class="font-noraml">Status </label>
+                        <select id="cmbStatus" data-placeholder="Selecione um status" class="chosen-select" name="Status" tabindex="2">
+                            <option value="T">Todos</option>
+                            <option value="0">Cadastrado</option>
+                            <option value="1">Registrado</option>
+                            <option value="2">Suspenso</option>
+                            <option value="3">Cancelado</option>
+                        </select>
+                    </div>
+
+
+                    <div class="col-md-2">
+                        <button class="btn btn-primary" id="btnPesquisarMapa" onclick="pesquisaCapturas()" type="button">Pesquisar</button>
+                    </div>
+
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-md-12">
+        <div class="paginacao"></div>
+    </div>
+
+    <div id="tabelaCapturas"></div>
+
+    <div class="col-md-12">
+        <div class="paginacao"></div>
+    </div>
+
+</div>
+
+@section styles {
+
+    <link href="~/Content/SweetAlert/sweetalert.css" rel="stylesheet" />
+    <link href="~/Content/plugins/chosen/bootstrap-chosen-bootstrap-chosen.css" rel="stylesheet" />
+    <link href="~/Content/style.css" rel="stylesheet" />
+    <link href="~/Content/plugins/datapicker/datepicker3.css" rel="stylesheet" />
+
+
+
+    <style type="text/css">
+        .item-lista {
+            margin-bottom: 15px;
+        }
+
+        .container-botoes {
+            padding-top: 15px;
+            text-align: right;
+        }
+
+        .btn-espaco-btn {
+            margin-right: 10px;
+            margin-bottom: 3px;
+        }
+    </style>
+}
+
+@section scripts {
+
+    @Scripts.Render("~/plugins/sweetAlert")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/dataPicker")
+    <script src="~/Scripts/utils.js"></script>
+    <script src="~/Scripts/plugins/paginacao/paginacao.js"></script>
+
+    <script>
+
+
+
+        var paginaAtual = 1;
+
+        var paginacao = new Paginacao();
+        var totalRegistros;
+
+        var dataPadraoInicial = new Date();
+        var dataPadraoFinal = new Date();
+        dataPadraoInicial.setDate(dataPadraoFinal.getDate() - 30);
+
+        $(document).ready(function () {
+    
+            $('#txtDataInicial, #txtDataFinal').datepicker({
+                format: 'dd/mm/yyyy',
+                //startView: 1,
+                //todayBtn: "linked",
+                keyboardNavigation: false,
+                forceParse: false,
+                autoclose: true
+            });
+
+            //$('#txtDataInicial').datepicker('setDate', dataPadraoInicial);
+            //$('#txtDataFinal').datepicker('setDate', dataPadraoFinal);
+
+            var config = {
+                '.chosen-select': {},
+                '.chosen-select-deselect': { allow_single_deselect: true },
+                '.chosen-select-no-single': { disable_search_threshold: 10 },
+                '.chosen-select-no-results': { no_results_text: 'Oops, nothing found!' },
+                '.chosen-select-width': { width: "99%" }
+            }
+            for (var selector in config) {
+                $(selector).chosen(config[selector]);
+            }
+
+
+            carregaChoosenEmpresa();
+            carregaChoosenCapturas();
+
+
+            carregaCapturas(retornaFiltroCaptura(1));
+
+        });
+
+
+        function carregaChoosenEmpresa() {
+
+            var uri = "/api/MapaCapturaAPI/GetRetornaListaDeEmpresas";
+
+            //$.getJSON(uri)
+            //    .done(function (data) {
+
+            //        $("#cmbEmpresa").append("<option value=" + 0 + ">" + "Todos" + "</option>");
+            //        $.each(data, function (key, item) {
+            //            $("#cmbEmpresa").append("<option value=" + item.idItem + ">" + item.nome + "</option>");
+            //            $("#cmbEmpresa").trigger('chosen:updated');
+
+            //        });
+
+            //    });
+
+
+            $.ajax({
+                url: uri,
+                dataType: 'json',
+                async: false,
+                success: function (data) {
+                    $("#cmbEmpresa").append("<option value=" + 0 + ">" + "Todos" + "</option>");
+                    $.each(data, function (key, item) {
+                        $("#cmbEmpresa").append("<option value=" + item.idItem + ">" + item.nome + "</option>");
+                        $("#cmbEmpresa").trigger('chosen:updated');
+
+                    });
+
+                }
+            });
+
+
+
+
+        }
+
+        function carregaChoosenCapturas() {
+            var uri = "/api/MapaCapturaAPI/GetRetornaListaCapturas";
+
+            //$.getJSON(uri)
+            //    .done(function (data) {
+
+            //        $("#cmbCapturas").append("<option value=" + 0 + ">" + "Todos" + "</option>");
+            //        $.each(data, function (key, item) {
+            //            $("#cmbCapturas").append("<option value=" + item.idItem + ">" + item.nome + "</option>");
+            //            $("#cmbCapturas").trigger('chosen:updated');
+
+            //        });
+
+            //    });
+
+
+            $.ajax({
+                url: uri,
+                dataType: 'json',
+                async: false,
+                success: function (data) {
+
+                    $("#cmbCapturas").append("<option value=" + 0 + ">" + "Todos" + "</option>");
+                    $.each(data, function (key, item) {
+                        $("#cmbCapturas").append("<option value=" + item.idItem + ">" + item.nome + "</option>");
+                        $("#cmbCapturas").trigger('chosen:updated');
+
+                    });
+
+                }
+            });
+
+
+        }
+
+        function retornaFiltroCaptura(pagina) {
+
+
+            if (localStorage.getItem("capturasVoltarExportar") != null ||
+                localStorage.getItem("capturasExportarSalvar") != null ||
+                localStorage.getItem("capturasVoltarEditar") != null ||
+                localStorage.getItem("capturasEditarSalvar") != null
+                ) {
+
+                localStorage.removeItem("capturasEditarSalvar");
+                localStorage.removeItem("capturasVoltarEditar");
+                localStorage.removeItem("capturasExportarSalvar");
+                localStorage.removeItem("capturasVoltarExportar");
+
+                var filtro = new Object();
+                filtro = JSON.parse(localStorage.getItem("filtroAtual"));
+
+                $("#txtFiltro").val(filtro.pesquisafiltro);
+
+                if (filtro.dataInicial != null) {
+                    $('#txtDataInicial').datepicker('setDate', formataDataJson(filtro.dataInicial));
+                } else {
+
+                    $('#txtDataInicial').val("");
+                }
+
+                if (filtro.dataFinal != null) {
+                    $('#txtDataFinal').datepicker('setDate', formataDataJson(filtro.dataFinal));
+                } else {
+
+                    $('#txtDataFinal').val("");
+                }
+
+                if (filtro.idEmpresa > 0) {
+                    $("#cmbEmpresa").val(filtro.idEmpresa).trigger('chosen:updated');
+                }
+
+                if (filtro.captura != null) {
+                    $("#cmbCapturas").val(filtro.captura).trigger('chosen:updated');
+                }
+
+                if (filtro.vinculo != null) {
+                    $("#cmbVinculacao").val("" + filtro.vinculo + "").trigger('chosen:updated');
+                }
+
+                return filtro;
+
+            } else {
+
+
+                var pesquisa = "";
+                var dataInicial;
+                var dataFinal;
+                var idEmpresa = $("#cmbEmpresa").val();
+                var cmbVinculacao = $("#cmbVinculacao").val();
+                var cmbCapturas = $("#cmbCapturas").val() != 0 ? $("#cmbCapturas").val() : null;
+                var cmbstatus = $("#cmbStatus").val();
+                var pagina = pagina;
+                var qtdRegistros = 12;
+
+                if ($("#txtFiltro").val() != null) {
+                    pesquisa = $("#txtFiltro").val();
+                }
+                if ($("#txtDataInicial").val() != null) {
+                    dataInicial = ConverteDataStringParaData($("#txtDataInicial").val());
+                }
+                if ($("#txtDataFinal").val() != null) {
+                    dataFinal = ConverteDataStringParaData($("#txtDataFinal").val());
+                }
+
+                var filtro = new Object();
+                filtro.pesquisafiltro = pesquisa;
+                filtro.dataInicial = dataInicial;
+                filtro.dataFinal = dataFinal;
+                filtro.idEmpresa = idEmpresa;
+                filtro.pagina = pagina;
+                filtro.qtdRegistros = qtdRegistros;
+                filtro.vinculo = cmbVinculacao;
+                filtro.captura = cmbCapturas;
+                filtro.status = cmbstatus;
+
+
+                localStorage.setItem("filtroAtual", JSON.stringify(filtro));
+
+
+                return filtro;
+
+            }
+
+
+        }
+
+        function carregaCapturas(filtro) {
+
+            $('#tabelaCapturas').html('');
+            $('<div>', { html: '<div class="col-md-12"><div class="ibox-content"><div class="row"><i class="fa fa-check"></i>&nbsp;Carregando... Aguarde!</div></div></div>' }).appendTo($('#tabelaCapturas'));
+
+            var ajaxRequest = $.ajax({
+                type: "POST",
+                url: "/api/MapaCapturaAPI/Capturas",
+                contentType: 'application/json',
+                data: JSON.stringify(filtro),
+                dataType: 'json',
+                success: function (data) {
+
+                    $("#tabelaCapturas").empty();
+                    $(".paginacao").empty();
+
+                    if (data.TotalDeCapturas > 0) {
+
+                        $.each(data.Capturas, function (key, item) {
+
+                            $('<div>', { html: formataItemTabelaCaptura(item) }).appendTo($('#tabelaCapturas'));
+                            $('[data-toggle="tooltip"]').tooltip();
+                        });
+
+                        totalRegistros = data.TotalDeCapturas;
+
+                        paginacao.CriaPaginacao(".paginacao", parseInt((totalRegistros / 12) + 0.9), totalRegistros, paginaAtual);
+                        paginacao.setMudouPagina(mudouPagina);
+
+                    } else {
+                        $('<div>', { html: '<div class="col-md-12"><div class="ibox-content"><div class="row"><i class="fa fa-check"></i>&nbsp;Não há dados para esta consulta</div></div></div>' }).appendTo($('#tabelaCapturas'));
+                    }
+
+
+
+                }
+            });
+
+        }
+
+        function formataItemTabelaCaptura(item) {
+
+            var dataItem = formataDataJson(item.dataConcessao);
+            var status = "";
+            var bandeira = "";
+
+            if (item.ValidarRegistro == true) {
+                bandeira += "<i class='bookmark-pos icon-bookmark'></i>"
+            }
+
+            if (item.StatusMapa == true) {
+                bandeira += "<i class='bookmark-pos icon-bookmark-red'></i>"
+            }
+
+            if (item.StatusMapa == true && item.ValidarRegistro == true) {
+                bandeira += "<i class='bookmark-pos icon-bookmark-red'></i>"
+                bandeira += "<i class='bookmark-pos icon-bookmark'></i>"
+            }
+
+            if(item.status =="0"){
+                status = "Cadastrado";
+            }
+            if(item.status =="1"){
+                status = "Registrado";
+            }
+            if(item.status =="2"){
+                status = "Suspenso";
+            }
+            if(item.status =="3"){
+                status = "Cancelado";
+            }
+
+
+            
+
+
+
+            return "<div class='col-md-12'><div class='ibox float-e-margins'><div class='ibox-content'>"
+
+                   + "<div class='row'>"
+                   + "<div class='col-md-3 item-lista'>"
+                   + "<label class='font-bold'>Produto</label>"
+                   + "<p>" + item.produto + "</p></div>"
+
+                   + "<div class='col-md-3 item-lista'>"
+                   + "<label class='font-bold'>Marca</label>"
+                   + "<p>" + item.marca + "</p></div>"
+
+                   + "<div class='col-md-2 item-lista'>"
+                   + "<label class='font-bold'>Status</label>"
+                   + "<p>" + status + "</p></div>"
+
+
+                   + "<div class='col-md-2 item-lista'>"
+                   + "<label class='font-bold'>Data de Concessão</label>"
+                   + "<p>" + dataItem + "</p></div>"
+
+                   + "<div class='col-md-2 item-lista panel panel-default'>"
+                   + bandeira
+                   + "<label class='font-bold'>Registro</label>"
+                   + "<p>" + item.registro + "</p></div>"
+                   + "</div>"
+
+                   + "<div class='row'>"
+                   + "<div class='col-md-2 item-lista'>"
+                   + "<label class='font-bold'>Estabelecimento</label>"
+                   + "<p>" + item.estabelecimento + "</p></div>"
+
+                   + "<div class='col-md-2 item-lista'>"
+                   + "<label class='font-bold'>Origem</label>"
+                   + "<p>" + item.origem + "</p></div>"
+                   + "<div class='col-md-3 item-lista'>"
+                   + "<label class='font-bold'>CNPJ</label>"
+                   + "<p>" + item.cnpj + "</p></div>"
+                   + "<div class='col-md-3 item-lista'>"
+                   + "<label class='font-bold'>Estado</label>"
+                   + "<p>" + item.uf + "</p></div>"
+                   + "<div class='col-md-2 item-lista'>"
+                   + "<label class='font-bold'>Complemento</label>"
+                   + "<p>" + item.complemento + "</p></div>"
+                   + "</div>"
+                   + "<div class='row'>"
+                   + "<div class='col-md-2 item-lista'>"
+                   + "<label class='font-bold'>Espécie</label>"
+                   + "<p>" + item.especie + "</p></div>"
+                   + "<div class='col-md-2 item-lista'>"
+                   + "<label class='font-bold'>Subespécie</label>"
+                   + "<p>" + item.subEspecie + "</p></div>"
+                   + "<div class='col-md-3 item-lista'>"
+                   + "<label class='font-bold'>Caracteristica</label>"
+                   + "<p>" + item.caracteristica + "</p></div>"
+                   + "<div class='col-md-3 item-lista'>"
+                   + "<label class='font-bold'>Base</label>"
+                   + "<p>" + item.base + "</p></div>"
+                   + "<div class='col-md-2'>"
+                   + "<div class='container-botoes'>"
+                   + "<a onclick='ExportarCaptura(" + item.idDadosCaputura + ")' class='btn btn-captura btn-espaco-btn'data-toggle='tooltip' data-placement='top' title='Exportar'><i class=' fa fa-sign-out fa-rotate-270'></i></a>"
+                   + "<a onclick='EditarCaptura(" + item.idDadosCaputura + ")' class='btn btn-captura btn-espaco-btn' data-toggle='tooltip' data-placement='top' title='Editar'><i class='fa fa-pencil'></i></a>"
+                   + "<a onclick='MensagemExcluirCaptura(" + item.idDadosCaputura + ")' class='btn btn-captura btn-espaco-btn' data-toggle='tooltip' data-placement='top' title='Excluir'><i class='fa fa-trash-o'></i></a>"
+                   + "</div></div></div></div></div></div>"
+
+        }
+
+        function pesquisaCapturas() {
+            paginaAtual = 1;
+            carregaCapturas(retornaFiltroCaptura(paginaAtual));
+        }
+
+        function EditarCaptura(idCaptura) {
+            window.location = "/MapaCaptura/Editar/" + idCaptura;
+        }
+
+        function ExportarCaptura(idCaptura) {
+            window.location = "/MapaCaptura/Exportar/" + idCaptura;
+        }
+
+        var idCapturaExcluir = 0;
+        function MensagemExcluirCaptura(idCaptura) {
+            idCapturaExcluir = idCaptura;
+
+            swal({
+                title: "Excluir Captura?",
+                text: "Você tem certeza que deseja excluir esta captura?",
+                type: "warning",
+                showCancelButton: true,
+                cancelButtonText: "Cancelar",
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Sim",
+                closeOnConfirm: false
+            },
+                    function () {
+                        btnExcluirCaptura();
+
+                    });
+
+        }
+
+        function btnExcluirCaptura() {
+            ExcluirCaptura(idCapturaExcluir);
+        }
+
+        function ExcluirCaptura(idCaptura) {
+            $.ajax({
+                type: "DELETE",
+                dataType: "json",
+                url: "/api/MapaCapturaAPI/Delete/" + idCaptura,
+                success: function (data) {
+                    swal("Deletado!", "Captura deletada.", "success");
+
+                    carregaCapturas(retornaFiltroCaptura(paginaAtual));
+
+                },
+                error: function (error) {
+                    jsonValue = jQuery.parseJSON(error.responseText);
+                }
+
+            });
+        }
+
+        function mudouPagina(pagina) {
+            paginaAtual = pagina;
+            carregaCapturas(retornaFiltroCaptura(paginaAtual));
+        }
+
+    </script>
+}

@@ -1,0 +1,56 @@
+﻿<nav class="navbar-default navbar-static-side" role="navigation">
+    <div class="sidebar-collapse">
+        <ul class="nav" id="side-menu">
+            <li class="nav-header">
+                <div class="dropdown profile-element">
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                        <span class="clear">
+                            <span class="block m-t-xs">
+                                <strong class="font-bold">Example user</strong>
+                            </span> <span class="text-muted text-xs block">Example menu <b class="caret"></b></span>
+                        </span>
+                    </a>
+                    <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                        <li><a href="#">Logout</a></li>
+                    </ul>
+                </div>
+                <div class="logo-element">
+                    IN+
+                </div>
+            </li>
+            <li class="@Html.IsSelected(action: "Index", controller: "Empresa")">
+                <a href="@Url.Action("Index", "Empresa")"><i class="fa fa-building"></i> <span class="nav-label">Empresas</span> </a>
+            </li>
+            <li class="@Html.IsSelected(action: "Index", controller: "Marca")">
+                <a href="@Url.Action("Index", "Marca")"><i class="fa fa-tag"></i> <span class="nav-label">Marcas</span></a>
+            </li>
+            <li class="@Html.IsSelected(action: "Index", controller: "Produto")">
+                <a href="@Url.Action("Index", "Produto")"><i class="fa fa-cubes"></i> <span class="nav-label">Produtos</span></a>
+            </li>
+            <li class="@Html.IsSelected(action: "Index", controller: "Cliente")">
+                <a href="@Url.Action("Index", "Cliente")"><i class="fa fa-users"></i> <span class="nav-label">Clientes</span></a>
+            </li>
+            <li class="@Html.IsSelected(action: "Index", controller: "Usuario")">
+                <a href="@Url.Action("Index", "Usuario")"><i class="fa fa-user"></i> <span class="nav-label">Usuarios</span></a>
+            </li>
+            <li class="@Html.IsSelected(action: "Index", controller: "MapaRegistro")">
+                <a href="@Url.Action("Index", "MapaRegistro")"><i class="fa fa-area-chart"></i> <span class="nav-label">MAPA</span></a>
+            </li>
+            <li class="@Html.IsSelected(action: "Index", controller: "MapaCaptura")">
+                <a href="@Url.Action("Index", "MapaCaptura")"><i class="fa fa-thumb-tack"></i> <span class="nav-label">Capturas</span></a>
+            </li>         
+            <li class="@Html.IsSelected(action: "Index", controller: "Processo")">
+                <a href="@Url.Action("Index", "Processo")"><i class="fa fa-thumb-tack"></i> <span class="nav-label">Processos SEAE</span></a>
+            </li>  
+            <li class="@Html.IsSelected(action: "Index", controller: "Promocao")">
+                <a href="@Url.Action("Index", "Promocao")"><i class="fa fa-thumb-tack"></i> <span class="nav-label">Promoções</span></a>
+            </li>  
+            <li class="@Html.IsSelected(action: "Index", controller: "PromocaoNoticia")">
+                <a href="@Url.Action("Index", "PromocaoNoticia")"><i class="fa fa-thumb-tack"></i> <span class="nav-label">Promoção - Noticias</span></a>
+            </li>  
+            <li class="@Html.IsSelected(action: "Index", controller: "PromocaoRedeSocial")">
+                <a href="@Url.Action("Index", "PromocaoRedeSocial")"><i class="fa fa-thumb-tack"></i> <span class="nav-label">Promoção - Redes Sociais</span></a>
+            </li>  
+        </ul>
+    </div>
+</nav>

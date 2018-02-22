@@ -1,0 +1,634 @@
+﻿@{
+    ViewBag.Title = "Cadastrar Empresa";
+}
+
+<style>
+    .slick_demo_2 .ibox-content {
+        margin: 0 5px;
+        padding: 5px;
+    }
+</style>
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Perfil da empresa</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/Home">Home</a>
+            </li>
+            <li>
+                <a href="/Empresa/">Empresas</a>
+            </li>
+            <li class="active">
+                <strong>Cadastrar</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+
+    </div>
+</div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Dados da empresa</h5>
+                </div>
+                <div class="ibox-content">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Setor</label>
+                            <div class="col-lg-10">
+                                <select id="cmbSetor" placeholder="Selecione o setor" class="chosen-select" name="setor" tabindex="2">></select>
+
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Nome</label>
+                            <div class="col-lg-10">
+                                <input id="txtNomeempresa" type="text" placeholder="Nome da empresa" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">CNPJ</label>
+                            <div id="listaCnpj" class="col-lg-9">
+                                <input id="txtcnpj" type="text" placeholder="CNPJ da empresa" class="form-control txtcnpj" data-mask="99.999.999/9999-99">
+                            </div>
+                            <div class="col-lg-1">
+                                <button id="btnInserircnpj" onclick="addCnpj()" class="btn btn-sm btn-white" type="button">+</button>
+                            </div>
+                        </div>
+
+                        <div id="cnpjLista"></div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Descrição</label>
+                            <div class="col-lg-10">
+                                <textarea id="txtDescricao" class="form-control" style="resize:none;" rows="5" placeholder="Descrição da empresa"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Site</label>
+                            <div class="col-lg-10">
+                                <div class="input-group m-b">
+                                    <span class="input-group-addon">http://</span> <input id="txtUrlsite" type="text" placeholder="Site da empresa" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Facebook</label>
+                            <div class="col-lg-10">
+                                <div class="input-group m-b">
+                                    <span class="input-group-addon">http://</span> <input id="txtFace" type="text" placeholder="Facebook da empresa" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Instagram</label>
+                            <div class="col-lg-10">
+                                <div class="input-group m-b">
+                                    <span class="input-group-addon">http://</span> <input id="txtInsta" type="text" placeholder="Instagram da empresa" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Twitter</label>
+                            <div class="col-lg-10">
+                                <div class="input-group m-b">
+                                    <span class="input-group-addon">http://</span> <input id="txtTw" type="text" placeholder="Twitter da empresa" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Youtube</label>
+                            <div class="col-lg-10">
+                                <div class="input-group m-b">
+                                    <span class="input-group-addon">http://</span> <input id="txtYoutube" type="text" placeholder="Youtube da empresa" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Klout</label>
+                            <div class="col-lg-10">
+                                <div class="input-group m-b">
+                                    <span class="input-group-addon">http://</span> <input id="txtKlout" type="text" placeholder="Klout da empresa" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Logo da empresa</label>
+                            <div class="col-lg-10">
+                                <div class="fileinput fileinput-new input-group" data-provides="fileinput" id="InputIMagem">
+                                    <div class="form-control" data-trigger="fileinput">
+                                        <i class="glyphicon glyphicon-file fileinput-exists"></i>
+                                        <span class="fileinput-filename"></span>
+                                    </div>
+                                    <span class="input-group-addon btn btn-default btn-file">
+                                        <span class="fileinput-new">Selecionar</span>
+                                        <span class="fileinput-exists">Alterar</span>
+                                        <input type="file" id="imagemEmpresa" name="imagemEmpresa" />
+                                    </span>
+                                    <a href="#" class="input-group-addon btn btn-default fileinput-exists" data-dismiss="fileinput">Remover</a>
+                                </div>
+                                <span class="help-block m-b-none">Selecione uma imagem nas dimensões 96 x 96</span>
+                            </div>
+                        </div>
+
+                    </form>
+
+                    <div class="row">
+                        <div class="col-lg-8 col-lg-offset-2">
+                            <br />
+                            <button class="btn btn-primary" id="btnSalvar" type="button">Salvar</button>
+
+                        </div>
+                        <div class="col-lg-2">
+                            <br />
+                            <button class="btn btn-white" onclick="cancelar()" type="submit">Cancelar</button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+
+@section styles{
+
+    <link href="~/Content/SweetAlert/sweetalert.css" rel="stylesheet" />
+    <link href="~/Content/plugins/chosen/bootstrap-chosen-bootstrap-chosen.css" rel="stylesheet" />
+    <link href="~/Content/plugins/jasny/jasny-bootstrap.min.css" rel="stylesheet" />
+    <style type="text/css"></style>
+
+}
+
+
+@section scripts {
+
+    @Scripts.Render("~/plugins/sweetAlert")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    <script src="~/Scripts/validacoes.js"></script>
+    <script src="~/Scripts/plugins/typeahead/bootstrap3-typeahead.js"></script>
+
+
+
+    <script>
+
+        var verificaImagem;
+        
+        $(document).ready(function () {
+
+            $('#cmbSetor').on('change', function () {
+
+                if (cmbSetor.value != "0") {
+                    $('.chosen-single').removeClass("combo-invalido");
+                }
+            });
+
+            $('#txtDescricao').focusout(function () {
+
+                if (txtDescricao.value != "") {
+                    $('#txtDescricao').removeClass("campo-invalido");
+                }
+
+            });
+
+            $('#txtUrlsite').focusout(function () {
+
+                if (txtUrlsite.value != "") {
+                    $('#txtUrlsite').removeClass("campo-invalido");
+                }
+
+            });
+
+            $('#txtNomeempresa').focusout(function () {
+
+                if (txtNomeempresa.value != "") {
+                    $('#txtNomeempresa').removeClass("campo-invalido");
+                }
+
+            });
+
+            var config = {
+                '.chosen-select': { width: "100%" },
+                '.chosen-select-deselect': { allow_single_deselect: true },
+                '.chosen-select-no-single': { disable_search_threshold: 10 },
+                '.chosen-select-no-results': { no_results_text: 'Oops, nothing found!' },
+                '.chosen-select-width': {}
+            }
+            for (var selector in config) {
+                $(selector).chosen(config[selector]);
+            }
+
+            SetaEventoChange();
+
+            //carrega setores
+            var uri = "/api/SetorAPI/Get/";
+            $.getJSON(uri)
+                .done(function (data) {
+
+                    $("#cmbSetor").append("<option value=" + 0 + ">" + "Selecione um setor" + "</option>");
+                    $.each(data, function (key, item) {
+                        $("#cmbSetor").append("<option value=" + item.idsetoresempresa + ">" + item.nome + "</option>");
+                        $("#cmbSetor").trigger('chosen:updated');
+                    });
+                });
+
+            $("#btnSalvar").click(function () { SalvarEmpresa() });
+
+            var uri = "/api/EmpresaAPI/GetRetornaNomeDeEmpresas";
+            $.getJSON(uri)
+                .done(function (data) {
+                    $("#txtNomeempresa").typeahead({
+                        source: data, displayText: function (item)
+                        { return item.nome }, name: 'empresas'
+                    });
+
+                    $(document).on('click', '.typeahead', function () {
+                        var current = $("#txtNomeempresa").typeahead("getActive");
+                        if (current) {
+
+                            swal({
+                                title: "A empresa " + current.nome + " já está cadastrada, deseja editar?",
+                                text: "Você tem certeza que deseja editar esta empresa?",
+                                type: "warning",
+                                showCancelButton: true,
+                                cancelButtonText: "Cancelar",
+                                confirmButtonColor: "#DD6B55",
+                                confirmButtonText: "Sim",
+                                closeOnConfirm: false
+                            },
+                                function (isConfirm) {
+                                    if (isConfirm)
+                                        redirecionaEdicao(current.idempresa);
+                                    else
+                                        $("#txtNomeempresa").val('');
+                                });
+
+                        } else {
+                            // Nothing
+                        }
+
+                    });
+
+
+                    $(document).keyup(function (e) {
+                        if (e.keyCode == 13) {
+
+                            var current = $("#txtNomeempresa").typeahead("getActive");
+                            if (current) {
+
+                                swal({
+                                    title: "A empresa " + current.nome + " já está cadastrada, deseja editar?",
+                                    text: "Você tem certeza que deseja editar esta empresa?",
+                                    type: "warning",
+                                    showCancelButton: true,
+                                    cancelButtonText: "Cancelar",
+                                    confirmButtonColor: "#DD6B55",
+                                    confirmButtonText: "Sim",
+                                    closeOnConfirm: false
+                                },
+                                           function () {
+                                               redirecionaEdicao(current.idempresa);
+                                           });
+                            } else {
+                                // Nothing
+                            }
+
+                        };
+                    });
+
+                });
+        });
+
+
+        function ExisteCNPJBanco(valcnpj, txtcnpj) {
+            var uri = "/api/EmpresaAPI/GetVerificaCnpjExistente";
+            uri = uri + "?cnpjempresa=" + valcnpj;
+
+            var cnpjCadastrado = false;
+
+            $.ajax({
+                url: uri,
+                async: false,
+                success: function (data) {
+                    if (data == true) {
+                        $(txtcnpj).addClass("cnpj-existente").removeClass("cnpj-valido").removeClass("cnpj-invalido");
+                        cnpjCadastrado = true;
+                    }
+                    else {
+                        $(txtcnpj).addClass("cnpj-valido").removeClass("cnpj-invalido").removeClass("cnpj-existente");
+                        cnpjCadastrado = false;
+                        addCnpj();
+                    }
+                }
+            });
+
+            return cnpjCadastrado;
+        }
+
+        function redirecionaEdicao(idempresa) {
+
+            window.location = "/Empresa/editar/" + idempresa;
+
+        }
+
+
+        function SetaEventoChange() {
+
+            $(".txtcnpj").unbind("change");
+
+            $(".txtcnpj").change(function () {
+
+                var valcnpj = $(this).val();
+                var valcmponto = valcnpj;
+
+                //Limpa caractes especiais do CNPJ
+                valcnpj = valcnpj.replace(/[^0-9]+/g, '');
+
+                if (validarCNPJ(valcnpj) == false) {
+                    $(this).addClass("cnpj-invalido").removeClass("cnpj-valido").removeClass("cnpj-existente");
+                }
+                else {
+                    ExisteCNPJBanco(valcmponto, this);
+
+                }
+
+
+            });
+
+        }
+
+        //insere txtcnpjs
+        var count = 0;
+        function addCnpj() {
+
+            var cont2 = 0;
+
+            $(".txtcnpj").each(function () {
+                if ($(this).val() == "" || $(this).val() == null) {
+                    cont2++;
+
+                }
+            });
+
+            if (cont2 == 0) {
+                count++;
+                //    alert(count);
+                $("#cnpjLista").append("<div id='elemento' class='form-group'><div class='col-lg-9 col-md-offset-2'><input id='txtcnpj" + count + "' type='text'placeholder='CNPJ da empresa' class='form-control txtcnpj' data-mask='99.999.999/9999-99'></div><div class='col-lg-1'><button class='btn btn-sm btn-white' type='button' onclick='removeCNPJ(this)' >-</button></div></div>");
+
+                SetaEventoChange();
+            }
+
+        }
+
+        function removeCNPJ(btn) {
+            count--;
+            $(btn).parent().parent().remove();
+        }
+        //endcnpjs
+
+
+        function verificarImagem(data) {
+
+            $.ajax({
+                type: "POST",
+                url: "/api/EmpresaAPI/VerificarExtImagem",
+                contentType: false,
+                processData: false,
+                data: data,
+                async: false,
+                success: function (data) {
+                    console.log(data.erro);
+                    verificaImagem = data.erro;
+                }
+            });
+
+            return verificaImagem;
+        }
+
+        //function verificarNomeEmpresa(nomeEmpresa) {
+
+        //    $.ajax({
+        //        type: "POST",
+        //        url: "/api/EmpresaAPI/Post?nomeEmpresa=" + nomeEmpresa,
+        //        contentType: false,
+        //        processData: false,
+        //        //data:url,
+        //        success: function (data) {
+        //            console.log(data.erro);
+        //            verificarNome = data.erro;
+        //        }
+        //    });
+
+        //    // ajaxRequest.done(function (xhr, textStatus) {
+
+        //    //});
+
+        //    return verificarNome;
+        //}
+
+
+        function VerificaForm() {
+
+            var selectsetorvalidacao = true;
+            var nomevalidacao = true;
+            var CnpjValidacao = true;
+            var descricaoValidacao = true;
+            var urlsiteValidacao = true;
+
+            //validar nome
+            if (cmbSetor.value == 0) {
+                $('.chosen-single').addClass("combo-invalido");
+                selectsetorvalidacao = false;
+            }
+
+            if (txtUrlsite.value == "") {
+                $(txtUrlsite).addClass("campo-invalido");
+                urlsiteValidacao = false;
+            }
+
+            if (txtDescricao.value == "") {
+                $(txtDescricao).addClass("campo-invalido");
+                descricaoValidacao = false;
+            }
+
+            if (txtNomeempresa.value == "") {
+                $(txtNomeempresa).addClass("campo-invalido");
+                nomevalidacao = false;
+            }
+
+            //valida os CNPJs
+
+            $(".txtcnpj").each(function (i, e) {
+
+
+                var valcnpj = $(e).val();
+                var valcmponto = valcnpj;
+
+                //Limpa caractes especiais do CNPJ
+                valcnpj = valcnpj.replace(/[^0-9]+/g, '');
+
+                if (valcnpj != "") {
+                    if (!validarCNPJ(valcnpj)) {
+                        $(e).addClass("cnpj-invalido").removeClass("cnpj-valido").removeClass("cnpj-existente");
+                        CnpjValidacao = false;
+                    //} else if (ExisteCNPJBanco(valcmponto, e)) {
+                    //    CnpjValidacao = false;
+                    }
+                }
+
+
+            });
+
+
+            return selectsetorvalidacao && nomevalidacao && CnpjValidacao && descricaoValidacao && urlsiteValidacao;
+        }
+
+
+
+        function SalvarEmpresa() {
+
+            if (VerificaForm()) {
+
+                var listaCnpjs = new Array();
+
+                $(".txtcnpj").each(function () {
+                    if ($(this).val() != "" && $(this).val() != null) {
+                        var c = { "cnpj": $(this).val() };
+                        listaCnpjs.push(c);
+                    }
+                });
+
+                var listaDeRedesSociais = new Array();
+
+                if ($("#txtFace").val() != null) {
+                    var r = { "idredesocial": "1", "urlredesocial": $("#txtFace").val() }
+                    listaDeRedesSociais.push(r);
+                }
+                if ($("#txtInsta").val() != null) {
+                    var r = { "idredesocial": "3", "urlredesocial": $("#txtInsta").val() }
+                    listaDeRedesSociais.push(r);
+                }
+                if ($("#txtTw").val() != null) {
+                    var r = { "idredesocial": "2", "urlredesocial": $("#txtTw").val() }
+                    listaDeRedesSociais.push(r);
+                }
+                if ($("#txtYoutube").val() != null) {
+                    var r = { "idredesocial": "4", "urlredesocial": $("#txtYoutube").val() }
+                    listaDeRedesSociais.push(r);
+                }
+                if ($("#txtKlout").val() != null) {
+                    var r = { "idredesocial": "5", "urlredesocial": $("#txtKlout").val() }
+                    listaDeRedesSociais.push(r);
+                }
+
+                var empresa = {
+                    nome: $("#txtNomeempresa").val(),
+                    descricao: $("#txtDescricao").val(),
+                    urlsite: $("#txtUrlsite").val(),
+                    idsetor: $("#cmbSetor").val(),
+                    redessociais: listaDeRedesSociais,
+                    cnpjs: listaCnpjs
+                }
+
+                var nomeEmpresa = $("#txtNomeempresa").val();
+
+                var data = new FormData();
+
+                var files = $("#imagemEmpresa").get(0).files;
+
+
+                if (files.length > 0) {
+                    data.append("imagemEmpresa", files[0]);
+                }
+
+                data.append("empresa", JSON.stringify(empresa));
+                
+                if (verificarImagem(data) == true) {                    
+                    ChamaSwalImagem("Não foi possível cadastrar a empresa.", "As extensões permitidas são JPG, PNG e JPEG");
+                    return false;
+
+                } else {
+                    
+                    $.ajax({
+                        type: "POST",
+                        url: "/api/EmpresaAPI/Post",
+                        contentType: false,
+                        processData: false,
+                        data: data,
+                        async: false,
+                        success: function (data) {
+
+                            window.location = "/Empresa/";
+                        }
+                    });
+                }
+
+
+            } else {
+                ChamaSwal("Não foi possível cadastrar a empresa.", "Campos obrigatórios não preenchidos adequadamente.");
+            }
+        }
+
+        function ChamaSwal(titulo, msg) {
+
+            swal({
+                title: titulo,
+                text: msg,
+                showConfirmButton: true,
+                confirmButtonText: "Ok"
+            },
+            function (isConfirm) {
+                if (isConfirm) {
+                    $('html, body').animate({ scrollTop: 0 }, 'slow');
+                }
+            });
+        }
+
+
+        function ChamaSwalImagem(titulo, msg) {
+
+            swal({
+                title: titulo,
+                text: msg,
+                showConfirmButton: true,
+                confirmButtonText: "Ok"
+            },
+            function (isConfirm) {
+                if (isConfirm) {
+                    // Nothing
+                }
+            });
+        }
+
+
+
+        function cancelar() {
+            window.location = "/Empresa/";
+        }
+
+    </script>
+}

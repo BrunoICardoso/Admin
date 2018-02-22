@@ -1,0 +1,141 @@
+﻿
+<div class="sk-spinner sk-spinner-three-bounce loadingTabelaNoticia">
+    <div class="sk-bounce1"></div>
+    <div class="sk-bounce2"></div>
+    <div class="sk-bounce3"></div>
+</div>
+
+<div id="tabelaNoticias">
+
+
+
+
+    @*<div class="noticia">
+
+            <div class="col-lg-12 boxNoticiaTop">
+
+                <div class="BoxTituloNoticia">
+                    <label class="tituloNoticia">titulo noticia</label>
+                </div>
+
+                <div class="BoxFonteNoticia">
+                    <label class="fonteNoticia">fonte</label>
+                </div>
+
+                <div class="BoxDataNoticia">
+                    <label class="dataNoticia">data</label>
+                </div>
+
+            </div>
+
+            <div class="col-lg-12 boxNoticiaMiddle">
+                <div class="BoxConteudoNoticia">
+                    <div class="conteudoNoticia" id="conteudoNoticiaInner">
+                        ade chinesa de Chongqing.
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-12 boxNoticiaBottom">
+                <div class="col-lg-12 exibeMaisConteudo">
+                    <div class="linhaExibirMaixConteudo"></div>
+                    <i id="iconeExibirMaisConteudo" class="fa fa-caret-down fa-2x iconeExibirMais" aria-hidden="true"></i>
+                    <a id="btnExibirMaisConteudo" class="botaoExibirMaisConteudo" onclick="exibirMaisConteudo();"></a>
+                </div>
+                <div class="BoxAutorNoticia">
+                    <i class="fa fa-user iconeFa" aria-hidden="true"></i>
+                    <label class="autorNoticia">autor</label>
+                </div>
+                <div class="BoxLinkNoticia">
+                    <i class="fa fa-link iconeFa" aria-hidden="true"></i>
+                    <label class="linkNoticia">link</label>
+                </div>
+            </div>
+
+            <div class="col-lg-12 boxPromocoesAssociadas">
+                <label class="tituloPromocoesAssociadas">Promoções Associadas</label>
+                <button class="btn btn-primary btnCriarPromocao" type="submit"><i class="fa fa-plus iconeBtnCriarPromocao" aria-hidden="true"></i>Criar nova promoção</button>
+                <div class="linhaPromocoesAssociadas"></div>
+                <div class="tagsPromocoesAssociadas">
+
+                    <button class="btn btn-white btn-xs" style="margin: 0 5px 5px 0" type="button">tag1 <i class="fa fa-times" aria-hidden="true"></i></button>
+
+                </div>
+            </div>
+
+        </div>*@
+</div>
+
+<script>
+
+    function exibirMaisConteudo(elemento) {
+
+        //console.log(elemento);
+        //console.log($(elemento).parent());
+        //console.log($(elemento).parent().parent());
+        //console.log($(elemento).parent().parent().parent());
+        //console.log($(elemento).parent().parent().parent().find("#conteudoNoticiaInner"));
+        //console.log($(elemento).parent().find(".BoxConteudoNoticia"));
+        //console.log("icone >>>>>>>>");
+        //console.log($(elemento).parent().parent().parent().find(".iconeExibirMaisConteudo"));
+
+        var conteudoNoticiaInner = $(elemento).parent().parent().parent().find("#conteudoNoticiaInner");
+        var BoxConteudoNoticia = $(elemento).parent().parent().parent().find(".BoxConteudoNoticia");
+        var iconeExibirMais = $(elemento).parent().find("#iconeExibirMaisConteudo");
+        var boxShadowConteudo = $(elemento).parent().find("#boxShadowConteudo");
+
+        var AlturaConteudoInner = conteudoNoticiaInner.height();
+        var AlturaBoxConteudo = BoxConteudoNoticia.height();
+        var aloow;
+
+        if (AlturaBoxConteudo == 100) {
+
+            $(BoxConteudoNoticia).animate({
+                height: AlturaConteudoInner + "px"
+            }, 1000);
+
+            $(boxShadowConteudo).fadeOut("slow");
+
+            //$(iconeExibirMais).css("margin-top", "-18px");
+            $(iconeExibirMais).removeClass("fa fa-angle-down fa-2x");
+            $(iconeExibirMais).addClass("fa fa-angle-up fa-2x");
+
+        } else {
+            //$(iconeExibirMais).css("margin-top", "-10px");
+            $(iconeExibirMais).removeClass("fa fa-angle-up fa-2x");
+            $(iconeExibirMais).addClass("fa fa-angle-down fa-2x");
+
+            $(boxShadowConteudo).fadeIn("slow");
+
+            $(BoxConteudoNoticia).animate({
+                height: "100px"
+            }, 1000);
+        }
+    }
+
+    function drag(evento, elemento) {
+
+        evento.dataTransfer.setData("data-idnoticia", elemento.attributes["data-idnoticia"].value);
+        
+    }
+
+    function drop(evento, elemento) {
+     
+        elemento.classList.remove('over');
+
+        var idPromocao = $(elemento).attr("data-idpromocao");
+        var nomePromocao = $(elemento).find("#nomeLinhaPromo").text();
+        
+
+        var idNoticia = evento.dataTransfer.getData("data-idnoticia");
+        var idFontePesquisa = filtro.fontePesquisa;
+
+        AssociaPromoNoticias(idPromocao, idNoticia, idFontePesquisa, nomePromocao, elemento);
+
+    }
+    
+    function allowDrop(event, elemento) {
+        event.preventDefault();
+    }
+    
+</script>

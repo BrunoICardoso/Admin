@@ -1,0 +1,609 @@
+﻿@{
+    ViewBag.Title = "Mapa registro";
+}
+
+<style>
+    .footer {
+        position: static;
+    }
+
+
+    .slick_demo_2 .ibox-content {
+        margin: 0 5px;
+        padding: 5px;
+    }
+
+    .paginacao {
+        padding-top: 15px;
+        border-top: solid 1px #DDD;
+    }
+</style>
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Mapa registro</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/Home">Home</a>
+            </li>
+            <li class="active">
+                <strong>Mapa registro</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+
+    </div>
+</div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-content">
+
+                        <div class="form-group" id="data_5">
+                            <label class="font-noraml">Data de concessão</label>
+                            <div class="input-daterange input-group filtro-mapa-data" id="datepicker">
+                                <input type="text" id="txtDataInicial" class="form-control">
+                                <span class="input-group-addon">a</span>
+                                <input type="text" id="txtDataFinal" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div>
+                                <label class="font-noraml">Estado</label>
+                                <select id="cmbEstado" data-placeholder="Selecione um estado" class="chosen-select" name="Estado" tabindex="2">></select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="font-noraml">Área</label>
+                            <div>
+                                <select id="cmbArea" data-placeholder="Selecione uma área" class="chosen-select" name="Area" tabindex="2">></select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="font-noraml">Espécie</label>
+                            <div>
+                                <select id="cmbEspecie" data-placeholder="Selecione uma espécie" class="chosen-select" name="Especie" tabindex="2">></select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="font-noraml">Subespécie</label>
+                            <div>
+                                <select id="cmbSubespecie" data-placeholder="Selecione uma subespécie" class="chosen-select" name="Subespecie" tabindex="2">></select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="font-noraml">Base</label>
+                            <div>
+                                <select id="cmbBase" data-placeholder="Selecione uma base" class="chosen-select" name="Base" tabindex="2">></select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="font-noraml">Característica</label>
+                            <div>
+                                <select id="cmbCaracteristica" data-placeholder="Selecione uma característica" class="chosen-select" name="Caracteristica" tabindex="2">></select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="font-noraml">Atributo</label>
+                            <div>
+                                <select id="cmbAtributo" data-placeholder="Selecione um atributo" class="chosen-select" name="Atributo" tabindex="2">></select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="font-noraml">Complemento</label>
+                            <div>
+                                <select id="cmbComplemento" data-placeholder="Selecione um complemento" class="chosen-select" name="Complemento" tabindex="2">></select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="font-noraml">Origem</label>
+                            <div>
+                                <select id="cmbOrigem" data-placeholder="Selecione uma origem" class="chosen-select" name="Origem" tabindex="2">></select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="font-noraml">Empresa</label>
+                            <div>
+                                <select id="cmbEmpresa" data-placeholder="Selecione uma empresa" class="chosen-select" name="Empresa" tabindex="2">></select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="font-noraml">Marca</label>
+                            <div>
+                                <input id="txtNomeMarca" type="text" placeholder="Nome da marca" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="font-noraml">Número do Registro</label>
+                            <div>
+                                <input id="txtNumeroRegistro" type="text" placeholder="Número do Registro" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="form-group text-center">
+                            <br />
+                            <button class="btn btn-primary" onclick="pesquisaRegistro()" type="button">
+                                <span class="glyphicon glyphicon-search" aria-hidden="true"></span> Pesquisa Registros
+                            </button>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <button type="button" id="btnAdicionarRegistro" onclick="CadastrarRegistro()" class="btn btn-default btn-xs btn-add-table"><i class="fa fa-plus"></i> Adicionar registro</button>
+                    </div>
+                    <div class="ibox-content">
+
+                        <table class="tabela-listar footable table table-stripped toggle-arrow-tiny footable-loaded tablet breakpoint" data-page-size="8">
+                            <thead>
+                                <tr>
+                                    @*<th data-toggle="true" class="footable-visible footable-sortable footable-first-column">Empresa<span class="footable-sort-indicator"></span></th>*@
+                                    <th class="footable-visible footable-sortable">Número do Registro<span class="footable-sort-indicator"></span></th>
+                                    <th class="footable-visible footable-sortable">Nome do Produto<span class="footable-sort-indicator"></span></th>
+                                    <th class="footable-visible footable-sortable">Espécie<span class="footable-sort-indicator"></span></th>
+                                    <th class="footable-visible footable-sortable">Subespécie<span class="footable-sort-indicator"></span></th>
+                                    <th class="footable-visible footable-sortable footable-last-column">Ações<span class="footable-sort-indicator"></span></th>
+                                </tr>
+                            </thead>
+                            <tbody id="registros"></tbody>
+                            <tfoot>
+                            </tfoot>
+                        </table>
+
+                        <div class="paginacao">
+
+                        </div>
+
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section styles {
+
+    <link href="~/Content/SweetAlert/sweetalert.css" rel="stylesheet" />
+    <link href="~/Content/plugins/chosen/bootstrap-chosen-bootstrap-chosen.css" rel="stylesheet" />
+    <link href="~/Content/plugins/datapicker/datepicker3.css" rel="stylesheet" />
+
+}
+
+@section scripts {
+
+    <script src="~/Scripts/plugins/paginacao/paginacao.js"></script>
+    @Scripts.Render("~/plugins/sweetAlert")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/dataPicker")
+    <script src="~/Scripts/plugins/typeahead/bootstrap3-typeahead.js"></script>
+    <script src="~/Scripts/utils.js"></script>
+
+    <script>
+
+        var paginaAtual = 1;
+
+        var paginacao = new Paginacao();
+        var totalRegistros;
+
+        $(document).ready(function () {
+
+            //Date
+            $('.filtro-mapa-data').datepicker({
+                format: 'dd/mm/yyyy',
+                //startView: 1,
+                //todayBtn: "linked",
+                keyboardNavigation: false,
+                forceParse: false,
+                autoclose: true
+            });
+            //End Date
+
+            //Chosen
+            var config = {
+                '.chosen-select': { width: "100%" },
+                '.chosen-select-deselect': { allow_single_deselect: true },
+                '.chosen-select-no-single': { disable_search_threshold: 10 },
+                '.chosen-select-no-results': { no_results_text: 'Oops, nothing found!' },
+                '.chosen-select-width': {}
+            }
+            for (var selector in config) {
+                $(selector).chosen(config[selector]);
+            }
+            //End Chosen
+
+            carregaCombos();
+
+            //$("#dataInicial").datepicker('setDate', new Date("0001-01-01T00:00"));
+            //$("#dataFinal").datepicker('setDate', new Date("0001-01-01T00:00"));
+            //$("#dataInicial").val("");
+            //$("#dataFinal").datepicker('setDate', new Date());
+
+            //if (localStorage.getItem('MarcaRegistroVoltar') == 'S'){
+            //    carregaTabela(retornaFiltroLocalStorage(1));
+            //}                
+            //else {
+            //    localStorage.setItem('MarcaRegistroVoltar', 'N');
+            //    carregaTabela(retornaFiltro(1));
+            //}           
+
+            carregaTabela(retornaFiltro(1));
+
+        });
+
+        function pesquisaRegistro() {
+            paginaAtual = 1;
+            carregaTabela(retornaFiltro(1));
+        }
+
+        function retornaFiltroLocalStorage(pagina) {
+           
+            var filtro = new Object();
+            var localStorageFiltro = JSON.parse(localStorage.getItem('MapaRegistroFiltros'));
+
+            console.log('Localstorage=============================');
+            console.log(localStorageFiltro);
+    
+            filtro.dataInicial = localStorageFiltro.dataInicial != null ? localStorageFiltro.dataInicial : null;
+            filtro.dataFinal = localStorageFiltro.dataFinal != null ? localStorageFiltro.dataFinal : null;
+            filtro.Estados = localStorageFiltro.Estados != null ? localStorageFiltro.Estados : null;
+            filtro.Areas = localStorageFiltro.Areas != null ? localStorageFiltro.Areas : null;
+            filtro.Especies = localStorageFiltro.Especies != null ?  localStorageFiltro.Especies : null;
+            filtro.Subespecies  = localStorageFiltro.Subespecies != null ? localStorageFiltro.Subespecies : null;
+            filtro.Bases = localStorageFiltro.Bases != null ? localStorageFiltro.Bases : null;
+            filtro.Caracteristicas = localStorageFiltro.Caracteristicas != null ? localStorageFiltro.Caracteristicas : null;
+            filtro.Atributos =  localStorageFiltro.Atributos != null ? localStorageFiltro.Atributos : null;
+            filtro.Complementos = localStorageFiltro.Complementos != null ? localStorageFiltro.Complementos : null;
+            filtro.Origens = localStorageFiltro.Origens != null ? localStorageFiltro.Origens : null;
+            filtro.Empresas = localStorageFiltro.Empresas != null ? localStorageFiltro.Empresas : null;
+            filtro.nomeMarca = localStorageFiltro.nomeMarca != null && localStorageFiltro.nomeMarca != "" ? localStorageFiltro.nomeMarca : null;
+            filtro.numeroRegistro = localStorageFiltro.numeroRegistro != null && localStorageFiltro.numeroRegistro != "" ? localStorageFiltro.numeroRegistro : null;
+
+            console.log(filtro);
+           
+            setTimeout(function () {
+
+                if (localStorageFiltro.Estados != null) {
+                    $(document).find("#cmbEstado").val(localStorageFiltro.Estados).trigger('chosen:updated');
+                }
+                if (localStorageFiltro.Areas != null) {
+                    $(document).find("#cmbArea").val(localStorageFiltro.Areas).trigger('chosen:updated');
+                }
+                if (localStorageFiltro.Especies != null) {
+                    $(document).find("#cmbEspecie").val(localStorageFiltro.Especies).trigger('chosen:updated');
+                }
+                if (localStorageFiltro.Subespecies != null) {
+                    $(document).find("#cmbSubespecie").val(localStorageFiltro.Subespecies).trigger('chosen:updated');
+                }
+                if (localStorageFiltro.Bases != null) {
+                    $(document).find("#cmbBase").val(localStorageFiltro.Bases).trigger('chosen:updated');
+                }
+                if (localStorageFiltro.Caracteristicas != null) {
+                    $(document).find("#cmbCaracteristica").val(localStorageFiltro.Caracteristicas).trigger('chosen:updated');
+                }
+                if (localStorageFiltro.Atributos != null) {
+                    $(document).find("#cmbAtributo").val(localStorageFiltro.Atributos).trigger('chosen:updated');
+                }
+                if (localStorageFiltro.Complementos != null) {
+                    $(document).find("#cmbComplemento").val(localStorageFiltro.Complementos).trigger('chosen:updated');
+                }
+                if (localStorageFiltro.Origens != null) {
+                    $(document).find("#cmbOrigem").val(localStorageFiltro.Origens).trigger('chosen:updated');
+                }
+                if (localStorageFiltro.Empresas != null) {
+                    $(document).find("#cmbEmpresa").val(localStorageFiltro.Empresas).trigger('chosen:updated');
+                }
+                if (localStorageFiltro.nomeMarca != null && localStorageFiltro.nomeMarca != "") {
+                    $(document).find("#txtNomeMarca").val(localStorageFiltro.nomeMarca);
+                }
+                if (localStorageFiltro.numeroRegistro != null && localStorageFiltro.numeroRegistro != "") {
+                    $(document).find("#txtNumeroRegistro").val(localStorageFiltro.numeroRegistro);
+                }
+                if (localStorageFiltro.dataInicial != null && localStorageFiltro.dataInicial != "") {
+                    //$(document).find("#txtDataInicial").datepicker('setDate', localStorageFiltro.dataInicial);
+                    $(document).find("#txtDataInicial").val(formataDataJson(localStorageFiltro.dataInicial));
+                }
+                if (localStorageFiltro.dataFinal != null && localStorageFiltro.dataFinal != "") {
+                    //$(document).find("#txtDataFinal").datepicker('setDate', localStorageFiltro.dataFinal);
+                    $(document).find("#txtDataFinal").val(formataDataJson(localStorageFiltro.dataFinal));
+                }
+
+                //
+                //$("#dataFinal").datepicker('setDate', new Date("0001-01-01T00:00"));
+
+            }, 200);           
+                    
+            //filtro.dataInicial = dataInicial;
+            //filtro.dataFinal = dataFinal;
+
+            //filtro.dataInicial = new Date($("#dataInicial").datepicker("getDate"));
+            //filtro.dataFinal = new Date($("#dataFinal").datepicker("getDate"));
+
+            filtro.pagina = pagina;
+            filtro.qtdRegistros = 15;
+
+            return filtro;
+        }
+
+        function retornaFiltro(pagina) {
+
+            var filtro = new Object();
+        
+            filtro.dataInicial  = $("#txtDataInicial").val() != undefined ? ConverteDataStringParaData($("#txtDataInicial").val()) : null;
+            filtro.dataFinal = $("#txtDataFinal").val() != undefined ? ConverteDataStringParaData($("#txtDataFinal").val()) : null;
+            filtro.Estados = $("#cmbEstado").val() != null ? $("#cmbEstado").val() : null;
+            filtro.Areas =  $("#cmbArea").val() != null ? $("#cmbArea").val() : null;
+            filtro.Especies =  $("#cmbEspecie").val() != null ? $("#cmbEspecie").val() : null;
+            filtro.Subespecies =  $("#cmbSubespecie").val() != null ? $("#cmbSubespecie").val() : null;
+            filtro.Bases = $("#cmbBase").val() != null ? $("#cmbBase").val() : null;
+            filtro.Caracteristicas = $("#cmbCaracteristica").val() != null ? $("#cmbCaracteristica").val() : null;
+            filtro.Atributos = $("#cmbAtributo").val() != null ? $("#cmbAtributo").val() : null;
+            filtro.Complementos = $("#cmbComplemento").val() != null ? $("#cmbComplemento").val() : null;
+            filtro.Origens = $("#cmbOrigem").val() != null ? $("#cmbOrigem").val() : null;
+            filtro.Empresas = $("#cmbEmpresa").val() != null ? $("#cmbEmpresa").val() : null;
+            filtro.nomeMarca = $("#txtNomeMarca").val();
+            filtro.numeroRegistro = $("#txtNumeroRegistro").val();             
+
+            //filtro.dataInicial = new Date($("#dataInicial").datepicker("getDate"));
+            //filtro.dataFinal = new Date($("#dataFinal").datepicker("getDate"));
+
+            filtro.pagina = pagina;
+            filtro.qtdRegistros = 15;
+
+            console.log('filtro=============================');
+            console.log(filtro);
+            
+            localStorage.setItem('MapaRegistroFiltros', JSON.stringify(filtro));
+
+            //localStorage.setItem('MapaRegistroFiltros.dataInicial', filtro.dataInicial);
+            //localStorage.setItem('MapaRegistroFiltros.dataFinal', filtro.dataFinal);
+            //localStorage.setItem('MapaRegistroFiltros.dataInicial', JSON.stringify(filtro.Estados));
+            //localStorage.setItem('MapaRegistroFiltros.Areas', JSON.stringify(filtro.Areas));
+            //localStorage.setItem('MapaRegistroFiltros.Especies', JSON.stringify(filtro.Especies));
+            //localStorage.setItem('MapaRegistroFiltros.Subespecies', JSON.stringify(filtro.Subespecies));
+            //localStorage.setItem('MapaRegistroFiltros.Bases', JSON.stringify(filtro.Bases));
+            //localStorage.setItem('MapaRegistroFiltros.Caracteristicas', JSON.stringify(filtro.Caracteristicas));
+            //localStorage.setItem('MapaRegistroFiltros.Atributos', JSON.stringify(filtro.Atributos));
+            //localStorage.setItem('MapaRegistroFiltros.Complementos', JSON.stringify(filtro.Complementos));
+            //localStorage.setItem('MapaRegistroFiltros.Origens', JSON.stringify(filtro.Origens));
+            //localStorage.setItem('MapaRegistroFiltros.Empresas', JSON.stringify(filtro.Empresas));
+            //localStorage.setItem('MapaRegistroFiltros.nomeMarca', filtro.nomeMarca);
+            //localStorage.setItem('MapaRegistroFiltros.numeroRegistro', filtro.numeroRegistro);
+
+            return filtro;
+        }
+
+        function carregaTabela(filtro) {
+                   
+            //console.log(JSON.stringify(filtro));
+            
+            $("#registros").empty();
+            $("#registros").html('<br/>Carregando... Aguarde!<br/>');
+
+            var ajaxRequest = $.ajax({
+                type: "POST",
+                url: "/api/MapaRegistroAPI/Filtro",
+                contentType: 'application/json',
+                data: JSON.stringify(filtro),
+                dataType: 'json',
+                success: function (data) {
+
+                    if (data.ListaDeMapaRegistros.length > 0) {
+                        $("#registros").empty();
+
+                        $.each(data.ListaDeMapaRegistros, function (key, item) {
+                            $('<tr>', { html: formataLinhaRegistro(item) }).appendTo($('#registros'));
+                        });
+
+                        totalRegistros = data.TotalMapaRegistros;
+
+                        paginacao.CriaPaginacao(".paginacao", parseInt((totalRegistros / 15) + 0.9), totalRegistros, paginaAtual);
+                        paginacao.setMudouPagina(mudouPagina);
+
+                    } else {
+                        $("#registros").html('<br/>Não foram encontrados registros.<br/>');
+                    }
+                }
+            });
+
+        }
+
+        function formataLinhaRegistro(item) {
+
+            return "<td>" + item.numeroRegistro + "</td>" +
+                            "<td>" + item.nomeProduto + "</td><td>"
+                              + item.nomeEspecie + "</td><td>"
+                                 + item.nomeSubespecie + "</td><td> <span class='btnEditar btn-acoes-table' onclick='EditarRegistro("
+                                    + item.idRegistro + ")' ><a onclick='EditarRegistro'><i class='fa fa-wrench' /> Editar<a/></span> <span class='btnExcluir btn-acoes-table' Onclick='MensagemExcluirRegistro("
+                                        + item.idRegistro + ")'><a onclick='ExcluirRegistro'><i class='fa fa-times' /> Excluir </a></span> </td>";
+        }
+
+        function carregaCombos() {
+
+            var uri = "/api/MapaRegistroAPI/GetFiltros";
+
+            $.getJSON(uri)
+                .done(function (data) {
+
+                    $("#cmbEstado").append("<option value=" + null + ">" + "Selecione um Estado" + "</option>");
+                    $.each(data.Estados, function (key, item) {
+                        $("#cmbEstado").append("<option value=" + item.idItem + ">" + item.nome + "</option>");
+                        $("#cmbEstado").trigger('chosen:updated');
+                    });
+
+                    $("#cmbArea").append("<option value=" + null + ">" + "Selecione uma Área" + "</option>");
+                    $.each(data.Areas, function (key, item) {
+                        $("#cmbArea").append("<option value=" + item.idItem + ">" + item.nome + "</option>");
+                        $("#cmbArea").trigger('chosen:updated');
+                    });
+
+                    $("#cmbEspecie").append("<option value=" + null + ">" + "Selecione um Espécie" + "</option>");
+                    $.each(data.Especies, function (key, item) {
+                        $("#cmbEspecie").append("<option value=" + item.idItem + ">" + item.nome + "</option>");
+                        $("#cmbEspecie").trigger('chosen:updated');
+                    });
+
+                    $("#cmbSubespecie").append("<option value=" + null + ">" + "Selecione uma Subespécie" + "</option>");
+                    $.each(data.Subespecies, function (key, item) {
+                        $("#cmbSubespecie").append("<option value=" + item.idItem + ">" + item.nome + "</option>");
+                        $("#cmbSubespecie").trigger('chosen:updated');
+                    });
+
+                    $("#cmbBase").append("<option value=" + null + ">" + "Selecione uma Base" + "</option>");
+                    $.each(data.Bases, function (key, item) {
+                        $("#cmbBase").append("<option value=" + item.idItem + ">" + item.nome + "</option>");
+                        $("#cmbBase").trigger('chosen:updated');
+                    });
+
+                    $("#cmbCaracteristica").append("<option value=" + null + ">" + "Selecione um Característica" + "</option>");
+                    $.each(data.Caracteristicas, function (key, item) {
+                        $("#cmbCaracteristica").append("<option value=" + item.idItem + ">" + item.nome + "</option>");
+                        $("#cmbCaracteristica").trigger('chosen:updated');
+                    });
+
+                    $("#cmbAtributo").append("<option value=" + null + ">" + "Selecione um Atributo" + "</option>");
+                    $.each(data.Atributos, function (key, item) {
+                        $("#cmbAtributo").append("<option value=" + item.idItem + ">" + item.nome + "</option>");
+                        $("#cmbAtributo").trigger('chosen:updated');
+                    });
+
+                    $("#cmbComplemento").append("<option value=" + null + ">" + "Selecione um Complemento" + "</option>");
+                    $.each(data.Complementos, function (key, item) {
+                        $("#cmbComplemento").append("<option value=" + item.idItem + ">" + item.nome + "</option>");
+                        $("#cmbComplemento").trigger('chosen:updated');
+                    });
+
+                    $("#cmbOrigem").append("<option value=" + null + ">" + "Selecione uma Origem" + "</option>");
+                    $.each(data.Origens, function (key, item) {
+                        $("#cmbOrigem").append("<option value=" + item.idItem + ">" + item.nome + "</option>");
+                        $("#cmbOrigem").trigger('chosen:updated');
+                    });
+
+                    $("#cmbEmpresa").append("<option value=" + null + ">" + "Selecione um Empresa" + "</option>");
+                    $.each(data.Empresas, function (key, item) {
+                        $("#cmbEmpresa").append("<option value=" + item.idItem + ">" + item.nome + "</option>");
+                        $("#cmbEmpresa").trigger('chosen:updated');
+                    });
+
+                    $("#txtNomeMarca").typeahead({
+                        source: data.Marcas, displayText: function (item)
+                        { return item.nome }, name: 'marcas'
+                    });
+
+                });
+        }
+
+        function CadastrarRegistro() {
+            window.location = "/MapaRegistro/Cadastrar";
+        }
+
+        //function CriaPaginacao(totalPaginas) {
+
+        //    $('.tabela-paginacao').empty();
+
+        //    $(".tabela-paginacao").append("<li id='btnprev' class='footable-page-arrow'><a data-page='Prev' onclick='Prev()'>‹</a></li>");
+
+        //    for (var i = 1; i <= totalPaginas; i++) {
+
+        //        if (i == paginaAtual) {
+        //            $(".tabela-paginacao").append("<li class='footable-page active'><a data-page='1' onclick='Paginar(" + i + ")'>" + i + "</a></li>");
+        //        }
+        //        else {
+        //            $(".tabela-paginacao").append("<li class='footable-page'><a data-page='1' onclick='Paginar(" + i + ")'>" + i + "</a></li>");
+        //        }
+        //    }
+
+        //    $(".tabela-paginacao").append("<li id='btnnext' class='footable-page-arrow'><a data-page='Next' onclick='Next(" + totalPaginas + ")'>›</a></li>");
+
+        //    if (paginaAtual == 1) {
+
+        //        $('#btnprev').addClass('disabled');
+        //    }
+        //    if (paginaAtual == totalPaginas) {
+
+        //        $('#btnnext').addClass('disabled');
+        //    }
+
+        //}
+
+        function mudouPagina(pagina) {
+            paginaAtual = pagina;
+            carregaTabela(retornaFiltro(paginaAtual));
+        }
+
+        //function Next(totalPaginas) {
+        //    if (paginaAtual < totalPaginas) {
+        //        Paginar(paginaAtual + 1);
+        //    }
+        //}
+
+        //function Prev() {
+        //    if (paginaAtual > 1) {
+        //        Paginar(paginaAtual - 1);
+        //    }
+        //}
+
+        //function Paginar(numPagina) {
+        //    paginaAtual = numPagina;
+        //    carregaTabela(retornaFiltro(numPagina));
+        //}
+
+        function EditarRegistro(idRegistro) {
+            window.location = "/MapaRegistro/Editar/" + idRegistro;
+        }
+
+        var idRegistroExcluir = 0;
+
+        function MensagemExcluirRegistro(idRegistro) {
+            idRegistroExcluir = idRegistro;
+
+            swal({
+                title: "Excluir Registro?",
+                text: "Você tem certeza que deseja excluir este registro?",
+                type: "warning",
+                showCancelButton: true,
+                cancelButtonText: "Cancelar",
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Sim",
+                closeOnConfirm: false
+            },
+                    function () {
+                        btnExcluirRegistro();
+
+                    });
+
+        }
+
+        function btnExcluirRegistro() {
+            ExcluirRegistro(idRegistroExcluir);
+        }
+
+        function ExcluirRegistro(idRegistro) {
+            $.ajax({
+                type: "DELETE",
+                dataType: "json",
+                url: "/api/MapaRegistroAPI/Delete/" + idRegistro,
+                success: function (data) {
+                    swal("Deletado!", "Registro deletado.", "success");
+                    carregaTabela(retornaFiltro(paginaAtual));
+                },
+                error: function (error) {
+                    jsonValue = jQuery.parseJSON(error.responseText);
+                }
+            });
+        }
+
+    </script>
+}

@@ -1,0 +1,353 @@
+﻿@{
+    ViewBag.Title = "Marcas";
+}
+
+<style>
+    .slick_demo_2 .ibox-content {
+        margin: 0 5px;
+        padding: 5px;
+    }
+
+    .paginacao {
+        padding-top: 15px;
+        border-top: solid 1px #DDD;
+    }
+
+</style>
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Marcas</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/Home">Home</a>
+            </li>
+            <li class="active">
+                <strong>Marcas</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+
+    </div>
+</div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <button type="button" id="btnAdicionarMarca" onclick="CadastrarMarca()" class="btn btn-default btn-xs btn-add-table"><i class="fa fa-plus"></i> Adicionar marca</button>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="font-noraml">Setor</label>
+                                <div class="input-group">
+                                    <select data-placeholder="Selecione um setor" id="cmbSetor" class="chosen-select" name="setor" style="width:250px" tabindex="2"></select>
+
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="font-noraml">Empresa</label>
+                                <div class="input-group">
+                                    <select data-placeholder="Selecione uma empresa" id="cmbEmpresa" class="chosen-select" name="setor" style="width:250px" tabindex="2"></select>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+
+
+                        <table class="tabela-listar footable table table-stripped toggle-arrow-tiny footable-loaded tablet breakpoint" data-page-size="8">
+                            <thead>
+                                <tr>
+
+                                    <th data-toggle="true" class="footable-visible footable-sortable footable-first-column">Empresa<span class="footable-sort-indicator"></span></th>
+                                    <th class="footable-visible footable-sortable">Marca<span class="footable-sort-indicator"></span></th>
+                                    <th class="footable-visible footable-sortable">Site<span class="footable-sort-indicator"></span></th>
+                                    <th class="footable-visible footable-sortable footable-last-column">Ações<span class="footable-sort-indicator"></span></th>
+                                </tr>
+
+
+
+                            </thead>
+                            <tbody id="marcas"></tbody>
+                            <tfoot>
+                            </tfoot>
+                        </table>
+
+                        <div class="paginacao">
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section styles {
+
+    <link href="~/Content/SweetAlert/sweetalert.css" rel="stylesheet" />
+    <link href="~/Content/plugins/chosen/bootstrap-chosen-bootstrap-chosen.css" rel="stylesheet" />
+
+}
+
+@section scripts {
+
+
+    @Scripts.Render("~/plugins/sweetAlert")
+    @Scripts.Render("~/plugins/chosen")
+    <script src="~/Scripts/plugins/paginacao/paginacao.js"></script>
+
+    <script>
+
+        var paginaAtual = 1;
+
+        var paginacao = new Paginacao();
+        var totalRegistros;
+
+        var idsetor = 0;
+        var idempresa = 0;
+
+        var idsetorAtual = 0;
+        var idempresaAtual = 0;
+
+
+        $(document).ready(function () {
+
+            carregardropdown(idsetor, idempresa, paginaAtual);
+
+            CarregarMarcas(idsetor, idempresa, paginaAtual);
+
+
+            var config = {
+                '.chosen-select': {},
+                '.chosen-select-deselect': { allow_single_deselect: true },
+                '.chosen-select-no-single': { disable_search_threshold: 10 },
+                '.chosen-select-no-results': { no_results_text: 'Oops, nothing found!' },
+                '.chosen-select-width': { width: "95%" }
+            }
+            for (var selector in config) {
+                $(selector).chosen(config[selector]);
+            }
+
+
+        });
+
+        $("#cmbSetor").chosen().change(function () {
+            var idsetor = $(this).val();
+            idsetorAtual = idsetor;
+            paginaAtual = 1;
+            //$('#cmbEmpresa').val("0").trigger('chosen:updated');
+            CarregarMarcas(idsetorAtual, 0, paginaAtual);
+
+        });
+
+        $("#cmbEmpresa").chosen().change(function () {
+
+            var idempresa = $(this).val();
+            idempresaAtual = idempresa;
+            paginaAtual = 1;
+            //$('#cmbsetor').val("idsetor").trigger('chosen:updated');
+            CarregarMarcas(idsetorAtual, idempresaAtual, paginaAtual);
+
+        });
+
+
+        function carregardropdown(idsetor, idempresa, pagina) {
+
+            var pagina = pagina;
+            var regporpagina = 10;
+
+            var uri = "/api/MarcaAPI/Get";
+
+            uri = uri + "?idSetor=" + idsetor + "&idEmpresa=" + idempresa + "&pagina=" + pagina + "&regporpagina=" + regporpagina;
+
+            $.getJSON(uri)
+                .done(function (data) {
+
+                    $("#cmbSetor").append("<option value=" + 0 + ">" + "Todos" + "</option>");
+                    $.each(data.Setores, function (key, item) {
+                        $("#cmbSetor").append("<option value=" + item.idsetoresempresa + ">" + item.nome + "</option>");
+                        $("#cmbSetor").trigger('chosen:updated');
+
+                    });
+
+                    $("#cmbEmpresa").append("<option value=" + 0 + ">" + "Todos" + "</option>");
+                    $.each(data.Empresas, function (key, item) {
+                        $("#cmbEmpresa").append("<option value=" + item.idempresa + ">" + item.nome + "</option>");
+                        $("#cmbEmpresa").trigger('chosen:updated');
+
+                    });
+
+                });
+
+        }
+
+        //idsetor, idempresa, pagina
+        function CarregarMarcas(idsetor, idempresa, pagina) {
+
+            var pagina = pagina;
+            var regporpagina = 10;
+
+            var uri = "/api/MarcaAPI/Get";
+
+            uri = uri + "?idSetor=" + idsetor + "&idEmpresa=" + idempresa + "&pagina=" + pagina + "&regporpagina=" + regporpagina;
+
+            $.getJSON(uri)
+                .done(function (data) {
+
+                    $("#marcas").empty();
+
+                    $.each(data.Marcas, function (key, item) {
+                        $('<tr>', { html: formataLinhaMarca(item) }).appendTo($('#marcas'));
+                    });
+
+                    totalRegistros = data.TotalMarcas;
+
+                    paginacao.CriaPaginacao(".paginacao", parseInt((totalRegistros / 10) + 0.9), totalRegistros, paginaAtual);
+                    paginacao.setMudouPagina(mudouPagina);
+
+
+                });
+
+        }
+
+        //function CriaPaginacao(totalPaginas) {
+
+        //    $('.tabela-paginacao').empty();
+
+
+        //    $(".tabela-paginacao").append("<li id='btnprev' class='footable-page-arrow'><a data-page='Prev' onclick='Prev()'>‹</a></li>");
+
+        //    for (var i = 1; i <= totalPaginas; i++) {
+
+        //        if (i == paginaAtual) {
+        //            $(".tabela-paginacao").append("<li class='footable-page active'><a data-page='1' onclick='Paginar(" + i + ")'>" + i + "</a></li>");
+        //        }
+        //        else {
+        //            $(".tabela-paginacao").append("<li class='footable-page'><a data-page='1' onclick='Paginar(" + i + ")'>" + i + "</a></li>");
+        //        }
+        //    }
+
+        //    $(".tabela-paginacao").append("<li id='btnnext' class='footable-page-arrow'><a data-page='Next' onclick='Next(" + totalPaginas + ")'>›</a></li>");
+
+        //    if (paginaAtual == 1) {
+
+        //        $('#btnprev').addClass('disabled');
+        //    }
+        //    if (paginaAtual == totalPaginas) {
+
+        //        $('#btnnext').addClass('disabled');
+        //    }
+
+
+        function mudouPagina(pagina) {
+            paginaAtual = pagina;
+            CarregarMarcas(idsetorAtual, idempresaAtual, paginaAtual);
+        }
+
+
+        //}
+
+        //function Next(totalPaginas) {
+        //    if (paginaAtual < totalPaginas) {
+        //        Paginar(paginaAtual + 1);
+        //    }
+        //}
+
+        //function Prev() {
+        //    if (paginaAtual > 1) {
+        //        Paginar(paginaAtual - 1);
+        //    }
+        //}
+
+        //function Paginar(numPagina) {
+
+        //    paginaAtual = numPagina;
+        //    CarregarMarcas(idsetorAtual,idempresaAtual,numPagina, 10);
+
+        //}
+
+
+        function formataLinhaMarca(item) {
+            return "<td>" + item.EmpresaNome + "</td><td>" + item.Nome + "</td><td>" + item.UrlSite + "</td> <td> <span class='btnEditar btn-acoes-table' onclick='EditarMarca(" + item.idMarca + ")' ><a onclick='EditarMarca'><i class='fa fa-wrench' /> Editar<a/></span> <span class='btnExcluir btn-acoes-table' Onclick='MensagemExcluirMarca(" + item.idMarca + ")'><a onclick='ExcluirMarca'><i class='fa fa-times' /> Excluir </a></span> <span class='btnExpressoes btn-acoes-table' Onclick='ExpressoesMarca(" + item.idMarca + ")'><a><i class='fa fa-file-code-o' /> Expressões </a></span> </td>";
+        }
+
+
+        function CadastrarMarca() {
+            window.location = "/Marca/Cadastrar";
+        }
+
+
+        function EditarMarca(idMarca) {
+            window.location = "/Marca/Editar/" + idMarca;
+        }
+
+        function ExpressoesMarca(idMarca) {
+            window.location = "/Marca/Expressoes/" + idMarca;
+        }
+
+        var idMarcaExcluir = 0;
+
+        function MensagemExcluirMarca(idMarca) {
+            idMarcaExcluir = idMarca;
+
+            //Código que mostra o alerta
+
+            swal({
+                title: "Excluir marca?",
+                text: "Você tem certeza que deseja excluir esta marca?",
+                type: "warning",
+                showCancelButton: true,
+                cancelButtonText: "Cancelar",
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Sim",
+                closeOnConfirm: false
+            },
+                    function () {
+                        btnExcluirMarca();
+
+                    });
+
+        }
+
+        //Função chamado ao confirmar a exclusão
+        function btnExcluirMarca() {
+            ExcluirMarca(idMarcaExcluir);
+        }
+
+
+        //Função que exclui do banco
+        function ExcluirMarca(idMarca) {
+            $.ajax({
+                type: "DELETE",
+                dataType: "json",
+                url: "/api/MarcaAPI/Delete/" + idMarca,
+                success: function (data) {
+                    swal("Deletada!", "Marca deletada.", "success");
+                    CarregarMarcas(idsetorAtual, idempresaAtual, paginaAtual, 10);
+                },
+                error: function (error) {
+                    jsonValue = jQuery.parseJSON(error.responseText);
+                }
+
+
+
+            });
+
+
+        }
+
+    </script>
+
+}
+
+
+
+

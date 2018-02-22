@@ -1,0 +1,386 @@
+﻿@{
+    ViewBag.Title = "Empresas";
+}
+
+<style>
+    .slick_demo_2 .ibox-content {
+        margin: 0 5px;
+        padding: 5px;
+    }
+
+
+    .paginacao {
+        padding-top: 15px;
+        border-top: solid 1px #DDD;
+    }
+
+
+    .box-filtro-empresas {
+        padding-bottom: 0px;
+    }
+
+    .box-filtro-outer{
+           height: 78px;
+            padding-top: 22px;
+    }
+
+    .box-filtro-setores{
+      display: inline-flex;
+      
+    }
+
+     .box-filtro-setores label{
+         padding-top: 7px;
+         font-size: 10pt;
+         margin-right: 15px;
+         font-weight: bold;
+      }
+
+     .btn-filtro-adicionar-empresa{
+             margin-top: 4px;
+     }
+
+
+</style>
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Empresas</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/Home">Home</a>
+            </li>
+            <li class="active">
+                <strong>Empresas</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+
+    </div>
+</div>
+
+
+<div class="wrapper wrapper-content animated fadeInRight box-filtro-empresas">
+    <div class="row">
+        <div class="col-md-12">
+
+            <div class="ibox float-e-margins">
+                <div class="ibox-content box-filtro-outer">
+
+
+
+                    <div class="col-lg-3 box-filtro-setores">
+
+                        
+                            <label class="font-noraml">Setores</label>
+                       
+                    
+                            <select class="form-control m-b" id="cmbSetor" name="account">
+                           
+                            </select>
+
+
+
+                    </div>
+
+
+                    <div class="col-lg-5">
+
+
+
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="txtPesquisa" placeholder="Nome da Empresa"> <span class="input-group-btn">
+                                <button type="button" class="btn btn-primary" onclick="pesquisaEmpresas()">
+                                    <i class="fa fa-search" aria-hidden="true"></i>
+                                </button>
+                            </span>
+                        </div>
+
+
+                    </div>
+                    <div class="col-lg-4">
+
+                        <button class="btn btn-sm btn-primary pull-right m-t-n-xs btn-filtro-adicionar-empresa" type="button" onclick="CadastrarEmpresa()"> <i class="fa fa-plus"></i>  Adicionar empresa</button>
+
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="wrapper wrapper-content animated fadeInRight" style="padding-top: 0px;">
+    <div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox float-e-margins">
+
+                    <div class="ibox-content">
+
+                        <table class="tabela-listar footable table table-stripped toggle-arrow-tiny footable-loaded tablet breakpoint" data-page-size="8">
+                            <thead>
+                                <tr>
+
+                                    <th data-toggle="true" class="footable-visible footable-sortable footable-first-column">Empresa<span class="footable-sort-indicator"></span></th>
+                                    <th class="footable-visible footable-sortable">Setor<span class="footable-sort-indicator"></span></th>
+                                    <th class="footable-visible footable-sortable">Site<span class="footable-sort-indicator"></span></th>
+                                    <th class="footable-visible footable-sortable footable-last-column">Ações<span class="footable-sort-indicator"></span></th>
+                                </tr>
+                            </thead>
+                            <tbody id="empresas"></tbody>
+                            <tfoot>
+                            </tfoot>
+                        </table>
+
+                        <div class="paginacao">
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section styles {
+
+    <link href="~/Content/SweetAlert/sweetalert.css" rel="stylesheet" />
+
+}
+
+@section scripts {
+
+    @Scripts.Render("~/plugins/sweetAlert")
+    <script src="~/Scripts/plugins/paginacao/paginacao.js"></script>
+   
+
+
+    <script>
+
+        var paginaAtual = 1;
+
+        var paginacao = new Paginacao();
+        var totalRegistros;
+
+        $(document).ready(function () {
+
+            $("#cmbSetor").change(function () {
+                pesquisaEmpresas();
+            });
+        
+
+            $('#txtPesquisa').keypress(function (event) {
+                var keycode = (event.keyCode ? event.keyCode : event.which);
+                if (keycode == '13') {
+                    pesquisaEmpresas();
+                }
+            });
+
+
+            carregaComboSetores();
+
+            CarregarEmpresas(1);
+        });
+
+        function pesquisaEmpresas() {
+
+            CarregarEmpresas(1);
+
+        }
+
+        function carregaComboSetores() {
+
+            var uri = "/api/EmpresaAPI/GetItensComboSetor";
+
+            $.getJSON(uri)
+          .done(function (data) {
+            
+              $("#cmbSetor").append("<option value=" + 0 + ">" + "Todos" + "</option>");
+              $.each(data, function (key, item) {
+                  $("#cmbSetor").append("<option value=" + item.idsetor + ">" + item.nome + "</option>");
+                  $("#cmbSetor").trigger('chosen:updated');
+
+              });
+            
+          });
+            
+        }
+
+        function CarregarEmpresas(pagina) {
+
+
+
+
+            var pagina = pagina;
+            var regporpagina = 10;
+
+            var filtro = new Object();
+            filtro.pagina = pagina;
+            filtro.regporpagina = regporpagina;
+            filtro.setor = $("#cmbSetor").val();
+            filtro.pesquisa = $("#txtPesquisa").val();
+
+            $('#empresas').empty();
+
+            $.ajax({
+                type: "POST",
+                url: "/api/EmpresaAPI/retornaEmpresas",
+                contentType: 'application/json',
+                data: JSON.stringify(filtro),
+                dataType: 'json',
+                success: function (data) {
+            
+                    $.each(data.Empresas, function (key, item) {
+                        $('<tr>', { html: formataLinhaEmpresa(item) }).appendTo($('#empresas'));
+                    });
+
+                    totalRegistros = data.TotalEmpresas;
+
+                    paginacao.CriaPaginacao(".paginacao", parseInt((totalRegistros / 10) + 0.9), totalRegistros, paginaAtual);
+                    paginacao.setMudouPagina(mudouPagina);
+        
+                }
+        
+            });
+
+
+        }
+
+
+
+        //function CriaPaginacao(totalPaginas) {
+
+        //    $('.tabela-paginacao').empty();
+
+
+        //    $(".tabela-paginacao").append("<li id='btnprev' class='footable-page-arrow'><a data-page='Prev' onclick='Prev()'>‹</a></li>");
+
+        //    for (var i = 1; i <= totalPaginas; i++) {
+
+        //        if (i == paginaAtual)
+        //        {
+        //            $(".tabela-paginacao").append("<li class='footable-page active'><a data-page='1' onclick='Paginar(" + i + ")'>" + i + "</a></li>");
+        //        }
+        //        else {
+        //            $(".tabela-paginacao").append("<li class='footable-page'><a data-page='1' onclick='Paginar(" + i + ")'>" + i + "</a></li>");
+        //        }
+        //    }
+
+        //    $(".tabela-paginacao").append("<li id='btnnext' class='footable-page-arrow'><a data-page='Next' onclick='Next(" + totalPaginas + ")'>›</a></li>");
+
+        //    if (paginaAtual == 1) {
+
+        //        $('#btnprev').addClass('disabled');
+        //    }
+        //    else if (paginaAtual == totalPaginas) {
+
+        //        $('#btnnext').addClass('disabled');
+        //    }
+
+        function mudouPagina(pagina) {
+            paginaAtual = pagina;
+            CarregarEmpresas(paginaAtual);
+        }
+
+        //}
+
+        //function Next(totalPaginas) {
+        //    if (paginaAtual < totalPaginas) {
+        //        Paginar(paginaAtual + 1);
+        //    }
+        //}
+
+        //function Prev() {
+        //    if (paginaAtual > 1) {
+        //        Paginar(paginaAtual - 1);
+        //    }
+        //}
+
+        //function Paginar(numPagina)
+        //{
+
+        //    paginaAtual = numPagina;
+        //    CarregarEmpresas(numPagina, 10);
+
+        //}
+
+        function formataLinhaEmpresa(item) {
+            return "<td>" + item.nome + "</td><td>" + item.setorNome + "</td><td>" + item.urlsite + "</td> <td> <span class='btnEditar btn-acoes-table' onclick='EditarEmpresa(" + item.idempresa + ")' ><a onclick='EditarEmpresa'><i class='fa fa-wrench' /> Editar<a/></span> <span class='btnExcluir btn-acoes-table' Onclick='MensagemExcluirEmpresa(" + item.idempresa + ")'><a onclick='ExcluirEmpresa'><i class='fa fa-times' /> Excluir </a></span> <span class='btnExpressoes btn-acoes-table' Onclick='ExpressoesEmpresa(" + item.idempresa + ")'><a><i class='fa fa-file-code-o' /> Expressões </a></span> </td>";
+
+
+
+        }
+
+
+        function CadastrarEmpresa() {
+            window.location = "/Empresa/Cadastrar";
+        }
+
+
+        function EditarEmpresa(idEmpresa) {
+            window.location = "/Empresa/Editar/" + idEmpresa;
+        }
+
+        function ExpressoesEmpresa(idEmpresa) {
+            window.location = "/Empresa/Expressoes/" + idEmpresa;
+        }
+
+        var idEmpresaExcluir = 0;
+
+        function MensagemExcluirEmpresa(idEmpresa) {
+            idEmpresaExcluir = idEmpresa;
+
+            swal({
+                title: "Excluir empresa?",
+                text: "Você tem certeza que deseja excluir esta empresa?",
+                type: "warning",
+                showCancelButton: true,
+                cancelButtonText: "Cancelar",
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Sim",
+                closeOnConfirm: false
+            },
+                    function () {
+                        btnExcluirEmpresa();
+
+                    });
+
+        }
+
+        //Função chamado ao confirmar a exclusão
+        function btnExcluirEmpresa() {
+            ExcluirEmpresa(idEmpresaExcluir);
+        }
+
+
+        //Função que exclui do banco
+        function ExcluirEmpresa(idEmpresa) {
+            $.ajax({
+                type: "DELETE",
+                dataType: "json",
+                url: "/api/EmpresaAPI/Delete/" + idEmpresa,
+                success: function (data) {
+                    swal("Deletada!", "Empresa deletada.", "success");
+                    CarregarEmpresas(paginaAtual);
+                },
+                error: function (error) {
+                    jsonValue = jQuery.parseJSON(error.responseText);
+                    //jError('An error has occurred while saving the new part source: ' + jsonValue, { TimeShown: 3000 });
+                }
+
+
+
+            });
+
+
+        }
+
+    </script>
+
+}
+

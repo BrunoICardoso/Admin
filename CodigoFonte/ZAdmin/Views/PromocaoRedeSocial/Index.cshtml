@@ -1,0 +1,841 @@
+﻿@using ZAdmin.Utils
+
+
+@{
+    ViewBag.Title = "Promoção - Redes Sociais";
+}
+
+<style type="text/css">
+
+
+</style>
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Promoção - Redes Sociais</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/Home">Home</a>
+            </li>
+            <li class="active">
+                <strong>Promoção - Redes Sociais</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+    </div>
+</div>
+
+<div class="row wrapper wrapper-content animated fadeIn">
+
+    <div class="col-md-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-content">
+
+                <div class="row">
+                    <div class="col-md-8">
+                        <label>Pesquisar</label>
+                        <input type="text" id="txtPesquisar" class="form-control" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="control-label" for="status">Selecione o período</label>
+                        <div class="input-daterange input-group" id="selecaoDatas">
+                            <input type="text" class="input-sm form-control" name="start" id="txtDataInicial" value="" />
+                            <span class="input-group-addon">&nbsp; a &nbsp;</span>
+                            <input type="text" class="input-sm form-control" name="end" id="txtDataFinal" value="" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="font-noraml itemBoxFiltro">Empresa</label>
+                        <select data-placeholder="Selecione uma empresa" id="cmbEmpresa" class="chosen-select-width" name="empresas" tabindex="2" style="width:100%;"></select>
+                    </div>
+                    <div class="col-md-2"></div>
+                    <div class="col-md-4" style="padding-top:22px;">
+                        <button class="btn btn-primary" id="btnPesquisar" type="button" onkeyup="Showkeypress(event);" onclick="    PesquisarRedesSocias()">
+                            <i class="fa fa-search" aria-hidden="true"></i>
+                            Pesquisar
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        @Html.Partial("~/Views/Shared/Promocao/_ContainerAssociador.cshtml")
+    </div>
+
+    <div class="col-md-8">
+        <div class="ibox float-e-margins">
+            @Html.Partial("PromocaoRedesSociais/_ListaRedesSociais")
+        </div>
+
+    </div>
+
+</div>
+
+
+@section styles {
+
+    <link href="~/Content/SweetAlert/sweetalert.css" rel="stylesheet" />
+    <link href="~/Content/plugins/chosen/bootstrap-chosen-bootstrap-chosen.css" rel="stylesheet" />
+    <link href="~/Content/style.css" rel="stylesheet" />
+    <link href="~/Content/plugins/datapicker/datepicker3.css" rel="stylesheet" />
+    <link href="~/Content/plugins/social-buttons/social-buttons.css" rel="stylesheet" />
+
+}
+
+
+<style>
+    .btnBoxPromocao {
+        cursor: default;
+    }
+
+    .btn-block.btnBoxPromocao {
+        /*width: 30%;*/
+        padding-left: 10px;
+        padding-right: 36px;
+        width: unset;
+        display: inline-block;
+        margin-right: 10px;
+        border: 1px solid #676a6c;
+    }
+
+    .btn-social > .btnBoxPromocaoClick {
+        left: initial;
+        right: 0 !important;
+        border-left: 1px solid rgba(0,0,0,0.2) !important;
+        cursor: pointer;
+    }
+
+    .btn-block + .btn-block {
+        margin-top: 0;
+    }
+</style>
+
+@section scripts {
+
+    @Scripts.Render("~/plugins/sweetAlert")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/dataPicker")
+    <script src="~/Scripts/utils.js"></script>
+    <script src="~/Scripts/plugins/paginacao/paginacao.js"></script>
+    <script src="~/Scripts/Promocoes/associaritens.js"></script>
+
+
+    <script>
+
+        // Variáveis
+        var paginacaoFace = new Paginacao();
+        var paginacaoTw = new Paginacao();
+        var paginacaoInta = new Paginacao();
+        var paginacaoYt = new Paginacao();
+
+        var paginaAtualFace = 1;
+        var paginaAtualTw = 1;
+        var paginaAtualInsta = 1;
+        var paginaAtualYt = 1;
+
+        var QtdRegistros = 6;
+
+        var caminhoImgPost = '@Configuracoes.DiretorioImagens';
+
+        var dataPadraoInicial = new Date();
+        var dataPadraoFinal = new Date();
+        dataPadraoInicial.setDate(dataPadraoFinal.getDate() - 30);
+
+        var configAssociador = {
+            urlPromocoes: "/api/PromocaoRedeSocialAPI/GetRetornaPromocoesTotalPosts?idEmpresa=",
+            modulo: "redessociais"
+        }
+        var containerAssociador = new ContainerAssociador(configAssociador);
+        containerAssociador.setClicouPromocao(CarregaRecursoPromocaoEmpresa);
+
+        containerAssociador.Inicializa();
+
+        $('#selecaoDatas').datepicker({
+            format: 'dd/mm/yyyy',
+            //startView: 1,
+            //todayBtn: "linked",
+            keyboardNavigation: false,
+            forceParse: false,
+            autoclose: true
+        });
+
+        $('#txtDataInicial').datepicker('setDate', dataPadraoInicial);
+        $('#txtDataFinal').datepicker('setDate', dataPadraoFinal);
+
+        //Chosen
+        var config = {
+            '.chosen-select': { width: "100%" },
+            '.chosen-select-deselect': { allow_single_deselect: true },
+            '.chosen-select-no-single': { disable_search_threshold: 10 },
+            '.chosen-select-no-results': { no_results_text: 'Oops, nothing found!' },
+            '.chosen-select-width': {}
+        }
+        for (var selector in config) {
+            $(selector).chosen(config[selector]);
+        }
+        //End Chosen
+
+        var filtros = {
+            idempresa: null,
+            dataIni: null,
+            dataFim: null,
+            textoPesquisa: null,
+            nomeRede: null,
+            QtdRegistros: 6,
+            paginaAtual: 0,
+            idpromocao: null
+            
+        }
+
+        // Inicia com todas as listas hide exceto facebook
+        // ============================================================
+        $("div[data-nomerede]").each(function () {
+            if ($(this).data('nomerede') == 'Facebook') {
+                $('#listaPostsFacebook').show();
+                $(this).addClass('active');
+            } else {
+                $('#listaPosts' + $(this).data('nomerede')).hide();
+            }
+        });
+
+        $('#loadingListaPostsFacebook, #loadingListaPostsTwitter, #loadingListaPostsInstagram, #loadingListaPostsYoutube').hide();
+
+        $(document).keypress(function (e) {
+
+            if (e.which == 13) {
+
+                PesquisarRedesSocias();
+            }
+
+
+        });
+
+
+        $(document).ready(function () {
+
+
+            PesquisarRedesSocias();
+            CarregaComboEmpresaFiltro();
+        });
+
+       
+
+        function CarregaComboEmpresaFiltro() {
+            var uri = "/api/PromocaoAPI/GetEmpresas";
+
+            $.getJSON(uri)
+                    .done(function (data) {
+
+                        $("#cmbEmpresa").append("<option value=" + 0 + ">" + "TODAS" + "</option>");
+
+                        $.each(data, function (key, item) {
+
+                            $("#cmbEmpresa").append("<option value=" + item.idItem + ">" + item.nome + "</option>");
+                            $("#cmbEmpresa").trigger('chosen:updated');
+                        });
+
+                    });
+        }
+
+        function CarregarListaFacebook() {
+
+            $('#loadingListaPostsFacebook').show();
+
+            filtros.textoPesquisa = $('#txtPesquisar').val() != "" ? $('#txtPesquisar').val() : null;
+            filtros.dataIni = $('#txtDataInicial').val() != "" ? ConverteDataStringParaData($('#txtDataInicial').val()) : null;
+            filtros.dataFim = $('#txtDataFinal').val() != "" ? ConverteDataStringParaData($('#txtDataFinal').val()) : null;
+            filtros.idempresa = $('#cmbEmpresa').val() != "" && $('#cmbEmpresa').val() != 0 ? $('#cmbEmpresa').val() : null;
+            filtros.nomeRede = 'facebook';
+            filtros.paginaAtual = paginaAtualFace;
+            filtros.QtdRegistros = QtdRegistros;
+
+            $.ajax({
+                type: "POST",
+                url: "/api/PromocaoRedeSocialAPI/Pesquisar",
+                contentType: 'application/json',
+                data: JSON.stringify(filtros),
+                dataType: 'json',
+                success: function (data) {
+
+                    $('#loadingListaPostsFacebook').hide();
+                    $("#listaPostsFacebook > .paginacao").empty();
+
+                    $('#listaPostsFacebook > .listagem').html('');
+                    if (data.ListaFacebook.length > 0) {
+                        $.each(data.ListaFacebook, function (key, item) {
+                            $('#listaPostsFacebook > .listagem').append(TemplateBoxesFace(item));
+                        });
+
+                        paginacaoFace.CriaPaginacao("#listaPostsFacebook > .paginacao", parseInt((data.TotalListaFacebook / QtdRegistros) + 0.9), data.TotalListaFacebook, paginaAtualFace);
+                        paginacaoFace.setMudouPagina(MudouPaginaNoticiaFace);
+
+                    } else {
+                        $('#listaPostsFacebook > .listagem').html('<div class="ibox-content boxRedeSocial"><div class="row"><div class="col-md-4"><label>Sem dados para facebook</label></div></div></div>');
+                    }
+                }
+            });
+        }
+
+        function MudouPaginaNoticiaFace(pagina) {
+            paginaAtualFace = pagina;
+            CarregarListaFacebook();
+        }
+
+        function CarregarListaTwitter() {
+
+            $('#loadingListaPostsTwitter').show();
+
+            filtros.textoPesquisa = $('#txtPesquisar').val() != "" ? $('#txtPesquisar').val() : null;
+            filtros.dataIni = $('#txtDataInicial').val() != "" ? ConverteDataStringParaData($('#txtDataInicial').val()) : null;
+            filtros.dataFim = $('#txtDataFinal').val() != "" ? ConverteDataStringParaData($('#txtDataFinal').val()) : null;
+            filtros.idempresa = $('#cmbEmpresa').val() != "" && $('#cmbEmpresa').val() != 0 ? $('#cmbEmpresa').val() : null;
+            filtros.nomeRede = 'twitter';
+            filtros.paginaAtual = paginaAtualTw;
+            filtros.QtdRegistros = QtdRegistros;
+
+            $.ajax({
+                type: "POST",
+                url: "/api/PromocaoRedeSocialAPI/Pesquisar",
+                contentType: 'application/json',
+                data: JSON.stringify(filtros),
+                dataType: 'json',
+                success: function (data) {
+                    $('#loadingListaPostsTwitter').hide();
+                    $("#listaPostsTwitter > .paginacao").empty();
+
+                    $('#listaPostsTwitter > .listagem').html('');
+                    if (data.ListaTwitter.length > 0) {
+                        $.each(data.ListaTwitter, function (key, item) {
+                            $('#listaPostsTwitter > .listagem').append(TemplateBoxesTw(item));
+                        });
+
+                        paginacaoTw.CriaPaginacao("#listaPostsTwitter > .paginacao", parseInt((data.TotalListaTwitter / QtdRegistros) + 0.9), data.TotalListaTwitter, paginaAtualTw);
+                        paginacaoTw.setMudouPagina(MudouPaginaNoticiaTw);
+
+                    } else {
+                        $('#listaPostsTwitter > .listagem').html('<div class="ibox-content boxRedeSocial"><div class="row"><div class="col-md-4"><label>Sem dados para twitter</label></div></div></div>');
+                    }
+                }
+            });
+        }
+
+        function MudouPaginaNoticiaTw(pagina) {
+            paginaAtualTw = pagina;
+            CarregarListaTwitter();
+        }
+
+        function CarregarListaInstagram() {
+
+            $('#loadingListaPostsInstagram').show();
+
+            filtros.textoPesquisa = $('#txtPesquisar').val() != "" ? $('#txtPesquisar').val() : null;
+            filtros.dataIni = $('#txtDataInicial').val() != "" ? ConverteDataStringParaData($('#txtDataInicial').val()) : null;
+            filtros.dataFim = $('#txtDataFinal').val() != "" ? ConverteDataStringParaData($('#txtDataFinal').val()) : null;
+            filtros.idempresa = $('#cmbEmpresa').val() != "" && $('#cmbEmpresa').val() != 0 ? $('#cmbEmpresa').val() : null;
+            filtros.nomeRede = 'instagram';
+            filtros.paginaAtual = paginaAtualInsta;
+            filtros.QtdRegistros = QtdRegistros;
+
+            $.ajax({
+                type: "POST",
+                url: "/api/PromocaoRedeSocialAPI/Pesquisar",
+                contentType: 'application/json',
+                data: JSON.stringify(filtros),
+                dataType: 'json',
+                success: function (data) {
+
+                    $('#loadingListaPostsInstagram').hide();
+                    $("#listaPostsInstagram > .paginacao").empty();
+
+                    $('#listaPostsInstagram > .listagem').html('');
+                    if (data.ListaInstagram.length > 0) {
+                        $.each(data.ListaInstagram, function (key, item) {
+                            $('#listaPostsInstagram > .listagem').append(TemplateBoxesInsta(item));
+                        });
+
+                        paginacaoInta.CriaPaginacao("#listaPostsInstagram > .paginacao", parseInt((data.TotalListaInstagram / QtdRegistros) + 0.9), data.TotalListaInstagram, paginaAtualInsta);
+                        paginacaoInta.setMudouPagina(MudouPaginaNoticiaInsta);
+
+                    } else {
+                        $('#listaPostsInstagram > .listagem').html('<div class="ibox-content boxRedeSocial"><div class="row"><div class="col-md-4"><label>Sem dados para instagram</label></div></div></div>');
+                    }
+                }
+            });
+        }
+
+        function MudouPaginaNoticiaInsta(pagina) {
+            paginaAtualInsta = pagina;
+            CarregarListaInstagram();
+        }
+
+        function CarregarListaYoutube() {
+
+            $('#loadingListaPostsYoutube').show();
+
+            filtros.textoPesquisa = $('#txtPesquisar').val() != "" ? $('#txtPesquisar').val() : null;
+            filtros.dataIni = $('#txtDataInicial').val() != "" ? ConverteDataStringParaData($('#txtDataInicial').val()) : null;
+            filtros.dataFim = $('#txtDataFinal').val() != "" ? ConverteDataStringParaData($('#txtDataFinal').val()) : null;
+            filtros.idempresa = $('#cmbEmpresa').val() != "" && $('#cmbEmpresa').val() != 0 ? $('#cmbEmpresa').val() : null;
+            filtros.nomeRede = 'youtube';
+            filtros.paginaAtual = paginaAtualYt;
+            filtros.QtdRegistros = QtdRegistros;
+
+            $.ajax({
+                type: "POST",
+                url: "/api/PromocaoRedeSocialAPI/Pesquisar",
+                contentType: 'application/json',
+                data: JSON.stringify(filtros),
+                dataType: 'json',
+                success: function (data) {
+
+                    $('#loadingListaPostsYoutube').hide();
+                    $('#listaPostsYoutube > .paginacao').empty();
+                    $('#listaPostsYoutube > .listagem').html('');
+                    if (data.ListaYoutube.length > 0) {
+                        $.each(data.ListaYoutube, function (key, item) {
+                            $('#listaPostsYoutube > .listagem').append(TemplateBoxesYt(item));
+                        });
+
+                        paginacaoYt.CriaPaginacao("#listaPostsYoutube > .paginacao", parseInt((data.TotalListaYoutube / QtdRegistros) + 0.9), data.TotalListaYoutube, paginaAtualYt);
+                        paginacaoYt.setMudouPagina(MudouPaginaNoticiaYt);
+
+                    } else {
+                        $('#listaPostsYoutube > .listagem').html('<div class="ibox-content boxRedeSocial"><div class="row"><div class="col-md-4"><label>Sem dados para youtube</label></div></div></div>');
+                    }
+                }
+            });
+        }
+
+        function MudouPaginaNoticiaYt(pagina) {
+            paginaAtualYt = pagina;
+            CarregarListaYoutube();
+        }
+
+        function PesquisarRedesSocias() {
+
+            filtros.idpromocao = null;
+
+            paginaAtualFace = paginaAtualTw = paginaAtualInsta = paginaAtualYt = 0;
+
+            CarregarListaFacebook();
+            CarregarListaTwitter();
+            CarregarListaInstagram();
+            CarregarListaYoutube();
+        }
+
+        
+        function ClickPesquisarRedesSociasPorPromocao(idPromocao, totalAssociacoes) {
+
+            if (totalAssociacoes > 0)
+                filtros.idpromocao = idPromocao;
+            else
+                filtros.idpromocao = null;
+
+            paginaAtualFace = paginaAtualTw = paginaAtualInsta = paginaAtualYt = 0;
+
+            CarregarListaFacebook();
+            CarregarListaTwitter();
+            CarregarListaInstagram();
+            CarregarListaYoutube();
+        }
+
+        function TemplateBoxesFace(item) {
+
+            var data = hora = "";
+            data = item.datahora.split(' ')[0];
+            hora = item.datahora.split(' ')[1];
+            
+            var numColunas = 8;
+
+
+            var html = '<div style="cursor:move;" draggable="true" ondragstart="drag(event, this)" id="drag-me" data-nomerede="facebook" data-idpost="' + item.idpost + '" class="ibox-content boxRedeSocial droppable">' +
+                            '<div class="row">';
+
+            if (item.nomeimagem != null && item.nomeimagem.length > 5) {
+
+                html += '<div class="col-md-4">' +
+                            '<img src="' + caminhoImgPost + '/facebook/' + item.nomeimagem + '" style="width: 100%; box-shadow: 3px 3px;">' +
+                        '</div>';
+
+            } else {
+                numColunas = 12;
+            }
+
+
+            html += '<div class="col-md-' + numColunas + '" style="cursor:move;">' +
+                                    '<label>'+ (item.nomeempresa != null ?  item.nomeempresa +' - ' : '') + data + ' | ' + hora + '</label>' +
+                                    '<br />' +
+                                    item.postagem +
+                                    '<br />' +
+                                    '<div class="btn-group2">' +
+                                        '<i class="fa fa-thumbs-up"></i> <span id="curtidaspost">' + item.reacoes + '</span> curtidas &nbsp;&nbsp;' +
+                                        '<i class="fa fa-comments"></i> <span id="comentariospost">' + item.qtdcomentarios + '</span> comentários &nbsp;&nbsp;' +
+                                        '<i class="fa fa-share"></i> <span id="compartilhamentospost">' + item.compartilhamentos + '</span> compartilhamentos' +
+                                    '</div>' +
+                                    '<div class="divPromocaoAssociada">' +
+                                        '<div class="row">' +
+                                            '<div class="col-md-6" style="padding-top: 16px;">' +
+                                                '<label>Promoções Associadas</label>' +
+                                            '</div>' +
+                                            '<div class="col-md-6" style="text-align: right;">' +
+                                                '<a href="/Promocao/CadastroRedeSocial/?rede=facebook&idPost=' + item.idpost + '" class="btn btn-captura btn-espaco-btn" data-toggle="tooltip" data-placement="top" title="Nova Promoção" data-original-title="Editar"><i class="fa fa-plus"></i></a>' +
+                                            '</div>' +
+                                        '</div>' +
+                                    '</div>' +
+
+                                    '<div class="row">' +
+                                        '<div class="col-md-12" style="padding-top: 10px;" id="listaPromocao' + item.idpost + '">';
+
+
+            if (item.promocoes.length > 0) {
+
+                $.each(item.promocoes, function (index, promo) {
+
+                    html += '<div style="display: inline-block;" class="btn btn-block btn-social btnBoxPromocao tag_' + promo.idPromocao + '_' + item.idpost + '" >' +
+                                '<span class="fa fa-times btnBoxPromocaoClick" title="Desassociar Promoção" onclick="DesassociarPromocaoPost(' + promo.idPromocao + ',' + item.idpost + ',\'facebook\' )" ></span> ' + promo.nome +
+                            '</div>';
+                });
+
+            } else {
+                html += '<label>Não há promoções associadas a este post</label>';
+            }
+
+
+            html += '</div>' +
+                                '</div>' +
+            '</div>' +
+            '</div>' +
+            '</div>';
+
+            return html;
+        }
+
+        function TemplateBoxesTw(item) {
+
+            var data = hora = "";
+            data = item.datahora.split(' ')[0];
+            hora = item.datahora.split(' ')[1];
+
+            var numColunas = 8;
+
+            var html = '<div style="cursor:move;" draggable="true" ondragstart="drag(event, this)" id="drag-me" data-nomerede="twitter" data-idpost="' + item.idpost + '" class="ibox-content boxRedeSocial">' +
+                            '<div class="row">';
+
+            if (item.nomeimagem != null && item.nomeimagem.length > 5) {
+
+                html += '<div class="col-md-4">' +
+                            '<img src="' + caminhoImgPost + '/twitter/' + item.nomeimagem + '" style="width: 100%; box-shadow: 3px 3px;">' +
+                        '</div>';
+
+            } else {
+                numColunas = 12;
+            }
+
+            html += '<div class="col-md-' + numColunas + '">' +
+                        '<label>' + (item.nomeempresa != null ? item.nomeempresa + ' - ' : '') + data + ' | ' + hora + '</label>' +
+                        '<br />' +
+                        item.postagem +
+                        '<br />' +
+                    '<div class="btn-group2">' +
+                        '<i class="fa fa-heart"></i> <span id="curtidaspost">' + item.curtidas + '</span> curtidas &nbsp;&nbsp;' +
+                        '<i class="fa fa-retweet"></i> <span id="comentariospost">' + item.retweets + '</span> retweets &nbsp;&nbsp;' +
+                    '</div>' +
+                    '<div class="divPromocaoAssociada">' +
+                        '<div class="row">' +
+                            '<div class="col-md-6" style="padding-top: 16px;">' +
+                                '<label>Promoções Associas</label>' +
+                            '</div>' +
+                            '<div class="col-md-6" style="text-align: right;">' +
+                                '<a href="/Promocao/CadastroRedeSocial/?rede=twitter&idPost=' + item.idpost + '" class="btn btn-captura btn-espaco-btn" data-toggle="tooltip" data-placement="top" title="Nova Promoção" data-original-title="Editar"><i class="fa fa-plus"></i></a>' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>' +
+
+                    '<div class="row">' +
+                        '<div class="col-md-12" style="padding-top: 10px;">';
+
+
+            if (item.promocoes.length > 0) {
+
+                $.each(item.promocoes, function (index, promo) {
+
+                    html += '<div style="display: inline-block;" class="btn btn-block btn-social btnBoxPromocao tag_' + promo.idPromocao + '_' + item.idpost + '" >' +
+
+                                '<span class="fa fa-times btnBoxPromocaoClick" title="Desassociar Promoção" onclick="DesassociarPromocaoPost(' + promo.idPromocao + ',' + item.idpost + ',\'twitter\' )" ></span> ' + promo.nome +
+                            '</div>';
+                });
+
+            } else {
+                html += '<label>Não há promoções associadas a este post</label>';
+            }
+
+
+            html += '</div>' +
+        '</div>' +
+
+'</div>' +
+'</div>' +
+'</div>';
+
+            return html;
+        }
+
+        function TemplateBoxesInsta(item) {
+
+            var data = hora = "";
+            data = item.datahora.split(' ')[0];
+            hora = item.datahora.split(' ')[1];
+
+            var numColunas = 8;
+
+            var html = '<div style="cursor:move;" draggable="true" ondragstart="drag(event, this)" id="drag-me" data-nomerede="instagram" data-idpost="' + item.idpost + '" class="ibox-content boxRedeSocial">' +
+                            '<div class="row">';
+
+            if (item.nomeimagem != null && item.nomeimagem.length > 5) {
+
+                html += '<div class="col-md-4">' +
+                            '<img src="' + caminhoImgPost + '/instagram/' + item.nomeimagem + '" style="width: 100%; box-shadow: 3px 3px;">' +
+                        '</div>';
+
+            } else {
+                numColunas = 12;
+            }
+
+            html += '<div class="col-md-' + numColunas + '">' +
+                    '<label>' + (item.nomeempresa != null ? item.nomeempresa + ' - ' : '') + data + ' | ' + hora + '</label>' +
+                    '<br />' +
+                    item.postagem +
+                    '<br />' +
+                    '<div class="btn-group2">' +
+                        '<i class="fa fa-thumbs-up"></i> <span id="curtidaspost">' + item.curtidas + '</span> curtidas &nbsp;&nbsp;' +
+                        '<i class="fa fa-comments"></i> <span id="comentariospost">' + item.qtdcomentarios + '</span> comentários &nbsp;&nbsp;' +
+                    '</div>' +
+                    '<div class="divPromocaoAssociada">' +
+                        '<div class="row">' +
+                            '<div class="col-md-6" style="padding-top: 16px;">' +
+                                '<label>Promoções Associas</label>' +
+                            '</div>' +
+                            '<div class="col-md-6" style="text-align: right;">' +
+                                '<a href="/Promocao/CadastroRedeSocial/?rede=instagram&idPost=' + item.idpost + '" class="btn btn-captura btn-espaco-btn" data-toggle="tooltip" data-placement="top" title="Nova Promoção" data-original-title="Editar"><i class="fa fa-plus"></i></a>' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>' +
+
+                    '<div class="row">' +
+                        '<div class="col-md-12" style="padding-top: 10px;">';
+
+
+            if (item.promocoes.length > 0) {
+
+                $.each(item.promocoes, function (index, promo) {
+
+                    html += '<div style="display: inline-block;" class="btn btn-block btn-social btnBoxPromocao tag_' + promo.idPromocao + '_' + item.idpost + '" >' +
+                                '<span class="fa fa-times btnBoxPromocaoClick" title="Desassociar Promoção" onclick="DesassociarPromocaoPost(' + promo.idPromocao + ',' + item.idpost + ',\'instagram\' )" ></span> ' + promo.nome +
+                            '</div>';
+                });
+
+            } else {
+                html += '<label>Não há promoções associadas a este post</label>';
+            }
+
+
+            html += '</div>' +
+                  '</div>' +
+
+'</div>' +
+'</div>' +
+'</div>';
+
+            return html;
+        }
+
+        function TemplateBoxesYt(item) {
+
+            var data = hora = "";
+            data = item.datahora.split(' ')[0];
+            hora = item.datahora.split(' ')[1];
+
+            var numColunas = 8;
+
+            var html = '<div style="cursor:move;" draggable="true" ondragstart="drag(event, this)" id="drag-me" data-nomerede="youtube" data-idpost="' + item.idvideo + '" class="ibox-content boxRedeSocial">' +
+                            '<div class="row">';
+
+            if (item.nomeimagem != null && item.nomeimagem.length > 5) {
+
+                html += '<div class="col-md-4">' +
+                            '<img src="' + caminhoImgPost + '/youtube/' + item.nomeimagem + '" style="width: 100%; box-shadow: 3px 3px;">' +
+                        '</div>';
+
+            } else {
+                numColunas = 12;
+            }
+
+            html += '<div class="col-md-' + numColunas + '">' +
+                    '<label>' + (item.nomeempresa != null ? item.nomeempresa + ' - ' : '') + data + ' | ' + hora + '</label>' +
+                    '<br />' +
+                    item.descricao +
+                    '<br />' +
+                    '<div class="btn-group2">' +
+                        '<i class="fa fa-eye"></i> <span id="curtidaspost">' + item.visualizacoes + '</span> visualizações &nbsp;&nbsp;' +
+                        '<i class="fa fa-thumbs-up"></i> <span id="comentariospost">' + item.curtidas + '</span> curtidas &nbsp;&nbsp;' +
+                        '<i class="fa fa-thumbs-down"></i> <span id="curtidaspost">' + item.descurtidas + '</span> descurtidas &nbsp;&nbsp;' +
+                        '<i class="fa fa-comments-o"></i> <span id="comentariospost">' + item.comentarios.length + '</span> comentários &nbsp;&nbsp;' +
+                    '</div>' +
+                    '<div class="divPromocaoAssociada">' +
+                        '<div class="row">' +
+                            '<div class="col-md-6" style="padding-top: 16px;">' +
+                                '<label>Promoções Associadas</label>' +
+                            '</div>' +
+                            '<div class="col-md-6" style="text-align: right;">' +
+                                '<a href="/Promocao/CadastroRedeSocial/?rede=youtube&idPost=' + item.idvideo + '" class="btn btn-captura btn-espaco-btn" data-toggle="tooltip" data-placement="top" title="Nova Promoção" data-original-title="Editar"><i class="fa fa-plus"></i></a>' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>' +
+
+                    '<div class="row">' +
+                        '<div class="col-md-12" style="padding-top: 10px;">';
+
+
+            if (item.promocoes.length > 0) {
+
+                $.each(item.promocoes, function (index, promo) {
+                    html += '<div style="display: inline-block;" class="btn btn-block btn-social btnBoxPromocao tag_' + promo.idPromocao + '_' + item.idvideo + '" >' +
+                                '<span class="fa fa-times btnBoxPromocaoClick" title="Desassociar Promoção" onclick="DesassociarPromocaoPost(' + promo.idPromocao + ',' + item.idvideo + ',\'youtube\' )" ></span> ' + promo.nome +
+                            '</div>';
+                });
+
+            } else {
+                html += '<label>Não há promoções associadas a este post</label>';
+            }
+
+
+            html += '</div>' +
+                        '</div>' +
+
+'</div>' +
+'</div>' +
+'</div>';
+
+            return html;
+        }
+
+        // Botões e listas
+        // ==============================================
+        $('.btn_social').on('click', function () {
+            var NomeRede = $(this).data('nomerede');
+            $("div[data-nomerede]").each(function () {
+                if ($(this).data('nomerede') == NomeRede) {
+                    $('#listaPosts' + NomeRede).show();
+                    $(this).addClass('active');
+                    $(this).removeClass('ativo');
+
+                } else {
+                    $('#listaPosts' + $(this).data('nomerede')).hide();
+                    $(this).removeClass('active');
+                    $(this).addClass('ativo');
+                }
+            });
+        })
+
+        function DesassociarPromocaoPost(idPromocao, idPost, rede) {
+
+            var dados = {
+                idpost: idPost,
+                idpromocao: idPromocao,
+                nomeRede: rede
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/api/PromocaoRedeSocialAPI/DesassociarPromocaoPost",
+                contentType: 'application/json',
+                data: JSON.stringify(dados),                
+                dataType: 'json',
+                success: function (data) {
+                                        
+                    $('.btnBoxPromocao.tag_' + idPromocao + '_' + idPost).remove();
+
+                    var listaPromoEmpresasBox = $('.linha-promo[data-idpromocao="' + idPromocao + '"]');
+                    if (listaPromoEmpresasBox.length > 0) {
+                        var totalPosts = listaPromoEmpresasBox.find('.num-rel').html();
+                        totalPosts = parseInt(totalPosts) - 1;
+
+                        listaPromoEmpresasBox.find('.num-rel').html(totalPosts);
+                    }
+                   
+                    var totalTags = 0;
+                    $('#listaPromocao' + idPost).find('.btnBoxPromocao').each(function (elem) {
+                        totalTags++;
+                    });
+
+                    if (totalTags == 0) {
+                        $('#listaPromocao' + idPost).html('<label>Não há promoções associadas a este post</label>');
+                    }                    
+                }
+            });            
+        }
+
+        function CarregaRecursoPromocaoEmpresa(idpromo) {
+            var uri = '/api/PromocaoRedeSocialAPI/GetPostsPromocao';
+            //alert("Clicou");
+        }
+
+        function drag(evento, elemento) {
+            evento.dataTransfer.setData("data-idpost", elemento.attributes["data-idpost"].value);
+            evento.dataTransfer.setData("data-nomerede", elemento.attributes["data-nomerede"].value);
+
+            //$(elemento).css('cursor', 'move');
+            //elemento.style.color = 'red';
+            //elemento.style.cursor = 'move';
+
+            //$("html").css("cursor", "move");
+            //console.log('Pegou <<<<<<<');
+        }
+
+        function drop(evento, elemento) {
+
+            //console.log(evento.dataTransfer.getData("data-idpost"));
+            //console.log(evento.dataTransfer.getData("data-nomerede"));
+            //console.log($(elemento).attr("data-idpromocao"));
+            elemento.classList.remove('over');
+
+            var idPromocao = $(elemento).attr("data-idpromocao");
+            var idPost = evento.dataTransfer.getData("data-idpost");
+            var nomeRede = evento.dataTransfer.getData("data-nomerede");
+
+
+            AssociaPromoRedesSociais(idPromocao, idPost, nomeRede, elemento);
+        }
+
+        //function dragOver(evento, elemento) {
+        //    //$(elemento).css('cursor', 'move');
+        //    //console.log('Mexendo <<<<<<');
+        //}
+
+
+        //function dragEnd(evento, elemento) {
+        //    //$(elemento).css('cursor', 'default');
+        //    //console.log('Largou <<<<<<');
+        //}
+				
+        //document.addEventListener("dragenter", function (event) {
+        //    event.target.style.background = "#F5F5F5";
+        //});
+
+        //document.addEventListener("dragleave", function (event) {
+        //    event.target.style.background = "";
+        //});
+
+        function allowDrop(event) {
+            event.preventDefault();
+        }
+
+    </script>
+}

@@ -1,0 +1,387 @@
+﻿
+@{
+    ViewBag.Title = "Editar Usuário";
+}
+
+<style>
+    .slick_demo_2 .ibox-content {
+        margin: 0 5px;
+        padding: 5px;
+    }
+</style>
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Perfil do usuário</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/Home">Home</a>
+            </li>
+            <li>
+                <a href="/Usuario/">Usuário</a>
+            </li>
+            <li class="active">
+                <strong>Editar</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+
+    </div>
+</div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Dados do Usuário</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="form-horizontal" enctype="multipart/form-data" method="POST">
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Status</label>
+                            <div class="col-lg-10">
+                                
+                                <input type="checkbox" id="chkativo" value="Ativo" class="js-switch"/>
+                                <span id="txtAtivado" value="Ativado">Inativo</span>
+
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Cliente</label>
+                            <div class="col-lg-10">
+                                <select id="cmbCliente" placeholder="Selecione um Cliente" class="chosen-select" name="cliente"></select>
+
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Nome</label>
+                            <div class="col-lg-10">
+                                <input id="txtNomeUsuario" type="text" placeholder="Nome do Usuário" class="typeahead form-control">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Login</label>
+                            <div class="col-lg-10">
+                                <input id="txtLogin" type="text" placeholder="Login" class="typeahead form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">E-mail</label>
+                            <div class="col-lg-10">
+                                <input id="txtEmail" type="text" placeholder="E-mail" class="typeahead form-control">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Alterar Senha</label>
+                            <div class="col-lg-10">
+                                <input type="checkbox" id="chksenha" value="Senha" class="js-switch" unchecked />
+                            </div>
+                        </div>
+                        <div class="ibox-content" id="formulario" style="display: none;">
+                            <div class="form-group">
+                                <label class="col-lg-2 control-label">Nova senha</label>
+                                <div class="col-lg-10">
+                                    <input id="txtSenha" type="password" placeholder="Nova senha" class="typeahead form-control senhausuario">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-lg-2 control-label">Confirmar nova senha</label>
+                                <div class="col-lg-10">
+                                    <input id="txtSenha2" type="password" placeholder="Confirmar senha" class="typeahead form-control senhausuario">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-8 col-lg-offset-2">
+                                <br />
+                                <button class="btn btn-primary" id="btnSalvar" type="button">Salvar</button>
+
+                            </div>
+                            <div class="col-lg-2">
+                                <br />
+                                <button class="btn btn-white" onclick="cancelar()" type="button">Cancelar</button>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+
+
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+
+@section styles {
+
+    <link href="~/Content/SweetAlert/sweetalert.css" rel="stylesheet" />
+    <link href="~/Content/plugins/chosen/bootstrap-chosen-bootstrap-chosen.css" rel="stylesheet" />
+    <link href="~/Content/plugins/jasny/jasny-bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/plugins/iCheck/custom.css" rel="stylesheet" />
+    @Styles.Render("~/plugins/switcheryStyles")
+    <style type="text/css"></style>
+}
+
+
+@section scripts {
+
+    @Scripts.Render("~/plugins/sweetAlert")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/iCheck")
+    <script src="~/Scripts/validacoes.js"></script>
+    <script src="~/Scripts/plugins/typeahead/bootstrap3-typeahead.js"></script>
+    <script src="~/Scripts/plugins/switchery/switchery.js"></script>
+
+    <script>
+
+        var chkAtivo = document.querySelector('#chkativo');
+        var chkSenha = document.querySelector('#chksenha');
+
+        var switchery = new Switchery(chkSenha, { color: '#6AC6B5' });
+        var switchery2 = new Switchery(chkAtivo, { color: '#6AC6B5' });
+
+        function SenhaValida(){
+
+            if (chkSenha.checked == true) {
+                return true;
+            }
+            return false;
+        }
+
+        $(document).ready(function () {
+
+            $("#txtNomeUsuario").on('change', function () {
+                if (txtNomeUsuario.value != "") {
+
+                    $(txtNomeUsuario).removeClass("campo-invalido");
+                }
+            });
+
+            $("#txtLogin").on('change', function () {
+
+                if (txtLogin.value != "") {
+
+                    $(txtLogin).removeClass("campo-invalido");
+                }
+            });
+
+            $("#txtEmail").on('change', function () {
+
+                if (txtEmail.value != "") {
+
+                    $(txtEmail).removeClass("campo-invalido");
+                }
+            });
+
+            $("#txtSenha").on('change', function () {
+
+                if (txtSenha.value == txtSenha2.value && txtSenha.value != "") {
+
+                    $(txtSenha).removeClass("campo-invalido");
+                    $(txtSenha2).removeClass("campo-invalido");
+                }
+            });
+
+            $("#txtSenha2").on('change', function () {
+
+                if (txtSenha2.value == txtSenha.value && txtSenha2.value != "") {
+
+                    $(txtSenha).removeClass("campo-invalido");
+                    $(txtSenha2).removeClass("campo-invalido");
+                }
+            });
+
+            $('#cmbCliente').on('change', function () {
+
+                if (cmbCliente.value != "0") {
+                    $('.chosen-single').removeClass("combo-invalido");
+                }
+            });
+
+            $('.switchery').click(function (a) {
+
+                if(chkSenha.checked == true){
+                    $("#formulario").slideDown("normal");
+                }
+                else if(chkSenha.checked == false){
+                    $("#formulario").slideUp("normal");
+                }
+
+                if(chkAtivo.checked == true){
+                    document.getElementById("txtAtivado").innerHTML="Ativo";
+                }else if (chkAtivo.checked == false){
+                    document.getElementById("txtAtivado").innerHTML="Inativo";
+                }
+
+
+            });
+
+
+            var config = {
+                '.chosen-select': { width: "100%" },
+                '.chosen-select-deselect': { allow_single_deselect: true },
+                '.chosen-select-no-single': { disable_search_threshold: 10 },
+                '.chosen-select-no-results': { no_results_text: 'Oops, nothing found!' },
+                '.chosen-select-width': {}
+            }
+            for (var selector in config) {
+                $(selector).chosen(config[selector]);
+            }
+
+            CarregaUsuario(@ViewBag.idUsuario);
+
+            $("#btnSalvar").click(function () { SalvarUsuario() });
+
+        });
+
+        function CarregaUsuario(idusuario) {
+
+            var uri = "/api/UsuarioAPI/Get/" + idusuario;
+            $.getJSON(uri)
+             .done(function (data) {
+
+                 var idClienteUsuario = data.usuario.idcliente;
+                 $("#txtNomeUsuario").val(data.usuario.nome);
+                 $("#txtLogin").val(data.usuario.login);
+                 $("#txtEmail").val(data.usuario.email);
+                 
+                 if(data.usuario.ativo){
+                     $(chkAtivo).next('span').click();
+                     document.getElementById("txtAtivado").innerHTML="Ativo";
+                 }else{
+                 }
+
+                 $.each(data.clientes, function (key, item) {
+                     if (item.idcliente === idClienteUsuario) {
+                         $("#cmbCliente").append("<option value=" + item.idcliente + " selected>" + item.nome + "</option>");
+                         $("#cmbCliente").trigger('chosen:updated');
+                     }
+                     else {
+                         $("#cmbCliente").append("<option value=" + item.idcliente + ">" + item.nome + "</option>");
+                         $("#cmbCliente").trigger('chosen:updated');
+                     }
+                 });
+             });
+        }
+
+        function VerificaForm() {
+
+            var NomeUsuarioValidacao = true;
+            var LoginValidacao = true;
+            var EmailValidacao = true;
+            var ClienteValidacao = true;
+            var SenhaValidacao = true;
+            var Senha2Validacao = true;
+
+            if (txtNomeUsuario.value == "") {
+                $(txtNomeUsuario).addClass("campo-invalido");
+                NomeUsuarioValidacao = false;
+            }
+            if (txtLogin.value == "") {
+                $(txtLogin).addClass("campo-invalido");
+                LoginValidacao = false;
+            }
+            if (txtEmail.value == "") {
+                $(txtEmail).addClass("campo-invalido");
+                EmailValidacao = false;
+            }
+            if (cmbCliente.value == 0) {
+                $('.chosen-single').addClass("combo-invalido");
+                ClienteValidacao = false;
+            }
+
+            if(SenhaValida()){
+
+                if (txtSenha.value != txtSenha2.value || txtSenha.value == "") {
+                    $(txtSenha).addClass("campo-invalido");
+                    $(txtSenha2).addClass("campo-invalido");
+                    SenhaValidacao = false;
+                    Senha2Validacao = false;
+                }
+
+                if (NomeUsuarioValidacao &&
+                    LoginValidacao &&
+                    EmailValidacao &&
+                    ClienteValidacao &&
+                    SenhaValidacao &&
+                    Senha2Validacao) {
+                    return true;
+                }
+            }
+
+            else{
+                if (NomeUsuarioValidacao &&
+                    LoginValidacao &&
+                    EmailValidacao &&
+                    ClienteValidacao) {
+                    return true;
+                }
+            }
+        }
+
+        function SalvarUsuario() {
+
+            if (VerificaForm()) {
+
+                if(SenhaValida()){
+                    var usuario = {
+                        ativo:  chkAtivo.checked,
+                        nome: $("#txtNomeUsuario").val(),
+                        login: $("#txtLogin").val(),
+                        senha: $("#txtSenha2").val(),
+                        email: $("#txtEmail").val(),
+                        idcliente: $("#cmbCliente").val(),
+                    }
+                }
+                else{
+                    var usuario = {
+                        ativo:  chkAtivo.checked,
+                        nome: $("#txtNomeUsuario").val(),
+                        login: $("#txtLogin").val(),
+                        email: $("#txtEmail").val(),
+                        idcliente: $("#cmbCliente").val(),
+                    }
+                }
+                
+
+                //console.log(JSON.stringify(usuario));
+                //debugger
+
+                $.ajax({
+                    type: "PUT",
+                    url: "/api/UsuarioAPI/Put/"+@ViewBag.idUsuario,
+                    dataType: 'json',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(usuario),
+                    success: function (data) {
+                        if (!data.erro) {
+                            window.location = "/Usuario/Index";
+                        } else {
+                            alert(data.mensagem);
+                        }
+                    }
+                });
+            }
+        }
+
+        function cancelar() {
+            window.location = "/Usuario/";
+        }
+
+    </script>
+}

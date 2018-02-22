@@ -1,0 +1,604 @@
+﻿
+.@{
+    ViewBag.Title = "Cadastrar Marca";
+}
+
+<style>
+    .slick_demo_2 .ibox-content {
+        margin: 0 5px;
+        padding: 5px;
+    }
+</style>
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Perfil da marca</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/Home">Home</a>
+            </li>
+            <li>
+                <a href="/Marca/">Marcas</a>
+            </li>
+            <li class="active">
+                <strong>Cadastrar</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+
+    </div>
+</div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Dados da marca</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="form-horizontal" enctype="multipart/form-data" method="POST">
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Empresa</label>
+                            <div class="col-lg-10">
+                                <select id="cmbEmpresa" placeholder="Selecione a empresa" class="chosen-select" name="setor" tabindex="2">></select>
+
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Nome</label>
+                            <div class="col-lg-10">
+                                <input id="txtNomemarca" type="text" placeholder="Nome da marca" class="typeahead form-control">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">CNPJ</label>
+                            <div id="listaCnpj" class="col-lg-9">
+                                <input id="txtcnpj" type="text" placeholder="CNPJ da marca" class="form-control txtcnpj" data-mask="99.999.999/9999-99">
+                            </div>
+                            <div class="col-lg-1">
+                                <button id="btnInserircnpj" onclick="addCnpj()" class="btn btn-sm btn-white" type="button">+</button>
+                            </div>
+
+                        </div>
+                        <div id="cnpjLista"></div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Descrição</label>
+                            <div class="col-lg-10">
+                                <textarea id="txtDescricao" class="form-control" style="resize:none;" rows="5" placeholder="Descrição da marca"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Site</label>
+                            <div class="col-lg-10">
+                                <div class="input-group m-b">
+                                    <span class="input-group-addon">http://</span> <input id="txtUrlsite" type="text" placeholder="Site da marca" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Facebook</label>
+                            <div class="col-lg-10">
+                                <div class="input-group m-b">
+                                    <span class="input-group-addon">http://</span> <input id="txtFace" type="text" placeholder="Facebook da marca" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Instagram</label>
+                            <div class="col-lg-10">
+                                <div class="input-group m-b">
+                                    <span class="input-group-addon">http://</span> <input id="txtInsta" type="text" placeholder="Instagram da marca" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Twitter</label>
+                            <div class="col-lg-10">
+                                <div class="input-group m-b">
+                                    <span class="input-group-addon">http://</span> <input id="txtTw" type="text" placeholder="Twitter da marca" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Youtube</label>
+                            <div class="col-lg-10">
+                                <div class="input-group m-b">
+                                    <span class="input-group-addon">http://</span> <input id="txtYoutube" type="text" placeholder="Youtube da marca" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Klout</label>
+                            <div class="col-lg-10">
+                                <div class="input-group m-b">
+                                    <span class="input-group-addon">http://</span> <input id="txtKlout" type="text" placeholder="Klout da marca" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Logo da marca</label>
+                            <div class="col-lg-10">
+                                <div class="fileinput fileinput-new input-group" data-provides="fileinput">
+                                    <div class="form-control" data-trigger="fileinput">
+                                        <i class="glyphicon glyphicon-file fileinput-exists"></i>
+                                        <span class="fileinput-filename"></span>
+                                    </div>
+                                    <span class="input-group-addon btn btn-default btn-file">
+                                        <span class="fileinput-new">Selecionar</span>
+                                        <span class="fileinput-exists">Alterar</span>
+                                        <input type="file" id="imagemMarca" name="imagemMarca" />
+                                    </span>
+                                    <a href="#" class="input-group-addon btn btn-default fileinput-exists" data-dismiss="fileinput">Remover</a>
+                                </div>
+                                <span class="help-block m-b-none">Selecione uma imagem nas dimensões 96 x 96</span>
+                            </div>
+                        </div>
+                            <div class="row">
+                            <div class="col-lg-8 col-lg-offset-2">
+                                <br />
+                                <button class="btn btn-primary" id="btnSalvar" type="button">Salvar</button>
+
+                            </div>
+                            <div class="col-lg-2">
+                                <br />
+                                <button class="btn btn-white" onclick="cancelar()" type="button">Cancelar</button>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+
+
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+
+@section styles {
+
+    <link href="~/Content/SweetAlert/sweetalert.css" rel="stylesheet" />
+    <link href="~/Content/plugins/chosen/bootstrap-chosen-bootstrap-chosen.css" rel="stylesheet" />
+    <link href="~/Content/plugins/jasny/jasny-bootstrap.min.css" rel="stylesheet" />
+    <style type="text/css"></style>
+}
+
+
+@section scripts {
+
+    @Scripts.Render("~/plugins/sweetAlert")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    <script src="~/Scripts/validacoes.js"></script>
+    <script src="~/Scripts/plugins/typeahead/bootstrap3-typeahead.js"></script>
+
+    <script>
+
+        $(document).ready(function () {
+
+            //$(".txtcnpj").focusout(function () {
+
+            //    if ($(this).val() == "__.___.___/____-__") {
+            //        $(this).removeClass("cnpj-invalido").removeClass("cnpj-existente").removeClass("cnpj-valido");
+            //    }
+            //});
+
+            $('#cmbEmpresa').on('change', function () {
+
+                if (cmbEmpresa.value != "0") {
+                    $('.chosen-single').removeClass("combo-invalido");
+                }
+            });
+
+            $('#txtDescricao').focusout(function () {
+
+                if (txtDescricao.value != "") {
+                    $('#txtDescricao').removeClass("campo-invalido");
+                }
+
+            });
+
+            $('#txtUrlsite').focusout(function () {
+
+                if (txtUrlsite.value != "") {
+                    $('#txtUrlsite').removeClass("campo-invalido");
+                }
+
+            });
+
+            $('#txtNomemarca').focusout(function () {
+
+                if (txtNomemarca.value != "") {
+                    $('#txtNomemarca').removeClass("campo-invalido");
+                }
+
+            });
+
+            var config = {
+                '.chosen-select': { width: "100%" },
+                '.chosen-select-deselect': { allow_single_deselect: true },
+                '.chosen-select-no-single': { disable_search_threshold: 10 },
+                '.chosen-select-no-results': { no_results_text: 'Oops, nothing found!' },
+                '.chosen-select-width': {}
+            }
+            for (var selector in config) {
+                $(selector).chosen(config[selector]);
+            }
+
+            SetaEventoChange();
+
+            var uri = "/api/MarcaAPI/Get";
+            uri = uri + "?idSetor=" + 0 + "&idEmpresa=" + 0 + "&pagina=" + 1 + "&regporpagina=" + 10;
+            $.getJSON(uri)
+                .done(function (data) {
+
+                    $("#cmbEmpresa").empty();
+                    $("#cmbEmpresa").append("<option value=" + 0 + ">" + "Selecione uma empresa" + "</option>");
+                    $.each(data.Empresas, function (key, item) {
+                        $("#cmbEmpresa").append("<option value=" + item.idempresa + ">" + item.nome + "</option>");
+                        $("#cmbEmpresa").trigger('chosen:updated');
+                        });
+                });
+
+            $("#btnSalvar").click(function () { SalvarMarca() });
+
+            var uri = "/api/MarcaAPI/GetListaNomeDeMarcas";
+            $.getJSON(uri)
+                .done(function (data) {
+                    $("#txtNomemarca").typeahead({
+                        source: data, displayText: function (item)
+                        { return item.Nome }, name: 'empresas'
+                    });
+
+                    $(document).on('click', '.typeahead', function () {
+                        var current = $("#txtNomemarca").typeahead("getActive");
+                        if (current) {
+
+                            swal({
+                                title: "A marca " + current.Nome + " já está cadastrada, deseja editar?",
+                                text: "Você tem certeza que deseja editar esta marca?",
+                                type: "warning",
+                                showCancelButton: true,
+                                cancelButtonText: "Cancelar",
+                                confirmButtonColor: "#DD6B55",
+                                confirmButtonText: "Sim",
+                                closeOnConfirm: false
+                            },
+                                       function () {
+                                           redirecionaEdicao(current.idMarca);
+                                       });
+
+                        } else {
+                            // Nothing 
+                        }
+                    });
+
+
+                    $(document).keyup(function (e) {
+                        if (e.keyCode == 13) {
+
+                            var current = $("#txtNomemarca").typeahead("getActive");
+                            if (current) {
+
+                                swal({
+                                    title: "A marca " + current.Nome + " já está cadastrada, deseja editar?",
+                                    text: "Você tem certeza que deseja editar esta marca?",
+                                    type: "warning",
+                                    showCancelButton: true,
+                                    cancelButtonText: "Cancelar",
+                                    confirmButtonColor: "#DD6B55",
+                                    confirmButtonText: "Sim",
+                                    closeOnConfirm: false
+                                },
+                                           function (isConfirm) {
+
+                                               if (isConfirm)
+
+                                                   redirecionaEdicao(current.idMarca);
+
+                                               else
+                                                   $(".col-lg-10 #txtNomemarca").val('');
+                                        });
+
+                            } else {
+                                // Nothing 
+                            }
+
+                        };
+                    });
+
+                });
+
+        });
+
+
+        function ExisteCNPJBanco(valcnpj, txtcnpj) {
+            var uri = "/api/MarcaAPI/GetVerificaCnpjExistente";
+            uri = uri + "?cnpjmarca=" + valcnpj;
+
+            var cnpjCadastrado = false;
+
+            $.ajax({
+                url: uri,
+                async: false,
+                success: function (data) {
+                    if (data == true) {
+                        $(txtcnpj).addClass("cnpj-existente").removeClass("cnpj-valido").removeClass("cnpj-invalido");
+                        cnpjCadastrado = true;
+                    }
+                    else {
+                        $(txtcnpj).addClass("cnpj-valido").removeClass("cnpj-invalido").removeClass("cnpj-existente");
+                        cnpjCadastrado = false;
+                        addCnpj();
+                    }
+                }
+            });
+
+            return cnpjCadastrado;
+        }
+
+
+        function redirecionaEdicao(idmarca) {
+
+            window.location = "/Marca/editar/" + idmarca;
+
+
+        }
+
+
+
+
+        function SetaEventoChange() {
+
+
+            $(".txtcnpj").unbind("change");
+
+            $(".txtcnpj").change(function () {
+
+                var valcnpj = $(this).val();
+
+                var valcmponto = valcnpj;
+
+                valcnpj = valcnpj.replace(/[^0-9]+/g, '');
+
+                if (valcmponto == "") {
+                    $(this).removeClass("cnpj-invalido").removeClass("cnpj-existente").removeClass("cnpj-valido");
+                }
+
+                else{
+                
+                if (validarCNPJ(valcnpj) == false) {
+                    $(this).addClass("cnpj-invalido").removeClass("cnpj-valido").removeClass("cnpj-existente");
+                }
+                else {
+                    ExisteCNPJBanco(valcmponto, this);
+                    
+                }
+
+                }
+
+            });
+
+        }
+
+        //insere txtcnpjs
+        var count = 0;
+        function addCnpj() {
+
+            var cont2 = 0;
+
+            $(".txtcnpj").each(function () {
+                if ($(this).val() == "" || $(this).val() == null) {
+                    cont2++;
+
+                }
+            });
+
+            if (cont2 == 0) {
+                count++;
+                //    alert(count);
+                $("#cnpjLista").append("<div id='elemento' class='form-group'><div class='col-lg-9 col-md-offset-2'><input type='text'placeholder='CNPJ da marca' class='form-control txtcnpj' data-mask='99.999.999/9999-99'></div><div class='col-lg-1'><button class='btn btn-sm btn-white' type='button' onclick='removeCNPJ(this)' >-</button></div></div>");
+
+                SetaEventoChange();
+            }
+
+        }
+
+        function removeCNPJ(btn) {
+            count--;
+            $(btn).parent().parent().remove();
+        }
+        //endcnpjs
+
+        function VerificaForm() {
+
+            var selectempresavalidacao = true;
+            var nomevalidacao = true;
+            var CnpjValidacao = true;
+            var descricaoValidacao = true;
+            var urlsiteValidacao = true;
+
+            //validar nome
+            if (cmbEmpresa.value == 0) {
+                $('.chosen-single').addClass("combo-invalido");
+                selectempresavalidacao = false;
+            }
+
+            if (txtNomemarca.value == "") {
+                $(txtNomemarca).addClass("campo-invalido");
+                nomevalidacao = false;
+            }
+
+            if (txtUrlsite.value == "") {
+                $(txtUrlsite).addClass("campo-invalido");
+                urlsiteValidacao = false;
+            }
+
+            if (txtDescricao.value == "") {
+                $(txtDescricao).addClass("campo-invalido");
+                descricaoValidacao = false;
+            }
+
+            //valida os CNPJs
+
+            $(".txtcnpj").each(function (i, e) {
+
+
+                var valcnpj = $(e).val();
+                var valcmponto = valcnpj;
+
+                //Limpa caractes especiais do CNPJ
+                valcnpj = valcnpj.replace(/[^0-9]+/g, '');
+
+                if (valcnpj != "") {
+                    if (!validarCNPJ(valcnpj)) {
+                        $(e).addClass("cnpj-invalido").removeClass("cnpj-valido").removeClass("cnpj-existente");
+                        CnpjValidacao = false;
+                    } else if (ExisteCNPJBanco(valcmponto, e)) {
+                        CnpjValidacao = false;
+                    }
+                }
+
+
+            });
+
+            return selectempresavalidacao && nomevalidacao && CnpjValidacao && descricaoValidacao && urlsiteValidacao;
+        }
+
+        function SalvarMarca() {
+
+            if (VerificaForm()) {
+
+                var listaCnpjs = new Array();
+
+                $(".txtcnpj").each(function () {
+                        var c = { "cnpj": $(this).val() };
+                        listaCnpjs.push(c);
+                });
+
+                var listaDeRedesSociais = new Array();
+
+                if ($("#txtFace").val() != null) {
+
+                    var r = { "idredesocial": "1", "urlredesocial": $("#txtFace").val() }
+
+                    listaDeRedesSociais.push(r);
+                }
+                if ($("#txtInsta").val() != null) {
+
+                    var r = { "idredesocial": "3", "urlredesocial": $("#txtInsta").val() }
+
+                    listaDeRedesSociais.push(r);
+                }
+                if ($("#txtTw").val() != null) {
+
+                    var r = { "idredesocial": "2", "urlredesocial": $("#txtTw").val() }
+
+                    listaDeRedesSociais.push(r);
+                }
+                if ($("#txtYoutube").val() != null) {
+
+                    var r = { "idredesocial": "4", "urlredesocial": $("#txtYoutube").val() }
+
+                    listaDeRedesSociais.push(r);
+                }
+                if ($("#txtKlout").val() != null) {
+
+                    var r = { "idredesocial": "5", "urlredesocial": $("#txtKlout").val() }
+
+                    listaDeRedesSociais.push(r);
+                }
+
+                var marca = {
+                    Nome: $("#txtNomemarca").val(),
+                    Descricao: $("#txtDescricao").val(),
+                    UrlSite: $("#txtUrlsite").val(),
+                    idEmpresa: $("#cmbEmpresa").val(),
+                    redessociais: listaDeRedesSociais,
+                    cnpjs: listaCnpjs
+                }
+
+                var nomeMarca = $("#txtNomemarca").val();
+
+                var data = new FormData();
+
+                var files = $("#imagemMarca").get(0).files;
+
+                if (files.length > 0) {
+                    data.append("imagemMarca", files[0]);
+                }
+
+                data.append("marca", JSON.stringify(marca));
+
+                var ajaxRequest = $.ajax({
+                    type: "POST",
+                    url: "/api/MarcaAPI/POST?nomeMarca=" + nomeMarca,
+                    contentType: false,
+                    processData: false,
+                    data: data,
+                    success: function (data) {
+
+                        if (!data.erro) {
+                            window.location.reload();
+                        } else {
+                            //alert(data.mensagem);
+                        }
+
+                    }
+
+                    //error: function (error) {
+                    //    jsonValue = jQuery.parseJSON(error.responseText);
+                    //    jError('An error has occurred while saving the new part source: ' + jsonValue, { TimeShown: 3000 });
+                    //}
+                });
+
+                ajaxRequest.done(function (xhr, textStatus) {
+
+                });
+
+            }
+            else {
+                ChamaSwal();
+            }
+
+        }
+
+        function ChamaSwal(){
+
+            swal({
+                title: "Não foi possível cadastrar a empresa.",
+                text: "Campos obrigatórios não preenchidos adequadamente.",
+                showConfirmButton: true,
+                confirmButtonText: "Ok"
+            },
+            function (isConfirm) {
+                if (isConfirm) {
+                    $('html, body').animate({ scrollTop: 0 }, 'slow');
+                }
+            });
+        }
+
+        function cancelar() {
+            window.location = "/Marca/";
+        }
+
+    </script>
+}

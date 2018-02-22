@@ -1,0 +1,610 @@
+﻿@using ZAdmin.Utils
+
+
+@{
+    ViewBag.Title = "Promoções";
+}
+
+<style type="text/css">
+
+    .boxAcoesTabela {
+        width: 22px;
+        height: 20px;
+        margin-right: 5px;
+        background-color: #8A8C8E;
+    }
+
+    .boxAcoesTabela:hover{
+        background-color: #16d4ad;
+    }
+
+    .iconsAcoesTabela {
+        color: #fff;
+    }
+
+    .spanAcoesTabela {
+        margin: 5px;
+    }
+
+    .loadingTabelaPromocoes {
+        height: 371px;
+        padding-top: 155px;
+        display: none;
+    }
+
+    .nomeColuna {
+        color: #14806a;
+    }
+
+        .nomeColuna:hover {
+            color: #16d4ad;
+        }
+
+    .acoesTabela {
+        color: #14806a;
+    }
+
+    .colunaAtiva {
+        color: #777;
+    }
+
+    .iconeColunaAtiva {
+        display: none;
+    }
+
+    .itemBoxFiltro {
+        display: block;
+        font-weight: bold;
+    }
+
+    .boxFiltroMiddle {
+        margin-top: 15px;
+    }
+
+    .txtData {
+        height: 34px;
+    }
+
+    .boxFiltroBottom {
+        margin-top: 15px;
+    }
+
+    #selecaoDatas {
+        width: 100%;
+    }
+
+    #selecaoDatasVigencia {
+        width: 100%;
+    }
+
+    #btnPesquisar {
+        margin-right: 16px;
+        float: right;
+    }
+
+</style>
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Promoções</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/Home">Home</a>
+            </li>
+            <li class="active">
+                <strong>Promoções</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+    </div>
+</div>
+
+<div class="row wrapper wrapper-content animated fadeInRight">
+
+    <div class="col-md-12">
+
+        <div class="ibox float-e-margins">
+            <div class="ibox-content">
+
+                <div class="row">
+                    <div class="col-lg-12 boxFiltroTop">
+                        <div class="col-lg-4">
+
+                            <label class="font-noraml itemBoxFiltro">Empresa</label>
+                            <select data-placeholder="Selecione uma empresa" id="cmbEmpresa" class="chosen-select-width" name="empresas" tabindex="2" style="width:100%;"></select>
+
+                        </div>
+
+
+                        <div class="col-lg-4 ">
+
+                            <label class="font-noraml itemBoxFiltro">Modalidade</label>
+                            <select data-placeholder="Selecione uma modalidade" id="cmbModalidade" class="chosen-select-width" name="modalidades" tabindex="2" style="width:99%;"></select>
+
+                        </div>
+
+
+                        <div class="col-md-4">
+
+                            <label class="control-label" for="status">Cadastrado em</label>
+                            <div class="input-daterange input-group" id="selecaoDatas">
+                                <input type="text" class="input-sm form-control txtData" name="start" id="txtDataInicialCadastro" value="" />
+                                <span class="input-group-addon txtData">a</span>
+                                <input type="text" class="input-sm form-control txtData" name="end" id="txtDataFinalCadastro" value="" />
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+
+                    <div class="col-lg-12 boxFiltroMiddle">
+                        <div class="col-lg-8">
+
+                            <label>Termos</label>
+                            <input type="text" id="txtTermos" class="form-control" style="width:100%;" />
+
+                        </div>
+
+                        <div class="col-md-4">
+
+                            <label class="control-label" for="status">Vigente em</label>
+                            <div class="input-daterange input-group" id="selecaoDatasVigencia">
+                                <input type="text" class="input-sm form-control txtData" name="start" id="txtDataInicialVigencia" value="" />
+                                <span class="input-group-addon txtData">a</span>
+                                <input type="text" class="input-sm form-control txtData" name="end" id="txtDataFinalVigencia" value="" />
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 boxFiltroBottom">
+
+                        <button class="btn btn-primary" id="btnPesquisar" type="button" onclick="pesquisar()">
+                            <i class="fa fa-search" aria-hidden="true"></i>
+                            Pesquisar
+                        </button>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    @*<div class="col-md-12">
+            <div class="paginacao">
+                >>PAGINAÇÃO<<
+            </div>
+        </div>*@
+
+
+
+    <div class="col-lg-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <label>Promoções</label>
+                <button type="button" id="btnAdicionarPromocao" onclick="CadastrarPromocao()" class="btn btn-primary btn-xs btn-add-table"><i class="fa fa-plus"></i> Adicionar Promoção</button>
+            </div>
+            <div class="ibox-content">
+
+                <table class="footable table table-stripped toggle-arrow-tiny footable-loaded tablet breakpoint" data-page-size="8">
+                    <thead>
+                        <tr>
+                            <th class="footable-visible footable-sortable">
+                                <a class="nomeColuna" id="testeColuna" data-nomeColuna="empresa" data-ascAtual="1" data-ativo="0" onclick="nomeColunaTabelaPromo(this)">
+                                    <i class="iconeColunaAtiva " aria-hidden="true"></i>
+                                    Empresa
+                                </a>
+                                <span class="footable-sort-indicator"></span>
+                            </th>
+
+
+                            <th class="footable-visible footable-sortable">
+                                <a class="nomeColuna" data-nomeColuna="modalidade" data-ascAtual="1" data-ativo="0" onclick="nomeColunaTabelaPromo(this)">
+                                    <i class="iconeColunaAtiva fa fa-caret-up" aria-hidden="true"></i>
+                                    Modalidade
+                                </a>
+                                <span class="footable-sort-indicator"></span>
+                            </th>
+
+
+                            <th class="footable-visible footable-sortable">
+                                <a class="nomeColuna" data-nomeColuna="promocao" data-ascAtual="1" data-ativo="0" onclick="nomeColunaTabelaPromo(this)">
+                                    <i class="iconeColunaAtiva fa fa-caret-up" aria-hidden="true"></i>
+                                    Promoção
+                                </a>
+                                <span class="footable-sort-indicator"></span>
+                            </th>
+
+
+                            <th class="footable-visible footable-sortable">
+                                <a class="nomeColuna" data-nomeColuna="dataCadastro" data-ascAtual="1" data-ativo="0" onclick="nomeColunaTabelaPromo(this)">
+                                    <i class="iconeColunaAtiva fa fa-caret-up" aria-hidden="true"></i>
+                                    Data do cadastro
+                                </a>
+                                <span class="footable-sort-indicator"></span>
+                            </th>
+
+
+                            <th class="footable-visible footable-sortable">
+                                <a class="nomeColuna" data-nomeColuna="vigenciaInicial" data-ascAtual="1" data-ativo="0" onclick="nomeColunaTabelaPromo(this)">
+                                    <i class="iconeColunaAtiva fa fa-caret-up" aria-hidden="true"></i>
+                                    Vigência Inicial
+                                </a>
+                                <span class="footable-sort-indicator"></span>
+                            </th>
+
+
+                            <th class="footable-visible footable-sortable">
+                                <a class="nomeColuna" data-nomeColuna="vigenciaFinal" data-ascAtual="1" data-ativo="0" onclick="nomeColunaTabelaPromo(this)">
+                                    <i class="iconeColunaAtiva fa fa-caret-up" aria-hidden="true"></i>
+                                    Vigência Final
+                                </a>
+                                <span class="footable-sort-indicator"></span>
+                            </th>
+
+
+                            <th class="footable-visible footable-sortable footable-last-column acoesTabela">Ações<span class="footable-sort-indicator"></span></th>
+                        </tr>
+                    </thead>
+
+
+
+                    <tbody id="tabelaPromocoes"></tbody>
+                    <tfoot>
+
+                    </tfoot>
+                </table>
+
+                <div class="loadingTabelaPromocoes">
+
+                    <div class="sk-spinner sk-spinner-three-bounce">
+                        <div class="sk-bounce1"></div>
+                        <div class="sk-bounce2"></div>
+                        <div class="sk-bounce3"></div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="col-md-12">
+        <div class="paginacao">
+
+        </div>
+    </div>
+
+
+
+</div>
+
+
+@section styles {
+
+    <link href="~/Content/SweetAlert/sweetalert.css" rel="stylesheet" />
+    <link href="~/Content/plugins/chosen/bootstrap-chosen-bootstrap-chosen.css" rel="stylesheet" />
+    <link href="~/Content/style.css" rel="stylesheet" />
+    <link href="~/Content/plugins/datapicker/datepicker3.css" rel="stylesheet" />
+}
+
+
+@section scripts {
+
+    @Scripts.Render("~/plugins/sweetAlert")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/dataPicker")
+    <script src="~/Scripts/utils.js"></script>
+    <script src="~/Scripts/plugins/paginacao/paginacao.js"></script>
+
+    <script>
+
+        var filtro = new Object();
+
+        var paginacao = new Paginacao();
+
+        var paginaAtual = 1;
+        var totalRegistros = 0;
+        var nomeColunaAtual = null;
+        var ascAtual = true;
+
+        $(document).ready(function () {
+
+            $('#selecaoDatas').datepicker({
+                format: 'dd/mm/yyyy',
+                startView: 1,
+                todayBtn: "linked",
+                keyboardNavigation: false,
+                forceParse: false,
+                autoclose: true,
+            }).on('changeDate', function () {
+                //atualizaNoticias();
+            });
+
+            $('#selecaoDatasVigencia').datepicker({
+                format: 'dd/mm/yyyy',
+                startView: 1,
+                todayBtn: "linked",
+                keyboardNavigation: false,
+                forceParse: false,
+                autoclose: true,
+            }).on('changeDate', function () {
+                //atualizaNoticias();
+            });
+
+
+            //Chosen
+            var config = {
+                '.chosen-select': { width: "100%" },
+                '.chosen-select-deselect': { allow_single_deselect: true },
+                '.chosen-select-no-single': { disable_search_threshold: 10 },
+                '.chosen-select-no-results': { no_results_text: 'Oops, nothing found!' },
+                '.chosen-select-width': {}
+            }
+            for (var selector in config) {
+                $(selector).chosen(config[selector]);
+            }
+            //End Chosen
+
+            $('#btnNoticias').tooltip();
+            $('#btnRedesSociais').tooltip();
+            $('#btnEditar').tooltip();
+            $('#btnExcluir').tooltip();
+                     
+            
+
+            carregaCombos();
+
+            tabelaPromocoes();
+
+        });
+
+        function pesquisar() {           
+            paginaAtual = 1;
+            tabelaPromocoes();
+        }
+
+        function carregaCombos() {
+
+            var uri = "/api/PromocaoAPI/GetEmpresas";
+
+            $.getJSON(uri)
+                    .done(function (data) {
+
+                        $("#cmbEmpresa").append("<option value=" + 0 + ">" + "TODAS" + "</option>");
+                        $.each(data, function (key, item) {
+                            $("#cmbEmpresa").append("<option value=" + item.idItem + ">" + item.nome + "</option>");
+                            $("#cmbEmpresa").trigger('chosen:updated');
+                        });
+
+                    });
+
+
+            var uri = "/api/PromocaoAPI/GetModalidades";
+
+            $.getJSON(uri)
+                    .done(function (data) {
+
+                        $("#cmbModalidade").append("<option value=" + 0 + ">" + "TODAS  " + "</option>");
+                        $.each(data, function (key, item) {
+                            $("#cmbModalidade").append("<option value=" + item.idItem + ">" + item.nome + "</option>");
+                            $("#cmbModalidade").trigger('chosen:updated');
+                        });
+
+                    });
+
+        }
+
+        function retornaFiltro() {
+
+            filtro.empresa = $("#cmbEmpresa").val();
+            filtro.modalidade = $("#cmbModalidade").val();
+
+            var dtInicialCadastrada = $("#txtDataInicialCadastro").val() == "" ? null : ConverteDataStringParaData($("#txtDataInicialCadastro").val());
+            filtro.dataInicialCadastrada = dtInicialCadastrada;
+
+            var dtFinalCadastrada = $("#txtDataFinalCadastro").val() == "" ? null : ConverteDataStringParaData($("#txtDataFinalCadastro").val());
+            filtro.dataFinalCadastrada = dtFinalCadastrada;
+
+            var dtInicialVigencia = $("#txtDataInicialVigencia").val() == "" ? null : ConverteDataStringParaData($("#txtDataInicialVigencia").val());
+            filtro.dataInicialVigencia = dtInicialVigencia;
+
+            var dtFinalVigencia = $("#txtDataFinalVigencia").val() == "" ? null : ConverteDataStringParaData($("#txtDataFinalVigencia").val());
+            filtro.dataFinalVigencia = dtFinalVigencia;
+
+            filtro.termos = $("#txtTermos").val();
+
+            filtro.nomeColuna = nomeColunaAtual;
+            filtro.asc = ascAtual;
+            
+            filtro.pagina = paginaAtual;
+            filtro.quantidade = 10;
+
+            return filtro;
+        }
+
+        function tabelaPromocoes() {
+            
+            $("#tabelaPromocoes").empty();
+            $(".paginacao").empty();
+            $(".loadingTabelaPromocoes").show();
+        
+            var filtro = retornaFiltro();
+
+            var ajaxRequest = $.ajax({
+                type: "POST",
+                url: "/api/PromocaoAPI/promocoes",
+                contentType: 'application/json',
+                data: JSON.stringify(filtro),
+                dataType: 'json',
+                success: function (data) {
+
+                    $(".loadingTabelaPromocoes").hide();
+                    $("#tabelaPromocoes").empty();
+                    $(".paginacao").empty();
+                    $.each(data.promocoes, function (key, item) {
+                        $('<tr>', { html: formataLinhaPromocao(item) }).appendTo($('#tabelaPromocoes'));
+                    });
+
+                    totalRegistros = data.TotalMapaRegistros;
+
+                    paginacao.CriaPaginacao(".paginacao", parseInt((totalRegistros / 10) + 0.9), totalRegistros, paginaAtual);
+                    paginacao.setMudouPagina(mudouPagina);
+
+                }
+            });
+
+        }
+
+        function mudouPagina(pagina) {
+            paginaAtual = pagina;
+            tabelaPromocoes();
+        }
+
+        function formataLinhaPromocao(item) {
+
+            return "<td>" + item.empresa + "</td>" +
+                   "<td>" + item.modalidade + "</td>" +
+                   "<td>" + (item.promocao != null ? item.promocao : '') + "</td>" +
+                   "<td>" + (item.dataCadastro != null ? formataDataJson(item.dataCadastro) : '') + "</td>" +
+                   "<td>" + (item.vigenciaInicial != null ? formataDataJson(item.vigenciaInicial) : '') + "</td>" +
+                   "<td>" + (item.vigenciaFinal != null ? formataDataJson(item.vigenciaFinal) : '') + "</td>" +
+                   "<td style='display: inline-flex;'>" +
+                         " <div id='btnNoticias' class='boxAcoesTabela' title='Notícias'><span class='btnNoticiasAcoesTabela spanAcoesTabela' style='margin-left: 3px;'" +
+                            "onclick='telaNoticiasDaPromocao(" + item.idPromocao + ")' > <a data-toggle='tooltip' title='Notícias'> <i class='fa fa-newspaper-o iconsAcoesTabela' /><a/>" +
+                         "</span></div>" +
+
+                         " <div id='btnRedesSociais' class='boxAcoesTabela' title='Redes Sociais'><span class='btnRedesSociasAcoesTabela spanAcoesTabela'" +
+                                    "onclick='telaRedesSociasPromocao(" + item.idPromocao + ")' > <a data-toggle='tooltip' title='Redes Sociais'> <i class='fa fa-share-alt iconsAcoesTabela' /><a/>" +
+                                 "</span></div>" +
+
+                         " <div id='btnEditar' class='boxAcoesTabela' title='Editar'><span class='btnEditarAcoesTabela spanAcoesTabela'" +
+                                    "onclick='EditarRegistro(" + item.idPromocao + ")' > <a data-toggle='tooltip' title='Editar Promoção'> <i class='fa fa-pencil iconsAcoesTabela' /><a/>" +
+                                 "</span></div>" +
+
+                         "<div id='btnExcluir' class='boxAcoesTabela' title='Excluir'><span class='btnExcluirAcoesTabela spanAcoesTabela'" +
+                            "Onclick='MensagemExcluirRegistro(" + item.idPromocao + ")'><a data-toggle='tooltip' title='Excluir Promoção'>" +
+                            "<i class='fa fa-trash iconsAcoesTabela' /></a></span></div>" +
+                   "</td>";
+
+        }
+
+        function MensagemExcluirRegistro(idPromocao) {
+
+            swal({
+                title: "Excluir Registro?",
+                text: "Você tem certeza que deseja excluir este registro?",
+                type: "warning",
+                showCancelButton: true,
+                cancelButtonText: "Cancelar",
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Sim",
+                closeOnConfirm: false
+            },
+                   function () {
+                       remover(idPromocao);
+                   });
+
+        }
+
+        function remover(idPromocao) {
+
+            $.ajax({
+                type: "DELETE",
+                dataType: "json",
+                url: "/api/PromocaoAPI/Delete/" + idPromocao,
+                success: function (data) {
+                    swal("Deletado!", "Registro deletado.", "success");
+                    tabelaPromocoes();
+                },
+                error: function (error) {
+                    jsonValue = jQuery.parseJSON(error.responseText);
+                }
+            });
+
+
+        }
+
+        function telaNoticiasDaPromocao(id) {
+            window.location.href = "/PromocaoNoticia/Associar/" + id;
+        }
+
+        function telaRedesSociasPromocao(id) {
+            window.location.href = "/PromocaoRedeSocial/Associar/" + id;
+        }
+
+        function EditarRegistro(id) {
+            window.location.href = "/Promocao/Editar/?idPromo=" + id;
+        }
+
+        function CadastrarPromocao() {
+            window.location.href = "/Promocao/Cadastro/";
+        }
+
+        function nomeColunaTabelaPromo(coluna) {
+
+            var asc = $(coluna).attr("data-ascAtual");
+
+            ascAtual = asc >= 1 ? true : false;
+
+            //----------
+
+            toggleNomeColuna(coluna, asc);
+
+            //-----------
+            var resultado = $(coluna).attr("data-nomeColuna");
+
+            nomeColunaAtual = resultado;
+
+            tabelaPromocoes();
+
+        }
+
+        function toggleNomeColuna(coluna, dataAscAtual) {
+
+            $(".nomeColuna").each(function (key, item) {
+                $(item).find(".iconeColunaAtiva").hide();
+            });
+
+            if (dataAscAtual >= 1) {
+                $(coluna).attr("data-ascAtual", "0");
+
+                $(coluna).find(".iconeColunaAtiva").removeClass("fa fa-caret-down");
+                $(coluna).find(".iconeColunaAtiva").addClass("fa fa-caret-up");
+                $(coluna).find(".iconeColunaAtiva").show();
+
+            } else {
+                $(coluna).attr("data-ascAtual", "1");
+
+                $(coluna).find(".iconeColunaAtiva").removeClass("fa fa-caret-up");
+                $(coluna).find(".iconeColunaAtiva").addClass("fa fa-caret-down");
+                $(coluna).find(".iconeColunaAtiva").show();
+
+            }
+
+            $(".nomeColuna").each(function (key, item) {
+                //console.log(item);
+                $(item).removeClass("colunaAtiva");
+            });
+
+            $(coluna).addClass("colunaAtiva");
+
+
+
+            //alert($(coluna).attr("data-ascAtual"));
+
+
+        }
+
+
+    </script>
+}

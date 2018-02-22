@@ -1,0 +1,175 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{BCCF24F1-79D2-47EF-919A-3760EB4C9F75}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ZAdmin_RN</RootNamespace>
+    <AssemblyName>ZAdmin_RN</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Elasticsearch.Net, Version=5.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d, processorArchitecture=MSIL">
+      <HintPath>..\packages\Elasticsearch.Net.5.0.0\lib\net45\Elasticsearch.Net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\CodigoFonte\packages\EntityFramework.5.0.0\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Nest, Version=5.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d, processorArchitecture=MSIL">
+      <HintPath>..\packages\NEST.5.0.0\lib\net45\Nest.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Clientes\Cliente.cs" />
+    <Compile Include="Clientes\Clientes.cs" />
+    <Compile Include="Clientes\Estado.cs" />
+    <Compile Include="Combos\ItemCombo.cs" />
+    <Compile Include="Empresas\Cnpj.cs" />
+    <Compile Include="Empresas\Empresa.cs" />
+    <Compile Include="Empresas\EmpresaExpressao.cs" />
+    <Compile Include="Empresas\EmpresaExpressoes.cs" />
+    <Compile Include="Empresas\Empresas.cs" />
+    <Compile Include="Empresas\filtroEmpresas.cs" />
+    <Compile Include="Empresas\RedeSocial.cs" />
+    <Compile Include="Knewin\DadosRequestAPI.cs" />
+    <Compile Include="Knewin\NoticiaImagem.cs" />
+    <Compile Include="Knewin\RequestAPI.cs" />
+    <Compile Include="Listas\itemLista.cs" />
+    <Compile Include="MapaDadosCaptura\FiltroCaptura.cs" />
+    <Compile Include="MapaDadosCaptura\MapaCapturas.cs" />
+    <Compile Include="MapaDadosCaptura\MapaDadosCaptura.cs" />
+    <Compile Include="MapaDadosCaptura\MapaDadosCapturaImportado.cs" />
+    <Compile Include="MapaDadosCaptura\MapaDadosCapturas.cs" />
+    <Compile Include="MapaDadosCaptura\StatusDadosCaptura.cs" />
+    <Compile Include="MapaRegistros\FiltroMapa.cs" />
+    <Compile Include="MapaRegistros\FiltroMapaRegistro.cs" />
+    <Compile Include="MapaRegistros\ItemCombo.cs" />
+    <Compile Include="MapaRegistros\MapaRegistro.cs" />
+    <Compile Include="MapaRegistros\MapaRegistros.cs" />
+    <Compile Include="Marcas\Cnpj.cs" />
+    <Compile Include="Marcas\Marca.cs" />
+    <Compile Include="Marcas\MarcaExpressao.cs" />
+    <Compile Include="Marcas\MarcaExpressoes.cs" />
+    <Compile Include="Marcas\Marcas.cs" />
+    <Compile Include="Marcas\RedeSocial.cs" />
+    <Compile Include="Knewin\NoticiaKnewin.cs" />
+    <Compile Include="Knewin\NoticiasKnewin.cs" />
+    <Compile Include="Mensagem\Mensagem.cs" />
+    <Compile Include="NoticiasElastic\Noticia.cs" />
+    <Compile Include="ProcessoElastic\AbrangeEstado.cs" />
+    <Compile Include="ProcessoElastic\AbrangeMunicipio.cs" />
+    <Compile Include="ProcessoElastic\Arquivo.cs" />
+    <Compile Include="ProcessoElastic\Empresa.cs" />
+    <Compile Include="ProcessoElastic\Setor.cs" />
+    <Compile Include="ProcessoElastic\Situacao.cs" />
+    <Compile Include="ProcessoElastic\Solicitante.cs" />
+    <Compile Include="Processo\Arquivos.cs" />
+    <Compile Include="Processo\Processo.cs" />
+    <Compile Include="ProcessoElastic\Processos_Seae.cs" />
+    <Compile Include="Processo\ProcessoFiltro.cs" />
+    <Compile Include="Processo\Processos.cs" />
+    <Compile Include="Processo\ProcessoSetorSubsetor.cs" />
+    <Compile Include="Processo\Setor.cs" />
+    <Compile Include="Processo\Setores.cs" />
+    <Compile Include="Processo\SetorSubsetor.cs" />
+    <Compile Include="Processo\Situacao.cs" />
+    <Compile Include="Processo\SituacaoMovimento.cs" />
+    <Compile Include="Processo\Subsetor.cs" />
+    <Compile Include="Processo\Subsetores.cs" />
+    <Compile Include="Produtos\Produto.cs" />
+    <Compile Include="Produtos\Produtos.cs" />
+    <Compile Include="Produtos\RedeSocial.cs" />
+    <Compile Include="Processo\Arquivo.cs" />
+    <Compile Include="PromocaoRedesSociais\ProcessoRedeSocialFiltros.cs" />
+    <Compile Include="PromocaoRedesSociais\PromocaoRedeSocial.cs" />
+    <Compile Include="PromocaoRedesSociais\PromocaoRedeSocialElastic.cs" />
+    <Compile Include="PromocaoRedesSociais\PromocaoRedesSociais.cs" />
+    <Compile Include="Promocao\filtroIndexPromocoes.cs" />
+    <Compile Include="Promocao\FiltroPromocoes.cs" />
+    <Compile Include="Promocao\filtroPromocaoNoticia.cs" />
+    <Compile Include="Promocao\ItemCombo.cs" />
+    <Compile Include="Promocao\itemTabelaPromocao.cs" />
+    <Compile Include="Promocao\Noticias.cs" />
+    <Compile Include="Promocao\OrgaoRegulador.cs" />
+    <Compile Include="Promocao\OrgaosRegulador.cs" />
+    <Compile Include="Promocao\Processos_Seae.cs" />
+    <Compile Include="Promocao\Promocao.cs" />
+    <Compile Include="Promocao\PromocaoArquivo.cs" />
+    <Compile Include="Promocao\PromocaoArquivos.cs" />
+    <Compile Include="Promocao\PromocaoArquivoSeae.cs" />
+    <Compile Include="Promocao\PromocaoElastic.cs" />
+    <Compile Include="Promocao\PromocaoEmpresa.cs" />
+    <Compile Include="Promocao\PromocaoEstado.cs" />
+    <Compile Include="Promocao\PromocaoModalidade.cs" />
+    <Compile Include="Promocao\PromocaoModalidades.cs" />
+    <Compile Include="Promocao\PromocaoMunicipio.cs" />
+    <Compile Include="Promocao\PromocaoNoticia.cs" />
+    <Compile Include="Promocao\Promocoes.cs" />
+    <Compile Include="Processo\Situacoes.cs" />
+    <Compile Include="Promocao\TagPromocao.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Seguranca\Criptografia.cs" />
+    <Compile Include="Setores\Setor.cs" />
+    <Compile Include="Setores\Setores.cs" />
+    <Compile Include="Usuarios\Usuario.cs" />
+    <Compile Include="Usuarios\Usuarios.cs" />
+    <Compile Include="Utils\Captura.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ZAdmin_DB\ZAdmin_DB.csproj">
+      <Project>{c5765239-b97e-4971-a3a1-bbf82ae6543d}</Project>
+      <Name>ZAdmin_DB</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

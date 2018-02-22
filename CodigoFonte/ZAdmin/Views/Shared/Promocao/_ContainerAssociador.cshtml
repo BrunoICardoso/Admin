@@ -1,0 +1,68 @@
+﻿<style>
+    .combo-empresas {
+        margin-bottom: 25px;
+    }
+
+    .num-rel {
+        text-align: center;
+    }
+
+    .container-movel {
+        position: fixed;
+        top: 23px;
+    }
+
+    .lista-promos {
+        overflow-y: auto;
+    }
+
+    .linha-promo:hover {
+        background-color: #f5f5f5;
+        cursor: pointer;
+    }
+
+    .linha-promo.selected {
+        background-color: #ddd;
+    }
+      
+    .linha-promo.over {
+         background-color: #ddd;
+    }
+   
+
+
+</style>
+
+
+<div class="tabs-container tabs-associacao">
+     <ul class="nav nav-tabs">
+         <li class="active">
+             <a data-toggle="tab" href="#tab-1" aria-expanded="true">Promoções</a>       
+         </li> 
+    </ul>
+
+    <div class="tab-content">
+        <div id="tab-1" class="tab-pane active">
+            <div class="panel-body">
+
+                <div class="combo-empresas">
+                    <label class="font-noraml">Empresa</label>
+                    <select data-placeholder="Selecione uma Empresa" id="cmbEmpresaPromocoes" class="chosen-select-width" name="empresas" tabindex="2" style="width:100%;"></select>
+                </div>
+                          
+                <label id="tituloRecurso" class="font-noraml"></label>      
+                <div class="lista-promos">
+                    <table class="table table-bordered">
+                        <tbody id="tabela-promo">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>   
+
+    
+
+</div>
+
+

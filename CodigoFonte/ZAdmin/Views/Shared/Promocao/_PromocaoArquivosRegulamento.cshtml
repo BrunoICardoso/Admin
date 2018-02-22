@@ -1,0 +1,137 @@
+﻿
+
+<label class="col-md-3 control-label">Arquivos</label>
+<div class="col-lg-6">
+    <table id="tabelaArquivosRegulamento" class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Arquivos</th>
+                <th>Tipo</th>
+                <th colspan="2">Ações</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <div class="row">
+        <div class="col-md-9">
+            <div class="fileinput fileinput-new input-group" data-provides="fileinput">
+                <div class="form-control" data-trigger="fileinput">
+                    <i class="glyphicon glyphicon-file fileinput-exists"></i>
+                    <span class="fileinput-filename"></span>
+                </div>
+                <span class="input-group-addon btn btn-default btn-file">
+                    <span class="fileinput-new">Selecionar</span>
+                    <span class="fileinput-exists">Alterar</span>
+                    <input type="file" id="arquivoRegul" name="arquivoRegul">
+                </span>
+                <a href="#" class="input-group-addon btn btn-default fileinput-exists" data-dismiss="fileinput">Remover</a>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <button class="btn btn-primary" type="button" onclick="SalvarArquivo()">&nbsp;Adicionar</button>
+        </div>
+    </div>
+
+</div>
+
+
+<div class="col-lg-4">
+
+</div>
+
+<script>
+
+    function CarregaArquivosRegulamento() {
+
+        $('#tabelaArquivosRegulamento').find('tbody').html('<tr><td colspan="3" align="center" >Carregando.. Aguarde!</td></tr>');
+
+        var url = "/api/PromocaoAPI/GetArquivosRegulamento/?idPromocao=" + $('#idPromocao').val();
+
+        $.getJSON(url)
+            .done(function (data) {
+
+                if (data != null && data.length > 0) {
+                    var html = "";
+                    $.each(data, function (index, arq) {
+                        html += '<tr>' +
+                                    '<td>' + arq.nome + '</td>' +
+                                    '<td>' + arq.tipo + '</td>' +
+                                    '<td style="text-align:center;" ><a class="linkArquivo" href="' + URLArquivosProcesso + '/' + arq.nome + '" target="_blank" ><i class="fa fa-download"></i></a></td>' +
+                                    '<td style="text-align:center;" ><a class="linkArquivo" onclick="MsgExcluirArquivoRegulamento(' + arq.id + ')" ><i class="fa fa-trash-o"></i></a></td>' +
+                                '</tr>';
+                    });
+
+                    $('#tabelaArquivosRegulamento').find('tbody').html(html);
+                } else {
+                    $('#tabelaArquivosRegulamento').find('tbody').html('<tr><td colspan="4" style="text-align:center;" >Não há arquivos para esta promoção</td></tr>');
+                }
+            });
+    }
+
+    function MsgExcluirArquivoRegulamento(idArquivo) {
+        swal({
+            title: "Excluir Arquivo - Regulamento?",
+            text: "Você tem certeza que deseja excluir este arquivo?",
+            type: "warning",
+            showCancelButton: true,
+            cancelButtonText: "Cancelar",
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Sim",
+            closeOnConfirm: false
+        },
+        function (isConfirm) {
+            if (isConfirm) {
+                ExcluirArquivoRegulamento(idArquivo);
+            }
+
+        });
+    }
+
+    function ExcluirArquivoRegulamento(idArquivo) {
+        var infoArq = {
+            id: idArquivo
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "/api/PromocaoAPI/ExcluirArquvioRegulamento/",
+            data: JSON.stringify(infoArq),
+            dataType: 'json',
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+                swal("Deletado!", "Arquivo excluído.", "success");
+
+                CarregaArquivosRegulamento();
+            },
+            error: function (error) {
+                jsonValue = jQuery.parseJSON(error.responseText);
+            }
+        })
+    }
+
+    function SalvarArquivo() {
+       
+        var dataArquivo = new FormData();
+        var files = $("#arquivoRegul").get(0).files;
+
+        dataArquivo.append("arquivoRegul", files[0]);
+        dataArquivo.append("idPromocao", _Dados.idPromocao);
+
+        $.ajax({
+            type: "PUT",
+            url: "/api/PromocaoAPI/SalvarArquivoRegulamento/",
+            contentType: false,
+            processData: false,
+            data: dataArquivo,
+            success: function (data) {
+                CarregaArquivosRegulamento();
+                $('a.fileinput-exists').trigger('click');
+            },
+            error: function (error) {
+                jsonValue = jQuery.parseJSON(error.responseText);
+            }
+        });
+
+    }
+
+</script>

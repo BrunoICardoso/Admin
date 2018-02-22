@@ -1,0 +1,525 @@
+﻿@using ZAdmin.Utils
+
+@{
+    ViewBag.Title = "Promoção - Notícias";
+}
+
+<style type="text/css">
+    .boxFiltroTop {
+        padding: 0 15px 0 15px;
+    }
+
+    .boxFiltroBottom {
+        margin-top: 20px;
+    }
+
+    .boxBotaoFiltro {
+        float: right;
+        margin-top: 23px;
+    }
+
+    #btnPesquisar {
+        float: right;
+    }
+
+    .txtData {
+        height: 35px;
+    }
+
+    #selecaoDatas {
+        width: 100%;
+    }
+
+    .tituloFiltro {
+        font-weight: bold;
+    }
+
+    .boxTagPromos {
+        margin-left: 15px;
+        margin-right: -8px;
+        xxmargin-bottom: 17px;
+        padding-left: 0;
+        float:left;
+    }
+
+   
+</style>
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Promoção - Notíciais</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/Home">Home</a>
+            </li>
+            <li class="active">
+                <strong>Promoção - Notíciais</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+    </div>
+</div>
+<div class="row wrapper wrapper-content animated fadeIn">
+
+    <div class="col-md-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-content">
+                <div class="row">
+
+                    <div class="col-lg-12 boxFiltroTop">
+
+                        <div class="col-lg-8" style="padding-right: 9px;">
+
+                            <label class="font-noraml tituloFiltro">Pesquisar</label>
+                            <input type="text" id="txtPesquisa" class="form-control" style="width:100%;" />
+
+                        </div>
+
+                        <div class="col-lg-4">
+
+                            <label class="control-label tituloFiltro" for="status">Data publicação</label>
+                            <div class="input-daterange input-group" id="selecaoDatas">
+                                <input type="text" class="input-sm form-control txtData" name="start" id="txtDataInicial" value="" />
+                                <span class="input-group-addon txtData">a</span>
+                                <input type="text" class="input-sm form-control txtData" name="end" id="txtDataFinal" value="" />
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 boxFiltroBottom">
+
+                        <div class="col-lg-4">
+                            <label class="font-noraml itemBoxFiltro tituloFiltro" style="width: 100%;">Fonte</label>
+                            <select data-placeholder="Selecione uma fonte" id="cmbFonte" class="chosen-select-width" name="fontes" tabindex="2" style="width:100%;">
+
+                                <option value="0">Selecione uma fonte</option>
+                                <option value="1">Notícias Knewin</option>
+                                <option value="2">Notícias Empresas</option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="col-lg-4">
+                            <label class="font-noraml itemBoxFiltro tituloFiltro">Empresa</label>
+                            <select data-placeholder="Selecione uma Empresa" id="cmbEmpresa" class="chosen-select-width" name="empresas" tabindex="2" style="width:100%;"></select>
+                        </div>
+
+                        <div class="col-lg-4 boxBotaoFiltro">
+
+                            <button class="btn btn-primary" id="btnPesquisar" type="button" onclick="pesquisar()">
+                                <i class="fa fa-search" aria-hidden="true"></i>
+                                Pesquisar
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-md-4">
+        @Html.Partial("~/Views/Shared/Promocao/_ContainerAssociador.cshtml")
+    </div>
+
+    <div class="col-md-8">
+
+        <div class="paginacaoNoticias"></div>
+
+        <div class="ibox float-e-margins">
+
+            @Html.Partial("~/Views/PromocaoNoticia/_IndexTabelaNoticias.cshtml")
+
+        </div>
+
+        <div class="paginacaoNoticias"></div>
+
+    </div>
+
+
+</div>
+@section styles {
+
+    <link href="~/Content/SweetAlert/sweetalert.css" rel="stylesheet" />
+    <link href="~/Content/plugins/chosen/bootstrap-chosen-bootstrap-chosen.css" rel="stylesheet" />
+    <link href="~/Content/style.css" rel="stylesheet" />
+    <link href="~/Content/plugins/datapicker/datepicker3.css" rel="stylesheet" />
+    <link href="~/Content/plugins/social-buttons/social-buttons.css" rel="stylesheet" />
+    <link href="~/Content/noticias.css" rel="stylesheet" />
+
+}
+
+
+@section scripts {
+
+    @Scripts.Render("~/plugins/sweetAlert")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/dataPicker")
+    <script src="~/Scripts/utils.js"></script>
+    <script src="~/Scripts/plugins/paginacao/paginacao.js"></script>
+    <script src="~/Scripts/Promocoes/associaritens.js"></script>
+
+    <script>
+
+        // Variáveis
+        var filtro = new Object();
+        var paginacao = new Paginacao();
+
+        var paginaAtual = 1;
+        var totalRegistros = 0;
+
+        var promocaoEmpresaAtual = 0;
+
+        var configAssociador = {
+            urlPromocoes: "/api/PromocaoNoticiaAPI/GetRetornaPromocoesTotalNoticia?idEmpresa=",
+            modulo: "noticias"
+        }
+        var containerAssociador = new ContainerAssociador(configAssociador);
+        containerAssociador.setClicouPromocao(selecionouPromocao);
+
+        $(document).ready(function () {
+
+            $('#selecaoDatas').datepicker({
+                format: 'dd/mm/yyyy',
+                startView: 1,
+                todayBtn: "linked",
+                keyboardNavigation: false,
+                forceParse: false,
+                autoclose: true,
+            }).on('changeDate', function () {
+                //atualizaNoticias();
+            });
+
+
+            containerAssociador.Inicializa();
+
+            //Chosen
+            var config = {
+                '.chosen-select': { width: "100%" },
+                '.chosen-select-deselect': { allow_single_deselect: true },
+                '.chosen-select-no-single': { disable_search_threshold: 10 },
+                '.chosen-select-no-results': { no_results_text: 'Oops, nothing found!' },
+                '.chosen-select-width': {}
+            }
+            for (var selector in config) {
+                $(selector).chosen(config[selector]);
+            }
+            //End Chosen
+
+            carregaCombos();
+
+            $("#cmbFonte").on('change', function (event, params) {
+
+                $("#tabelaNoticias").empty();
+                $(".paginacaoNoticias").empty();
+
+                if ($("#cmbFonte").val() == 2) {
+
+                    $('#cmbEmpresa').prop('disabled', false).trigger("chosen:updated");
+
+                } else {
+
+                    $('#cmbEmpresa').prop('disabled', true).trigger("chosen:updated");
+
+                }
+
+            });
+
+            carregaNoticias();
+                       
+            $('#cmbFonte').val(2);
+            $('#cmbFonte').trigger("chosen:updated");
+            $('#cmbFonte').change();
+        });
+
+
+        function carregaCombos() {
+
+            $('#cmbEmpresa').prop('disabled', true).trigger("chosen:updated");
+
+            var uri = "/api/PromocaoNoticiaAPI/GetCombos";
+
+            $.getJSON(uri)
+                  .done(function (data) {
+
+                      $("#cmbEmpresa").append("<option value=" + 0 + ">" + "TODAS" + "</option>");
+                      $.each(data.empresas, function (key, item) {
+                          $("#cmbEmpresa").append("<option value=" + item.idItem + ">" + item.nome + "</option>");
+                          $("#cmbEmpresa").trigger('chosen:updated');
+                      });
+                  });
+        }
+
+        function retornaFiltro() {
+
+            filtro.pesquisa = $("#txtPesquisa").val();
+            filtro.fontePesquisa = $("#cmbFonte").val();
+            filtro.empresa = $("#cmbEmpresa").val() == null ? 0 : $("#cmbEmpresa").val();
+            filtro.dataInicial = ConverteDataStringParaData($("#txtDataInicial").val());
+            filtro.dataFinal = ConverteDataStringParaData($("#txtDataFinal").val());
+            filtro.pagina = paginaAtual;
+            filtro.quantidade = 10;
+
+            return filtro;
+        }
+
+        function carregaNoticias() {
+
+            $("#tabelaNoticias").empty();
+            $(".paginacaoNoticias").empty();
+            $(".loadingTabelaNoticia").show();
+
+            var filtro = retornaFiltro();
+
+            $.ajax({
+                type: "POST",
+                url: "/api/PromocaoNoticiaAPI/noticias",
+                contentType: 'application/json',
+                data: JSON.stringify(filtro),
+                dataType: 'json',
+                success: function (data) {
+                    
+                    if (data.noticias != null) {
+                        $(".loadingTabelaNoticia").hide();
+
+                        $("#tabelaNoticias").empty();
+                        $.each(data.noticias, function (key, item) {
+
+                            $('<tr>', { html: formataNoticia(item) }).appendTo($('#tabelaNoticias'));
+                        });
+
+
+                        totalRegistros = data.totalNoticias;
+
+                        paginacao.CriaPaginacao(".paginacaoNoticias", parseInt((totalRegistros / 10) + 0.9), totalRegistros, paginaAtual);
+                        paginacao.setMudouPagina(mudouPagina);
+
+                    } else {
+                        $(".loadingTabelaNoticia").hide();
+                    }
+
+                }
+
+            });
+
+
+        }
+
+
+
+        function mudouPagina(pagina) {
+            
+            paginaAtual = pagina;
+            carregaNoticias();
+
+        }
+
+
+        function selecionouPromocao(idPromo) {
+
+            paginaAtual = 1;
+            promocaoEmpresaAtual = idPromo;
+            CarregaRecursoPromocaoEmpresa()
+        }
+
+        function mudouPaginaNoticiasPromo(pagina) {
+
+            paginaAtual = pagina;
+
+            CarregaRecursoPromocaoEmpresa();
+
+        }
+
+        function formataNoticia(item) {
+           
+            var res = item.conteudo == null ? "" : item.conteudo.replace(/(?:\r\n|\r|\n)/g, '<br />');
+
+            return "<div class='row'><div class='col-lg-12'> <div class='noticia  ibox-content' data-idnoticia='" + item.idnoticia + "'>" +
+            "<div id='boxDragNoticia' class='boxNoticiaTop' draggable='true' ondragstart='drag(event, this)' id='drag-me' data-idnoticia='" + item.idnoticia + "'>" +
+            "<div class='BoxTituloNoticia'>" +
+            "<label class='tituloNoticia'>" + item.titulo + "</label>" +
+            "</div>" +
+            "<div class='BoxFonteNoticia'>" +
+            "<label class='fonteNoticia'>" + item.nomefonte + "</label>" +
+            "</div>" +
+            "<div class='BoxDataNoticia'>" +
+            "<label class='dataNoticia'>" + (item.datapublicacao.indexOf("T") > 0 ?formataDataJson(item.datapublicacao):item.datapublicacao.substring(0,9)) + "</label>" +
+            "</div>" +
+            "</div>" +
+            "<div class='boxNoticiaMiddle'>" +
+            "<div class='BoxConteudoNoticia'>" +
+            "<div class='conteudoNoticia' id='conteudoNoticiaInner'>" +
+                 //item.conteudo +
+                   res+ 
+            "</div>" +
+            "</div>" +
+            "</div>" +
+            "<div class='boxNoticiaBottom'>" +
+            "<div class='exibeMaisConteudo'>" +
+            //"<div class='linhaExibirMaixConteudo'></div>" +
+            "<i id='iconeExibirMaisConteudo' class='fa fa-angle-down fa-2x iconeExibirMais' aria-hidden='true'></i>" +
+            //"<div id='boxShadowConteudo' class='shadowBoxConteudo'></div>" +
+            "<a id='btnExibirMaisConteudo' class='botaoExibirMaisConteudo' onclick='exibirMaisConteudo(this);'></a>" +
+            "</div>" +
+            "<div class='BoxAutorNoticia'>" +
+            "<i class='fa fa-user iconeFa' aria-hidden='true'></i>" +
+            "<label class='autorNoticia'>" + (item.autor == null ? "Não informado" : item.autor) + "</label>" +
+            "</div>" +
+            "<div class='BoxLinkNoticia'>" +
+            "<i class='fa fa-link iconeFa' aria-hidden='true'></i>" +
+            "<label class='linkNoticia'><a target='_blank' href='" + item.url + "'>Acesso o conteúdo original</a></label>" +
+            "</div>" +
+            "</div>" +
+            "<div class='boxPromocoesAssociadas row'>" +
+            "<div class='col-md-12'>" +
+            "<div class='tituloPromocoesAssociadas'>Promoções Associadas" +
+            "<button class='btn btn-primary btnCriarPromocao' type='submit'><i class='fa fa-plus iconeBtnCriarPromocao' aria-hidden='true' onclick='location.href=\"/Promocao/CadastroNoticia/?idNoticia=" + item.idnoticia + "&fonte=" + filtro.fontePesquisa + "\"'></i></button>" +
+            "</div>" +
+            "</div>" +
+            "<div id='tagsPromocoes" + item.idnoticia + "' class='tagsPromocoesAssociadas'>" +
+
+           carregaTagsPromocoes(item.promocoes, item.idnoticia)
+
+            //"<button class='btn btn-white btn-xs' style='margin: 0 5px 5px 0' type='button'>tag1 <i class='fa fa-times' aria-hidden='true'></i></button>" +
+
+            "</div>" +
+            "</div>" +
+            "</div>" +
+            "</div>" +
+            "</div>";
+
+        }
+
+        function carregaTagsPromocoes(lista, idNoticia) {
+
+            if (lista != null && lista.length > 0) {
+
+                var tags = "";
+
+                $.each(lista, function (k, item) {
+
+                    tags = tags + "<div class='boxTagPromos' id='tag_" + item.idpromocao + "_" + idNoticia + "'><div class='btn btn-block btn-social btnBoxPromocao'>" +
+                           "<span class='fa fa-times btnBoxPromocaoClick' onclick='DesassociarPromocaoNoticia(" + item.idpromocao + "," + idNoticia + ")' ></span>" + item.nome + " </div></div>";
+                });
+                return tags;
+
+            } else {
+                return "<span id='avisoSemResultado" + idNoticia + "' class='avisoPromosSemResultado'>Não há promoções associadas à esta notícia.</span>"
+            }
+
+        }
+
+        function DesassociarPromocaoNoticia(idPromo, idNoticia) {
+            
+            var dados = {
+                idNoticia: idNoticia,
+                idpromocao: idPromo,
+                fonteNoticia: $("#cmbFonte").val()
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/api/PromocaoNoticiaAPI/DesassociarPromocaoNoticia",
+                contentType: 'application/json',
+                data: JSON.stringify(dados),
+                dataType: 'json',
+                async : false,
+                success: function (data) {
+                    $('#tag_' + idPromo + '_' + idNoticia).remove();
+                }
+            });
+
+            var idpromolinha;
+
+            $('#tabela-promo > tr').each(function (e, i) {
+                idpromolinha = $(i).attr("data-idpromocao");
+
+                if (idpromolinha == idPromo) {
+                    
+                    var qtdPromocoes = $(i).find(".num-rel").text();
+                    $(i).find(".num-rel").text(parseInt(qtdPromocoes) - 1);
+
+                }
+
+            });
+
+           
+            var qtdElementos = $('#tagsPromocoes' + idNoticia).children(".boxTagPromos").length;
+            
+            if (qtdElementos == 0) {
+        
+                $("#tagsPromocoes" + idNoticia).append("<span id='avisoSemResultado" + idNoticia + "' class='avisoPromosSemResultado'>Não há promoções associadas à esta notícia.</span>");                
+
+            }
+
+        }
+
+        function criarNovaPromocao(idNoticia) {
+
+            window.open(
+              '/Promocao/Cadastro/?idNoticia=' + idNoticia,
+              '_blank'
+            );
+
+        }
+
+        function pesquisar() {
+            paginaAtual = 1;
+            carregaNoticias();
+        }
+
+        function CarregaRecursoPromocaoEmpresa() {
+            
+            $("#cmbFonte").val(2);
+            $("#cmbFonte").trigger("chosen:updated");
+        
+            $("#tabelaNoticias").empty();
+            $(".paginacaoNoticias").empty();
+            $(".loadingTabelaNoticia").show();
+
+            var uri = '/api/PromocaoNoticiaAPI/retornaNoticiasPromocao?idPromocao=' + promocaoEmpresaAtual + '&pagina=' + paginaAtual + '&quantidade=10';
+            
+            $.ajax({
+                type: "POST",
+                url: uri,
+                contentType: 'application/json',
+                data: JSON.stringify(filtro),
+                dataType: 'json',
+                success: function (data) {
+
+                    console.log(data);
+
+                    if (data.noticias != null) {
+                        $(".loadingTabelaNoticia").hide();
+
+                        $("#tabelaNoticias").empty();
+                        $.each(data.noticias, function (key, item) {
+                            $('<div>', { html: formataNoticia(item) }).appendTo($('#tabelaNoticias'));
+                        });
+
+                        totalRegistros = data.totalNoticias;
+
+                        paginacao.CriaPaginacao(".paginacaoNoticias", parseInt((totalRegistros / 10) + 0.9), totalRegistros, paginaAtual);
+                        paginacao.setMudouPagina(mudouPaginaNoticiasPromo);
+
+                    } else {
+                        $(".loadingTabelaNoticia").hide();
+                    }
+
+                }
+
+            });
+
+        }
+
+    </script>
+}

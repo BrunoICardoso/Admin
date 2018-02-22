@@ -1,0 +1,595 @@
+﻿@using ZAdmin.Utils
+
+@{
+    ViewBag.Title = "Processos SEAE";
+
+}
+
+<style type="text/css">
+    .container-botoes {
+        padding-top: 15px;
+        text-align: right;
+        margin-right: -9px;
+    }
+
+    .btn-espaco-btn {
+        margin-right: 10px;
+        margin-bottom: 0px;
+    }
+
+    .btn-captura {
+        color: white;
+        background: #8e8888;
+        border: 1px solid #e7eaec;
+    }
+
+    .btn-captura:hover {
+        background: #1ab394;
+        color: white;
+    }
+
+    a.linkArquivo {
+        font-size: 17px;
+        color: #8E8888;
+    }
+
+    a.linkArquivo :hover {
+        color: #1AB394;
+    }
+
+    #txtDataInicial, #txtDataFinal {
+        width: 100px;
+    }
+
+    .ibox-tools {
+        margin-top: -24px;
+    }
+
+    .alinhaDireita {
+        text-align:right;
+    }
+
+    .btnVerMais {
+        margin-left: 17px;
+    }
+
+    .btnVerMenos {
+        margin-left: -17px; 
+    }
+
+    .btnVerMais:hover, .btnVerMenos:hover {
+        background: #1ab394;
+        color: white;
+    }
+</style>
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Processos SEAE</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/Home">Home</a>
+            </li>
+            <li class="active">
+                <strong>Processos SEAE</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+    </div>
+</div>
+
+<div class="row wrapper wrapper-content animated fadeInRight">
+    <div class="col-md-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-content">
+
+                <div class="row">
+
+                    <div class="col-md-8">
+                        <label>Palavras-chave</label>
+                        <input type="text" id="txtPalavraChave" class="form-control" />
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="control-label" for="status">Selecione o período</label>
+                        @*<div id="mapafiltro-datainicial" class="filtro-mapa-data input-group date">
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" id="txtDataInicial" class="form-control">
+                            </div>
+
+                            <label>Data final</label>
+                            <div id="mapafiltro-datafinal" class="filtro-mapa-data input-group date">
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" id="txtDataFinal" class="form-control">
+                            </div>*@
+
+
+                        <div class="input-daterange input-group" id="selecaoDatas">
+                            <input type="text" class="input-sm form-control" name="start" id="txtDataInicial" value="" />
+                            <span class="input-group-addon">&nbsp; a &nbsp;</span>
+                            <input type="text" class="input-sm form-control" name="end" id="txtDataFinal" value="" />
+                        </div>
+
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <div class="col-md-4">
+                        @*<label class="font-noraml">Situações</label>
+                            <div class="input-group">
+                                <select data-placeholder="Selecione uma situação" id="cmbSituacoes" class="chosen-select" name="setor" style="width:300px" tabindex="2"></select>
+                            </div>*@
+                        <label>Empresas</label>
+                        <select data-placeholder="Selecione uma empresa" id="cmbEmpresas" class="chosen-select" name="setor" tabindex="2"></select>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label>No. Processo</label>
+                        <input type="text" id="txtNumProcesso" class="form-control" />
+                    </div>
+
+                    <div class="col-md-4">
+                        <label>Ordenar por</label>
+                        <select data-placeholder="Selecione uma empresa" id="cmbOrdenacao" class="chosen-select" style="width:100%" name="setor" tabindex="2">
+                            <option value="DtRegistroASC">Data do registro crescente</option>
+                            <option value="DtRegistroDESC">Data do registro decrescente</option>
+                            <option value="DtSituacaoDESC">Situação mais recente</option>
+                        </select>
+
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 alinhaDireita m-t">
+                        <button class="btn btn-primary" id="btnPesquisarMapa" onclick="pesquisaProcessos()" type="button">Pesquisar</button>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-md-12">
+        <div class="paginacao"></div>
+    </div>
+
+    <div id="tabelaProcessos"></div>
+
+    <div class="col-md-12">
+        <div class="paginacao"></div>
+    </div>
+
+</div>
+
+
+@section styles {
+
+    <link href="~/Content/SweetAlert/sweetalert.css" rel="stylesheet" />
+    <link href="~/Content/plugins/chosen/bootstrap-chosen-bootstrap-chosen.css" rel="stylesheet" />
+    <link href="~/Content/style.css" rel="stylesheet" />
+    <link href="~/Content/plugins/datapicker/datepicker3.css" rel="stylesheet" />
+}
+
+
+@section scripts {
+
+    @Scripts.Render("~/plugins/sweetAlert")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/dataPicker")
+    <script src="~/Scripts/utils.js"></script>
+    <script src="~/Scripts/plugins/paginacao/paginacao.js"></script>
+
+    <script>
+        var paginaAtual = 1;
+        var paginacao = new Paginacao();
+        var totalRegistros;
+
+        var dataPadraoInicial = new Date();
+        var dataPadraoFinal = new Date();
+        dataPadraoInicial.setDate(dataPadraoFinal.getDate() - 30);
+
+        $('#selecaoDatas').datepicker({
+            format: 'dd/mm/yyyy',
+            //startView: 1,
+            //todayBtn: "linked",
+            keyboardNavigation: false,
+            forceParse: false,
+            autoclose: true
+        });
+
+        $('#txtDataInicial').datepicker('setDate', dataPadraoInicial);
+        $('#txtDataFinal').datepicker('setDate', dataPadraoFinal);
+
+        var config = {
+            '.chosen-select': { width: "99%" },
+            '.chosen-select-deselect': { allow_single_deselect: true },
+            '.chosen-select-no-single': { disable_search_threshold: 10 },
+            '.chosen-select-no-results': { no_results_text: 'Oops, nothing found!' },
+            '.chosen-select-width': { width: "95%" }
+        }
+        for (var selector in config) {
+            $(selector).chosen(config[selector]);
+        }
+
+        var _filtros = new Object();
+        _filtros.palavrasChave = $('#txtPalavraChave').val();
+        _filtros.dataIni = ConverteDataStringParaData($("#txtDataInicial").val());
+        _filtros.dataFim = ConverteDataStringParaData($("#txtDataFinal").val());
+        _filtros.idempresa = null;
+        _filtros.numProcesso = null;
+        _filtros.ordenacao = null;
+        _filtros.pagina = paginaAtual;
+        _filtros.qtdRegistros = 6;
+
+        $(document).ready(function () {
+            //GerarComboSituacoes();
+            GerarComboEmpresas();
+            CarregaProcessos(retornaFiltroCaptura(paginaAtual));
+
+            $("#cmbEmpresas").chosen({ width: '100%' });
+        });
+
+        function GerarComboSituacoes() {
+
+            var url = '/api/ProcessoAPI/GetListaSituacoes';
+
+            $.getJSON(url)
+                .done(function (data) {
+
+                    $("#cmbSituacoes").append("<option value=" + 0 + ">" + "Todos" + "</option>");
+                    $.each(data, function (key, item) {
+                        $("#cmbSituacoes").append("<option value=" + item.idsituacao + ">" + item.descricao + "</option>");
+                        $("#cmbSituacoes").trigger('chosen:updated');
+
+                    });
+
+                });
+        }
+
+        function GerarComboEmpresas() {
+            var url = '/api/ProcessoAPI/GetListaEmpresas';
+
+            $.getJSON(url)
+                .done(function (data) {
+
+                    $("#cmbEmpresas").append("<option value=" + 0 + ">" + "Todos" + "</option>");
+                    $.each(data, function (key, item) {
+                        $("#cmbEmpresas").append("<option value=" + item.idempresa + ">" + item.nome + "</option>");
+                        $("#cmbEmpresas").trigger('chosen:updated');
+
+                    });
+
+                });
+
+
+        }
+
+        function CarregaProcessos(pagina) {
+
+            tabelaProcessos = $('#tabelaProcessos');
+            tabelaProcessos.html('');
+            $(".paginacao").empty();
+
+            $('<div>', { html: '<div class="col-md-12"><div class="ibox-content"><div class="row"><i class="fa fa-check"></i>&nbsp;Carregando... Aguarde!</div></div></div>' }).appendTo($('#tabelaProcessos'));
+
+            $.ajax({
+                type: "POST",
+                url: "/api/ProcessoAPI/ListarProcessosCaptura",
+                contentType: 'application/json',
+                data: JSON.stringify(_filtros),
+                dataType: 'json',
+                success: function (data) {
+
+                    //console.log(data);
+
+                    tabelaProcessos.html('');
+
+                    if (data.TotalRegistros > 0) {
+
+                        $.each(data.Processo, function (index, obj) {
+                            tabelaProcessos.append(MontaHtmlProcesso(obj));
+                            $('[data-toggle="tooltip"]').tooltip();
+                        })
+
+                        paginacao.CriaPaginacao(".paginacao", parseInt((data.TotalRegistros / _filtros.qtdRegistros) + 0.9), data.TotalRegistros, paginaAtual);
+                        paginacao.setMudouPagina(mudouPagina);
+
+                    } else {
+                        $('<div>', { html: '<div class="col-md-12"><div class="ibox-content"><div class="row"><i class="fa fa-check"></i>&nbsp;Não há dados para esta consulta</div></div></div>' }).appendTo($('#tabelaProcessos'));
+                    }
+                }
+            });
+        }
+
+        function MontaHtmlProcesso(Processo) {
+            var camponome;
+            console.log(Processo);
+
+            if (Processo.nome != null){
+                camponome = Processo.nome
+            } else if(Processo.numprocesso !=null){
+                
+                camponome = Processo.numprocesso
+            
+            }else{ 
+                camponome = '-'
+                  }
+
+
+            var html = '';
+
+            html += '<div class="col-md-12" style="margin-bottom: 7px;"><div class="ibox float-e-margins">' +
+                        '<div class="ibox-title" style="margin-bottom: -25px;"><b>Processo no. </b>' + Processo.numprocesso +
+                            '<div class="ibox-tools">' +
+                                '<a href="/Promocao/Cadastro/?idProc=' + Processo.idprocesso + '" class="btn btn-captura btn-espaco-btn" data-toggle="tooltip" data-placement="top" title="Exportar" ><i class=" fa fa-sign-out fa-rotate-270"></i></a>' +
+                                '<a onclick="ExcluirProcesso(' + Processo.idprocesso + ')" class="btn btn-captura btn-espaco-btn" data-toggle="tooltip" data-placement="top" title="Excluir"><i class="fa fa-trash-o"></i></a></div>' +
+                            '</div>' +
+                        '</div>' +
+                        '<div class="ibox-content">' +
+                            '<div class="row" style="margin-bottom: 8px;">' +
+                                '<div class="col-md-2 alinhaDireita"><b>Nome</b></div><div class="col-md-10">' + camponome + '</div>' +
+                            '</div>' +
+                            '<div class="row" style="margin-bottom: 8px;">' +
+                                '<div class="col-md-2 alinhaDireita"><b>Processo no.</b></div><div class="col-md-10">' + Processo.numprocesso + '</div>' +
+                            '</div>' +
+                            '<div class="row" style="margin-bottom: 8px;">' +
+                                '<div class="col-md-2 alinhaDireita"><b>Empresas</b></div><div class="col-md-10">' + MontaHtmlEmpresas(Processo.empresas) + '</div>' +
+                            '</div>' +
+                            '<div class="row" style="margin-bottom: 8px;">' +
+
+                                '<div class="col-md-2 alinhaDireita"><b>Data de registro SEAE</b></div><div class="col-md-10">' + (Processo.dtprocesso != null ? formataDataJson(Processo.dtprocesso) : "-") + '</div>' +
+
+                            '</div>' +
+                            '<div class="row" style="margin-bottom: 8px;">' +
+                                '<div class="col-md-2 alinhaDireita"><b>Vigência</b></div><div class="col-md-10">' + (Processo.dtvigenciaini != null ? formataDataJson(Processo.dtvigenciaini) : " - ") + ' até ' + (Processo.dtvigenciafim != null ? formataDataJson(Processo.dtvigenciafim) : " - ") + '</div>' +
+                            '</div>' +
+                            '<div class="row" style="margin-bottom: 8px;">' +
+                                '<div class="col-md-2 alinhaDireita"><b>Situação Atual</b></div><div class="col-md-10">' + (Processo.situacaoatual != null ? Processo.situacaoatual : "-") + '</div>' +
+                            '</div>' +
+                            '<div class="row" style="margin-bottom: 8px;">' +
+                                '<div class="col-md-2 alinhaDireita"><b>Abrangência</b></div><div class="col-md-10">' + MontaHtmlAbrangencia(Processo) + '</div>' +
+                            '</div>' +
+                            '<div class="row" style="margin-bottom: 8px;">' +
+                                '<div class="col-md-2 alinhaDireita"><b>Valor total em prêmios</b></div><div class="col-md-10">' + (Processo.valortotalpremios != null && Processo.valortotalpremios != 0 ? "R$ " + formataNumero(Processo.valortotalpremios, 2) : "R$ -") + '</div>' +
+                            '</div>' +
+                            '<div class="row" style="margin-bottom: 8px;">' +
+                                '<div class="col-md-2 alinhaDireita"><b>Modalidade</b></div><div class="col-md-10">' + (Processo.modalidade != null ? Processo.modalidade : "-") + '</div>' +
+                            '</div>' +
+                            '<div class="row" style="margin-bottom: 8px;">' +
+                                '<div class="col-md-2 alinhaDireita"><b>Forma de contemplação</b></div><div class="col-md-10">' + (Processo.formacontemplacao != null ? Processo.formacontemplacao : "-") + '</div>' +
+                            '</div>' +
+                            '<div class="row" style="margin-bottom: 8px;">' +
+                                '<div class="col-md-2 alinhaDireita"><b>Interessados</b></div><div class="col-md-10">' + ( Processo.interessados != null ? Processo.interessados : "-" ) + '</div>' +
+                            '</div>' +
+                            '<div class="row" style="margin-bottom: 8px;">' +
+                                '<div class="col-md-2 alinhaDireita"><b>Setores \ Subsetores</b></div><div class="col-md-10">' + MontaHtmlSetores(Processo) + '</div>' +
+                            '</div>' +
+                            
+
+                            '<div class="row">' +
+                                '<div class="col-md-12 alinhaDireita">' +
+                                    '<button type="button" class="btn btn-default btn-sm btnVerMais" id="btnVerMais' + Processo.idprocesso + '" onclick="BtnVerMaisMenos(' + Processo.idprocesso + ',\'MAIS\')"><i class="fa fa-plus"></i>&nbsp;&nbsp;Ver mais</button>' +                                    
+                                '</div>' +
+                            '</div>' +
+
+                            '<div id="divVerMais' + Processo.idprocesso + '" style="display:none;" >' +
+                                '<div class="row" style="margin-bottom: 8px;">' +
+                                    '<div class="col-md-2 alinhaDireita"><b>Resumo</b></div><div class="col-md-10">' + (Processo.resumo != null ? Processo.resumo : "-") + '</div>' +
+                                '</div>' +
+                                '<div class="row" style="margin-bottom: 8px;">' +
+                                    '<div class="col-md-2 alinhaDireita"><b>Como participar</b></div><div class="col-md-10">' + (Processo.comoparticipar != null ? Processo.comoparticipar : "-") + '</div>' +
+                                '</div>' +
+                                '<div class="row" style="margin-bottom: 15px;">' +
+                                    '<div class="col-md-2 alinhaDireita"><b>Prêmios</b></div><div class="col-md-10">' + (Processo.premios != null ? Processo.premios : "-") + '</div>' +
+                                '</div>';
+
+                            if (Processo.arquivos.length > 0) {
+                
+                                html += '<div class="row" style="margin-bottom: 8px;">' +
+                                            '<div class="col-md-2 alinhaDireita"><b>Documentos</b></div><div class="col-md-10">' + MontaHtmlArquivos(Processo.arquivos) + '</div>' +
+                                        '</div>';               
+                            } else {
+                                html += '<div class="row" style="margin-bottom: 8px;">' +
+                                            '<div class="col-md-2 alinhaDireita"><b>Documentos</b></div><div class="col-md-10">Não há documentos para este processo.</div>' +
+                                        '</div>';
+                            }
+
+                html +=         '<div class="row">' +
+                                    '<div class="col-md-12 alinhaDireita">' +
+                                        '<button type="button" class="btn btn-default btn-sm btnVerMenos" id="btnVerMenos' + Processo.idprocesso + '" style="display:none;" onclick="BtnVerMaisMenos(' + Processo.idprocesso + ',\'MENOS\')"><i class="fa fa-minus"></i>&nbsp;&nbsp;Ver menos</button>' +
+                                    '</div>' +
+                                '</div>' +
+                        '</div>';
+
+            html += '</div></div>';
+            //html += '<div style="height:7px;" >&nbsp;.....</div>';
+
+            return html;
+        }
+
+        function MontaHtmlArquivos(Arquivos) {
+            var html = '';
+            html += '<table class="table table-bordered">' +
+                        '<thead>' +
+                                '<tr>' +
+                                    '<th>No. Documento</th>' +
+                                    '<th>Coordenação</th>' +
+                                    '<th>Situação</th>' +
+                                    '<th style="text-align:center;">Baixar</th>' +
+                                '</tr>' +
+                                '</thead>' +
+                        '<tbody>';
+
+
+            $.each(Arquivos, function (index, Arq) {
+
+                html += '<tr>' +
+                        '<td>' + Arq.numdoc + '</td>' +
+                        '<td>' + Arq.coordenacao + '</td>' +
+                        '<td>' + Arq.situacao + '</td>' +
+                        '<td style="text-align:center;"><a class="linkArquivo" href="' + Arq.link + '" target="_blank"> <i class="fa fa-download"></i> </a></td>' +
+                    '</tr>';
+
+            })
+            html +=     '</tbody>';
+            html += '<table>';
+
+            return html;
+
+        }
+
+        function MontaHtmlEmpresas(Empresas) {
+            var html = '-';
+            
+            if (Empresas.length > 0) {
+                var arrEmpresas = [];
+                $.each(Empresas, function (index, emp) {
+                    arrEmpresas.push(emp.nome);
+                })
+
+                html = arrEmpresas.join();
+            }
+
+            return html;
+        }
+
+        function MontaHtmlAbrangencia(Processo) {
+
+            if (Processo.abrangencia_nacional == true){
+                return 'Nacional';
+
+            } else {
+                var arrEstadosMunicipios = [];
+
+                if (Processo.abrangestados.length > 0) {
+                    $.each(Processo.abrangestados, function (ind, est) {
+                        arrEstadosMunicipios.push(est.nome);
+                    });
+                }
+
+                if (Processo.abrangmunicipios.length > 0) {
+                    $.each(Processo.abrangmunicipios, function (ind, mun) {
+                        arrEstadosMunicipios.push(mun.nome + "/ "+ mun.uf);
+                    });
+                }
+
+                if (arrEstadosMunicipios.length > 0)
+                    return arrEstadosMunicipios.join();
+                else
+                    return "-";
+            }
+
+            return "-";
+        }
+
+        function MontaHtmlSetores(Processo) {
+
+            if (Processo.setores.length > 0) {
+                var arrSetores = [];
+                $.each(Processo.setores, function (ind, setor) {                    
+                    arrSetores.push(setor.codsetor + ". " + setor.descsetor + " \ " + setor.codsubsetor + ". " + setor.descsubsetor);
+                });
+
+                return arrSetores.join("<br>");
+            }
+
+            return "-";
+        }
+
+        function ExportarProcesso(idProc) {
+            swal({
+                title: "Excluir Captura?",
+                text: "Você tem certeza que deseja excluir esta captura?",
+                type: "warning",
+                showCancelButton: true,
+                cancelButtonText: "Cancelar",
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Sim",
+                closeOnConfirm: false
+            },
+                    function () {
+                        btnExcluirCaptura();
+
+                    });
+        }
+
+        function ExcluirProcesso(idProc) {
+            swal({
+                title: "Excluir Processo?",
+                text: "Você tem certeza que deseja excluir este processo?",
+                type: "warning",
+                showCancelButton: true,
+                cancelButtonText: "Cancelar",
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Sim",
+                closeOnConfirm: false
+            },
+                function () {
+                    DeleteProcesso(idProc);
+
+                }
+            );
+        }
+
+        function DeleteProcesso(idProc) {
+            $.ajax({
+                type: 'GET',
+                url: '/api/ProcessoAPI/GetExcluirProcesso/?idProcesso=' + idProc,
+                dataType: "json",
+                success: function (data) {
+                    swal("Deletado!", "Processo excluído.", "success");
+
+                    CarregaProcessos(retornaFiltroCaptura(paginaAtual));
+                },
+                error: function (error) {
+                    jsonValue = jQuery.parseJSON(error.responseText);
+                }
+            })
+        }
+
+        function retornaFiltroCaptura(pagina) {
+
+            _filtros.pagina = pagina;
+            _filtros.palavrasChave = $('#txtPalavraChave').val();
+            _filtros.dataIni = ConverteDataStringParaData($('#txtDataInicial').val());
+            _filtros.dataFim = ConverteDataStringParaData($('#txtDataFinal').val());
+            _filtros.idempresa = $('#cmbEmpresas').val() != "0" ? $('#cmbEmpresas').val() : null;
+            _filtros.numProcesso = $('#txtNumProcesso').val() ? $('#txtNumProcesso').val() : null;
+            _filtros.ordenacao = $('#cmbOrdenacao').val() ? $('#cmbOrdenacao').val() : null;
+
+            //console.log(_filtros);
+
+            return _filtros;
+        }
+
+        function pesquisaProcessos() {
+            paginaAtual = 1;
+            CarregaProcessos(retornaFiltroCaptura(paginaAtual));
+        }
+
+        function mudouPagina(pagina) {
+            paginaAtual = pagina;
+            CarregaProcessos(retornaFiltroCaptura(paginaAtual));
+        }
+
+        function BtnVerMaisMenos(id,status) {
+            if (status == 'MAIS') {
+                $('#divVerMais' + id).show(500);
+                $('#btnVerMais' + id).hide();
+                $('#btnVerMenos' + id).show();
+
+            } else if (status == 'MENOS') {
+                $('#divVerMais' + id).hide(500);
+                $('#btnVerMais' + id).show();
+                $('#btnVerMenos' + id).hide();
+
+            } else {
+                $('#divVerMais' + id).show(500);
+                $('#btnVerMais' + id).hide();
+                $('#btnVerMenos' + id).show();
+            }
+        }
+
+    </script>
+}

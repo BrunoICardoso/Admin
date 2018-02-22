@@ -1,0 +1,257 @@
+﻿@{
+    ViewBag.Title = "Clientes";
+}
+
+<style>
+    .slick_demo_2 .ibox-content {
+        margin: 0 5px;
+        padding: 5px;
+    }
+
+    .paginacao {
+        padding-top: 15px;
+        border-top: solid 1px #DDD;
+    }
+</style>
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Clientes</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/Home">Home</a>
+            </li>
+            <li class="active">
+                <strong>Clientes</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+
+    </div>
+</div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <button type="button" id="btnAdicionarUsuario" onclick="CadastrarCliente()" class="btn btn-default btn-xs btn-add-table"><i class="fa fa-plus"></i> Adicionar cliente</button>
+                    </div>
+                    <div class="ibox-content">
+
+
+                        <table class="tabela-listar footable table table-stripped toggle-arrow-tiny footable-loaded tablet breakpoint" data-page-size="8">
+                            <thead>
+                                <tr>
+                                    <th data-toggle="true" class="footable-visible footable-sortable footable-first-column">Nome<span class="footable-sort-indicator"></span></th>
+                                    <th class="footable-visible footable-sortable">Estado<span class="footable-sort-indicator"></span></th>
+                                    <th class="footable-visible footable-sortable">Cidade<span class="footable-sort-indicator"></span></th>
+                                    <th class="footable-visible footable-sortable">Ações<span class="footable-sort-indicator"></span></th>
+                                </tr>
+                            </thead>
+                            <tbody id="clientes"></tbody>
+                            <tfoot>
+                            </tfoot>
+                        </table>
+
+                        <div class="paginacao">
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section styles {
+
+    <link href="~/Content/SweetAlert/sweetalert.css" rel="stylesheet" />
+    <link href="~/Content/plugins/chosen/bootstrap-chosen-bootstrap-chosen.css" rel="stylesheet" />
+
+}
+
+@section scripts {
+
+    <script src="~/Scripts/plugins/paginacao/paginacao.js"></script>
+    @Scripts.Render("~/plugins/sweetAlert")
+    @Scripts.Render("~/plugins/chosen")
+
+
+    <script>
+
+        var paginaAtual = 1;
+
+        var paginacao = new Paginacao();
+        var totalRegistros;
+
+        $(document).ready(function () {
+
+            CarregarClientes(paginaAtual);
+
+            var config = {
+                '.chosen-select': {},
+                '.chosen-select-deselect': { allow_single_deselect: true },
+                '.chosen-select-no-single': { disable_search_threshold: 10 },
+                '.chosen-select-no-results': { no_results_text: 'Oops, nothing found!' },
+                '.chosen-select-width': { width: "95%" }
+            }
+            for (var selector in config) {
+                $(selector).chosen(config[selector]);
+            }
+
+
+        });
+
+        function CarregarClientes(pagina) {
+
+            var pagina = pagina;
+            var regporpagina = 10;
+
+            var uri = "/api/ClienteAPI/Get";
+            uri = uri + "?pagina=" + pagina + "&regporpagina=" + regporpagina;
+
+            $.getJSON(uri)
+                .done(function (data) {
+
+                    $("#clientes").empty();
+
+                    $.each(data.Clientes, function (key, item) {
+                        $('<tr>', { html: formataLinhaCliente(item) }).appendTo($('#clientes'));
+                    });
+
+                    totalRegistros = data.TotalClientes;
+
+                    paginacao.CriaPaginacao(".paginacao", parseInt((totalRegistros / 10) + 0.9), totalRegistros, paginaAtual);
+                    paginacao.setMudouPagina(mudouPagina);
+
+                });
+
+        }
+
+        //function CriaPaginacao(totalPaginas) {
+
+        //    $('.tabela-paginacao').empty();
+
+
+        //    $(".tabela-paginacao").append("<li id='btnprev' class='footable-page-arrow'><a data-page='Prev' onclick='Prev()'>‹</a></li>");
+
+        //    for (var i = 1; i <= totalPaginas; i++) {
+
+        //        if (i == paginaAtual) {
+        //            $(".tabela-paginacao").append("<li class='footable-page active'><a data-page='1' onclick='Paginar(" + i + ")'>" + i + "</a></li>");
+        //        }
+        //        else {
+        //            $(".tabela-paginacao").append("<li class='footable-page'><a data-page='1' onclick='Paginar(" + i + ")'>" + i + "</a></li>");
+        //        }
+        //    }
+
+        //    $(".tabela-paginacao").append("<li id='btnnext' class='footable-page-arrow'><a data-page='Next' onclick='Next(" + totalPaginas + ")'>›</a></li>");
+
+        //    if (paginaAtual == 1) {
+
+        //        $('#btnprev').addClass('disabled');
+        //    }
+        //    if (paginaAtual == totalPaginas) {
+
+        //        $('#btnnext').addClass('disabled');
+        //    }
+
+
+        function mudouPagina(pagina) {
+            paginaAtual = pagina;
+            CarregarClientes(paginaAtual);
+        }
+
+
+        //}
+
+        //function Next(totalPaginas) {
+        //    if (paginaAtual < totalPaginas) {
+        //        Paginar(paginaAtual + 1);
+        //    }
+        //}
+
+        //function Prev() {
+        //    if (paginaAtual > 1) {
+        //        Paginar(paginaAtual - 1);
+        //    }
+        //}
+
+        //function Paginar(numPagina) {
+
+        //    paginaAtual = numPagina;
+        //    CarregarClientes(numPagina, 10);
+
+        //}
+
+
+        function formataLinhaCliente(item) {
+            return "<td>" + item.nome + "</td><td>" + item.nomeEstado + "</td><td>" + item.cidade + "</td> <td> <span class='btnEditar btn-acoes-table' onclick='EditarCliente(" + item.idcliente + ")' ><a onclick='EditarCliente'><i class='fa fa-wrench' /> Editar<a/></span> <span class='btnExcluir btn-acoes-table' Onclick='MensagemExcluirCliente(" + item.idcliente + ")'><a onclick='ExcluirCliente'><i class='fa fa-times' /> Excluir </a></span> </td>";
+        }
+
+
+        function CadastrarCliente() {
+            window.location = "/Cliente/Cadastrar";
+        }
+
+
+        function EditarCliente(idCliente) {
+            window.location = "/Cliente/Editar/" + idCliente;
+        }
+
+
+        var idClienteExcluir = 0;
+
+        function MensagemExcluirCliente(idCliente) {
+            idClienteExcluir = idCliente;
+
+            swal({
+                title: "Excluir Cliente?",
+                text: "Você tem certeza que deseja excluir este cliente?",
+                type: "warning",
+                showCancelButton: true,
+                cancelButtonText: "Cancelar",
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Sim",
+                closeOnConfirm: false
+            },
+                    function () {
+                        btnExcluirCliente();
+                    });
+        }
+
+        //Função chamado ao confirmar a exclusão
+        function btnExcluirCliente() {
+            ExcluirCliente(idClienteExcluir);
+        }
+
+
+        //Função que exclui do banco
+        function ExcluirCliente(idCliente) {
+            $.ajax({
+                type: "DELETE",
+                dataType: "json",
+                url: "/api/ClienteAPI/Delete/" + idCliente,
+                success: function (data) {
+                    swal("Deletado!", "Cliente deletado.", "success");
+                    CarregarClientes(paginaAtual, 10);
+                },
+                error: function (error) {
+                    jsonValue = jQuery.parseJSON(error.responseText);
+                }
+            });
+        }
+
+    </script>
+
+}
+
+
+
+

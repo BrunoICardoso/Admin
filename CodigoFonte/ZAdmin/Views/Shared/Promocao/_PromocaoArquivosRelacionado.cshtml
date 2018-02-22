@@ -1,0 +1,178 @@
+﻿
+
+<label class="col-md-3 control-label">Arquivos</label>
+<div class="col-md-6">
+    <table id="tabelaArquivosRelacionado" class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Arquivos</th>
+                <th>Tipo</th>
+                <th colspan="2">Ações</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <div class="row">
+        <div class="col-md-12" style="display:-webkit-box;">
+            <div class="radio">
+                <label><input type="radio" name="optradio" checked="checked" value="arquivo">Arquivo</label>
+            </div>
+
+            <div class="radio" style="margin-left: 18px;">
+                <label><input type="radio" name="optradio" value="link">Link</label>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-9">
+
+            <div class="form-group" id="inputTextoLink">
+                <input type="text" id="arquivoRelacionadoLink" name="product_name" value="" placeholder="" class="form-control input-mini">
+            </div>
+
+            <div class="fileinput fileinput-new input-group" data-provides="fileinput" id="inputFileArquivo">
+                <div class="form-control" data-trigger="fileinput">
+                    <i class="glyphicon glyphicon-file fileinput-exists"></i>
+                    <span class="fileinput-filename"></span>
+                </div>
+                <span class="input-group-addon btn btn-default btn-file">
+                    <span class="fileinput-new">Selecionar</span>
+                    <span class="fileinput-exists">Alterar</span>
+                    <input type="file" id="arquivoRelacionado" name="arquivoRelacionado">
+                </span>
+                <a href="#" class="input-group-addon btn btn-default fileinput-exists" data-dismiss="fileinput">Remover</a>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <button class="btn btn-primary" style="width:100%" type="button" onclick="SalvarArquivoLinkRelacionado()">&nbsp;Adicionar</button>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+    function CarregaArquivosRelacionado() {
+
+        $('#tabelaArquivosRelacionado').find('tbody').html('<tr><td colspan="3" align="center" >Carregando.. Aguarde!</td></tr>');
+
+        var url = "/api/PromocaoAPI/GetArquivosRelacionado/?idPromocao=" + $('#idPromocao').val();
+
+        $.getJSON(url)
+            .done(function (data) {
+
+                if (data != null && data.length > 0) {
+                    var html = "";
+                    $.each(data, function (index, arq) {
+                        html += '<tr>' +
+                                    '<td>' + arq.nome + '</td>' +
+                                    '<td>' + arq.tipo + '</td>';
+
+                        if (arq.tipo != "Link") {
+                            html += '<td style="text-align:center;" ><a class="linkArquivo" href="' + URLArquivosProcesso + '/' + arq.nome + '" target="_blank" ><i class="fa fa-download"></i></a></td>';
+                        } else {
+                            html += '<td style="text-align:center;" ><a class="linkArquivo" href="' + arq.url + '" target="_blank" ><i class="fa fa-download"></i></a></td>';
+                        }
+
+                        html += '<td style="text-align:center;" ><a class="linkArquivo" onclick="MsgExcluirArquivoRelacionado(' + arq.id + ')" ><i class="fa fa-trash-o"></i></a></td>' +
+                                '</tr>';
+                    });
+
+                    $('#tabelaArquivosRelacionado').find('tbody').html(html);
+                } else {
+                    $('#tabelaArquivosRelacionado').find('tbody').html('<tr><td colspan="4" style="text-align:center;" >Não há arquivos para esta promoção</td></tr>');
+                }
+            });
+    }
+
+    function MsgExcluirArquivoRelacionado(idArquivo) {
+        swal({
+            title: "Excluir Arquivo - Relacionado?",
+            text: "Você tem certeza que deseja excluir este arquivo?",
+            type: "warning",
+            showCancelButton: true,
+            cancelButtonText: "Cancelar",
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Sim",
+            closeOnConfirm: false
+        },
+        function (isConfirm) {
+            if (isConfirm) {
+                ExcluirArquivoRelacionado(idArquivo);
+            }
+
+        });
+    }
+
+    function ExcluirArquivoRelacionado(idArquivo) {
+        var infoArq = {
+            id: idArquivo
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "/api/PromocaoAPI/ExcluirArquvioRelacionado/",
+            data: JSON.stringify(infoArq),
+            dataType: 'json',
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+                swal("Deletado!", "Arquivo excluído.", "success");
+
+                CarregaArquivosRelacionado();
+            },
+            error: function (error) {
+                jsonValue = jQuery.parseJSON(error.responseText);
+            }
+        })
+    }
+
+    function SalvarArquivoLinkRelacionado() {
+
+        var arquivoLink = $("input[type='radio'][name='optradio']:checked").val();
+        
+        var dataArquivo = new FormData();
+        var files = $("#arquivoRelacionado").get(0).files;
+
+        dataArquivo.append("arquivoRelacionado", files[0]);
+        dataArquivo.append("idPromocao", _Dados.idPromocao);
+
+        if (arquivoLink == 'arquivo') {
+            $.ajax({
+                type: "PUT",
+                url: "/api/PromocaoAPI/SalvarArquivoRelacionado/",
+                contentType: false,
+                processData: false,
+                data: dataArquivo,
+                success: function (data) {
+                    CarregaArquivosRelacionado();
+                    $('a.fileinput-exists').trigger('click');
+                },
+                error: function (error) {
+                    jsonValue = jQuery.parseJSON(error.responseText);
+                }
+            });
+
+        } else if (arquivoLink == 'link') {
+
+            $.ajax({
+                type: "GET",
+                url: "/api/PromocaoAPI/SalvarLinkRelacionado/?url=" + $('#arquivoRelacionadoLink').val() + '&idPromocao=' + _Dados.idPromocao,
+                success: function (data) {
+                    CarregaArquivosRelacionado();
+                    $('#arquivoRelacionadoLink').val('');
+                },
+                error: function (error) {
+                    jsonValue = jQuery.parseJSON(error.responseText);
+                }
+            });
+        }
+
+        
+
+    }
+
+</script>

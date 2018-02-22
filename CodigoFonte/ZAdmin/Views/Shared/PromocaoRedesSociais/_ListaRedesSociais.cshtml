@@ -1,0 +1,159 @@
+﻿
+<style>
+    .btn-group2 {
+        display: inline-block;
+        vertical-align: middle;
+        padding-top: 5px;
+        border-top: 1px solid silver;
+        margin-top: 10px;
+        width: 100%;
+    }
+
+    .divPromocaoAssociada {
+        margin-top: 30px;
+        border-bottom: 1px solid gray;
+    }
+
+    .btn-captura {
+        color: white;
+        background: #8e8888;
+        border: 1px solid #e7eaec;
+    }
+
+        .btn-captura:hover {
+            background: #1ab394;
+            color: white;
+        }
+
+    .boxRedeSocial {
+        margin-bottom: 10px;
+    }
+
+    .btn_social {
+        /*height: 40px;*/
+        padding: 5px 5px 5px 0;
+        /*width: 100%;*/
+        background-color: #B4B4B4;
+        color: #fff;
+        font-size: 17px;
+    }
+
+        .btn_social.active, .btn_cloud.active {
+            background-color: #19AA8D;
+        }
+
+        .btn_social:hover, .btn_cloud:hover {
+            background-color: #0ed1aa;
+            cursor: pointer;
+        }
+
+        .btn_social.inativo {
+            background-color: #DEDEDE;
+        }
+
+    .btn_icone {
+        border-right: 1px solid white;
+        display: inline-block;
+        width: 40px;
+        text-align: center;
+        margin-right: 5px;
+    }
+
+    #listaPostsFacebook, #listaPostsInstagram,
+    #listaPostsTwitter, #listaPostsYoutube {
+        margin-top: -30px;
+    }
+</style>
+
+<div id="botoesRedesSociais" class="row">
+
+    <div class="col-md-3">
+
+        <div class="btn_social" data-nomerede="Facebook">
+            <div class="btn_icone"><i class="fa fa-facebook"></i></div>
+            Facebook
+        </div>
+    </div>
+    <div class="col-md-3">
+
+        <div class="btn_social" data-nomerede="Twitter">
+            <div class="btn_icone">
+                <i class="fa fa-twitter"></i>
+            </div>
+            Twitter
+        </div>
+    </div>
+    <div class="col-md-3">
+
+        <div class="btn_social" data-nomerede="Instagram">
+            <div class="btn_icone">
+                <i class="fa fa-instagram"></i>
+            </div>
+            Instagram
+        </div>
+    </div>
+    <div class="col-md-3">
+
+        <div class="btn_social" data-nomerede="Youtube">
+            <div class="btn_icone">
+                <i class="fa fa-youtube"></i>
+            </div>
+            Youtube
+        </div>
+    </div>
+</div>
+<br /><br />
+<div id="listaRedesSociais" class="row">
+    <div class="col-md-12" id="listaPostsFacebook">
+        <div class="listagem">
+            <div id="loadingListaPostsFacebook">
+                <div class="sk-spinner sk-spinner-three-bounce">
+                    <div class="sk-bounce1"></div>
+                    <div class="sk-bounce2"></div>
+                    <div class="sk-bounce3"></div>
+                </div>
+            </div>
+        </div>
+        <div class="paginacao"></div>
+
+    </div>
+
+    <div class="col-md-12" id="listaPostsTwitter">
+        <div class="listagem">
+            <div id="loadingListaPostsTwitter">
+                <div class="sk-spinner sk-spinner-three-bounce">
+                    <div class="sk-bounce1"></div>
+                    <div class="sk-bounce2"></div>
+                    <div class="sk-bounce3"></div>
+                </div>
+            </div>
+        </div>
+        <div class="paginacao"></div>
+    </div>
+
+    <div class="col-md-12" id="listaPostsInstagram">
+        <div class="listagem">
+            <div id="loadingListaPostsInstagram">
+                <div class="sk-spinner sk-spinner-three-bounce">
+                    <div class="sk-bounce1"></div>
+                    <div class="sk-bounce2"></div>
+                    <div class="sk-bounce3"></div>
+                </div>
+            </div>
+        </div>
+        <div class="paginacao"></div>
+    </div>
+
+    <div class="col-md-12" id="listaPostsYoutube">
+        <div class="listagem">
+            <div id="loadingListaPostsYoutube">
+                <div class="sk-spinner sk-spinner-three-bounce">
+                    <div class="sk-bounce1"></div>
+                    <div class="sk-bounce2"></div>
+                    <div class="sk-bounce3"></div>
+                </div>
+            </div>
+        </div>
+        <div class="paginacao"></div>
+    </div>
+</div>

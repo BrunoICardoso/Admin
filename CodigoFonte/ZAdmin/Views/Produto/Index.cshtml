@@ -1,0 +1,340 @@
+﻿@{
+    ViewBag.Title = "Produtos";
+}
+
+<style>
+    .slick_demo_2 .ibox-content {
+        margin: 0 5px;
+        padding: 5px;
+    }
+
+    .paginacao {
+        padding-top: 15px;
+        border-top: solid 1px #DDD;
+    }
+
+</style>
+
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Produtos</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/">Home</a>
+            </li>
+            <li class="active">
+                <strong>Produtos</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+
+    </div>
+</div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <button type="button" id="btnAdicionarMarca" onclick="CadastrarProdutos()" class="btn btn-default btn-xs btn-add-table"><i class="fa fa-plus"></i> Adicionar produto</button>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="font-noraml">Empresa</label>
+                                <div class="input-group">
+                                    <select data-placeholder="Selecione uma empresa" id="cmbEmpresa" class="chosen-select" name="setor" style="width:250px" tabindex="2"></select>
+
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="font-noraml">Marca</label>
+                                <div class="input-group">
+                                    <select data-placeholder="Selecione uma marca" id="cmbMarca" class="chosen-select" name="setor" style="width:250px" tabindex="2"></select>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <table class="tabela-listar footable table table-stripped toggle-arrow-tiny footable-loaded tablet breakpoint" data-page-size="8">
+                            <thead>
+                                <tr>
+
+                                    <th data-toggle="true" class="footable-visible footable-sortable footable-first-column">Marca<span class="footable-sort-indicator"></span></th>
+                                    <th class="footable-visible footable-sortable">Produto<span class="footable-sort-indicator"></span></th>
+                                    <th class="footable-visible footable-sortable">Site<span class="footable-sort-indicator"></span></th>
+                                    <th class="footable-visible footable-sortable footable-last-column">Ações<span class="footable-sort-indicator"></span></th>
+                                </tr>
+
+                            </thead>
+                            <tbody id="produtos"></tbody>
+                            <tfoot>
+                            </tfoot>
+                        </table>
+
+                        <div class="paginacao">
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section styles {
+
+    <link href="~/Content/SweetAlert/sweetalert.css" rel="stylesheet" />
+    <link href="~/Content/plugins/chosen/bootstrap-chosen-bootstrap-chosen.css" rel="stylesheet" />
+
+}
+
+@section scripts {
+
+    <script src="~/Scripts/plugins/paginacao/paginacao.js"></script>
+    @Scripts.Render("~/plugins/sweetAlert")
+    @Scripts.Render("~/plugins/chosen")
+
+
+    <script>
+
+        var paginaAtual = 1;
+
+        var paginacao = new Paginacao();
+        var totalRegistros;
+
+        var idempresa = 0;
+        var idmarca = 0;
+
+        var idempresaAtual = 0;
+        var idmarcaAtual = 0;
+
+
+        $(document).ready(function () {
+
+            carregardropdown(idempresa, idmarca, paginaAtual);
+
+            CarregarProdutos(idempresa, idmarca, paginaAtual);
+
+
+            var config = {
+                '.chosen-select': {},
+                '.chosen-select-deselect': { allow_single_deselect: true },
+                '.chosen-select-no-single': { disable_search_threshold: 10 },
+                '.chosen-select-no-results': { no_results_text: 'Oops, nothing found!' },
+                '.chosen-select-width': { width: "95%" }
+            }
+            for (var selector in config) {
+                $(selector).chosen(config[selector]);
+            }
+
+
+        });
+
+        $("#cmbEmpresa").chosen().change(function () {
+
+            var idempresa = $(this).val();
+            idempresaAtual = idempresa;
+            paginaAtual = 1;
+            //$('#cmbMarca').val("idsetor").trigger('chosen:updated');
+            CarregarProdutos(idempresaAtual, 0, paginaAtual);
+
+        });
+
+        $("#cmbMarca").chosen().change(function () {
+            var idmarca = $(this).val();
+            idmarcaAtual = idmarca;
+            paginaAtual = 1;
+            //$('#cmbEmpresa').val("0").trigger('chosen:updated');
+            CarregarProdutos(idempresaAtual, idmarcaAtual, paginaAtual);
+
+        });
+
+        function carregardropdown(idempresa, idmarca, pagina) {
+
+            var pagina = pagina;
+            var regporpagina = 10;
+
+            var uri = "/api/ProdutoAPI/Get?idEmpresa=" + idempresa + "&idMarca=" + idmarca + "&pagina=" + pagina + "&qtdporpagina=" + regporpagina;
+
+            $.getJSON(uri)
+                .done(function (data) {
+
+                    $("#cmbEmpresa").append("<option value=" + 0 + ">" + "Todos" + "</option>");
+                    $.each(data.Empresas, function (key, item) {
+                        $("#cmbEmpresa").append("<option value=" + item.idempresa + ">" + item.nome + "</option>");
+                        $("#cmbEmpresa").trigger('chosen:updated');
+
+                    });
+
+                    $("#cmbMarca").append("<option value=" + 0 + ">" + "Todos" + "</option>");
+                    $.each(data.Marcas, function (key, item) {
+                        $("#cmbMarca").append("<option value=" + item.idMarca + ">" + item.Nome + "</option>");
+                        $("#cmbMarca").trigger('chosen:updated');
+
+                    });
+
+                });
+
+        }
+
+        //idsetor, idempresa, pagina, qtdpagina
+        function CarregarProdutos(idempresa, idmarca, pagina) {
+
+            var pagina = pagina;
+            var regporpagina = 10;
+
+            var uri = "/api/ProdutoAPI/Get?idEmpresa=" + idempresa + "&idMarca=" + idmarca + "&pagina=" + pagina + "&qtdporpagina=" + regporpagina;
+
+            ///Get?idEmpresa=0&idMarca=0&pagina=1&qtdporpagina=10
+
+            $.getJSON(uri)
+                .done(function (data) {
+
+                    $("#produtos").empty();
+
+                    $.each(data.Produtos, function (key, item) {
+                        $('<tr>', { html: formataLinhaProduto(item) }).appendTo($('#produtos'));
+                    });
+
+                    totalRegistros = data.TotalProdutos;
+
+                    paginacao.CriaPaginacao(".paginacao", parseInt((totalRegistros / 10) + 0.9), totalRegistros, paginaAtual);
+                    paginacao.setMudouPagina(mudouPagina);
+
+                });
+
+        }
+
+        //function CriaPaginacao(totalPaginas) {
+
+        //    $('.tabela-paginacao').empty();
+
+
+        //    $(".tabela-paginacao").append("<li id='btnprev' class='footable-page-arrow'><a data-page='Prev' onclick='Prev()'>‹</a></li>");
+
+        //    for (var i = 1; i <= totalPaginas; i++) {
+
+        //        if (i == paginaAtual) {
+        //            $(".tabela-paginacao").append("<li class='footable-page active'><a data-page='1' onclick='Paginar(" + i + ")'>" + i + "</a></li>");
+        //        }
+        //        else {
+        //            $(".tabela-paginacao").append("<li class='footable-page'><a data-page='1' onclick='Paginar(" + i + ")'>" + i + "</a></li>");
+        //        }
+        //    }
+
+        //    $(".tabela-paginacao").append("<li id='btnnext' class='footable-page-arrow'><a data-page='Next' onclick='Next(" + totalPaginas + ")'>›</a></li>");
+
+        //    if (paginaAtual == 1) {
+
+        //        $('#btnprev').addClass('disabled');
+        //    }
+        //    if (paginaAtual == totalPaginas) {
+
+        //        $('#btnnext').addClass('disabled');
+        //    }
+
+
+        function mudouPagina(pagina) {
+            paginaAtual = pagina;
+            CarregarProdutos(idempresaAtual, idmarcaAtual, paginaAtual);
+        }
+
+
+        //}
+
+        //function Next(totalPaginas) {
+        //    if (paginaAtual < totalPaginas) {
+        //        Paginar(paginaAtual + 1);
+        //    }
+        //}
+
+        //function Prev() {
+        //    if (paginaAtual > 1) {
+        //        Paginar(paginaAtual - 1);
+        //    }
+        //}
+
+        //function Paginar(numPagina) {
+
+        //    paginaAtual = numPagina;
+        //    CarregarProdutos(idempresaAtual, idmarcaAtual, numPagina, 10);
+
+        //}
+
+
+        function formataLinhaProduto(item) {
+            return "<td>" + item.marcanome + "</td><td>" + item.nome + "</td><td>" + item.urlsite + "</td> <td> <span class='btnEditar btn-acoes-table' onclick='EditarProduto(" + item.idproduto + ")' ><a onclick='EditarProduto'><i class='fa fa-wrench' /> Editar<a/></span> <span class='btnExcluir btn-acoes-table' Onclick='MensagemExcluirProduto(" + item.idproduto + ")'><a onclick='ExcluirProduto'><i class='fa fa-times' /> Excluir </a></span> </td>";
+        }
+
+
+        function CadastrarProdutos() {
+            window.location = "/Produto/Cadastrar";
+        }
+
+
+        function EditarProduto(idProduto) {
+            window.location = "/Produto/Editar/" + idProduto;
+        }
+
+
+        var idProdutoExcluir = 0;
+
+        function MensagemExcluirProduto(idProduto) {
+            idProdutoExcluir = idProduto;
+
+            //Código que mostra o alerta
+
+            swal({
+                title: "Excluir produto?",
+                text: "Você tem certeza que deseja excluir este produto?",
+                type: "warning",
+                showCancelButton: true,
+                cancelButtonText: "Cancelar",
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Sim",
+                closeOnConfirm: false
+            },
+                    function () {
+                        btnExcluirProduto();
+
+                    });
+
+        }
+
+        //Função chamado ao confirmar a exclusão
+        function btnExcluirProduto() {
+            ExcluirProduto(idProdutoExcluir);
+        }
+
+
+        //Função que exclui do banco
+        function ExcluirProduto(idProduto) {
+            $.ajax({
+                type: "DELETE",
+                dataType: "json",
+                url: "/api/ProdutoAPI/Delete/" + idProduto,
+                success: function (data) {
+                    swal("Deletado!", "Produto deletado.", "success");
+                    CarregarProdutos(idempresaAtual, idmarcaAtual, paginaAtual, 10);
+                },
+                error: function (error) {
+                    jsonValue = jQuery.parseJSON(error.responseText);
+                    //jError('An error has occurred while saving the new part source: ' + jsonValue, { TimeShown: 3000 });
+                }
+
+
+
+            });
+
+
+        }
+
+    </script>
+
+}

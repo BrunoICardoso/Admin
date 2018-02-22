@@ -1,0 +1,439 @@
+﻿@{
+    ViewBag.Title = "Editar Produto";
+}
+
+<style>
+    .slick_demo_2 .ibox-content {
+        margin: 0 5px;
+        padding: 5px;
+    }
+
+        .box-imagem {
+        box-shadow: 0px 0px 5px #999;
+        xxborder: 1px solid #EAEAEA;
+        padding: 2px;
+        width: 100px;
+        height: 100px;
+    }
+
+        .box-imagem img {
+            width: 96px;
+            height: 96px;
+        }
+
+</style>
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Editar produto</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="index.html">Home</a>
+            </li>
+            <li>
+                <a href="/Produto/">Produtos</a>
+            </li>
+            <li class="active">
+                <strong>Editar</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+
+    </div>
+</div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Dados do produto</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="form-horizontal" enctype="multipart/form-data" method="POST">
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Empresa</label>
+                            <div class="col-lg-10">
+                                <select id="cmbEmpresa" placeholder="Selecione a empresa" class="chosen-select" name="setor" tabindex="2">></select>
+
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Marca</label>
+                            <div class="col-lg-10">
+                                <select id="cmbMarca" placeholder="Selecione a marca" class="chosen-select" name="setor" tabindex="2">></select>
+
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Nome</label>
+                            <div class="col-lg-10">
+                                <input id="txtNomeproduto" type="text" placeholder="Nome do produto" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Descrição</label>
+                            <div class="col-lg-10">
+                                <textarea id="txtDescricao" class="form-control" style="resize:none;" rows="5" placeholder="Descrição do produto"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Site</label>
+                            <div class="col-lg-10">
+                                <div class="input-group m-b">
+                                    <span class="input-group-addon">http://</span> <input id="txtUrlsite" type="text" placeholder="Site do produto" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Facebook</label>
+                            <div class="col-lg-10">
+                                <div class="input-group m-b">
+                                    <span class="input-group-addon">http://</span> <input id="txtRS0" type="text" placeholder="Facebook do produto" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Instagram</label>
+                            <div class="col-lg-10">
+                                <div class="input-group m-b">
+                                    <span class="input-group-addon">http://</span> <input id="txtRS2" type="text" placeholder="Instagram do produto" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Twitter</label>
+                            <div class="col-lg-10">
+                                <div class="input-group m-b">
+                                    <span class="input-group-addon">http://</span> <input id="txtRS1" type="text" placeholder="Twitter do produto" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Youtube</label>
+                            <div class="col-lg-10">
+                                <div class="input-group m-b">
+                                    <span class="input-group-addon">http://</span> <input id="txtRS3" type="text" placeholder="Youtube do produto" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Klout</label>
+                            <div class="col-lg-10">
+                                <div class="input-group m-b">
+                                    <span class="input-group-addon">http://</span> <input id="txtRS4" type="text" placeholder="Klout do produto" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Logo do produto</label>
+
+                            <div class="col-lg-2" id="divimage">
+                            </div>
+
+                            <div class="col-lg-8">
+                                <div class="fileinput fileinput-new input-group" data-provides="fileinput">
+                                    <div class="form-control" data-trigger="fileinput">
+                                        <i class="glyphicon glyphicon-file fileinput-exists"></i>
+                                        <span class="fileinput-filename"></span>
+                                    </div>
+                                    <span class="input-group-addon btn btn-default btn-file">
+                                        <span class="fileinput-new">Selecionar</span>
+                                        <span class="fileinput-exists">Alterar</span>
+                                        <input type="file" id="imagemMarca" name="imagemMarca" />
+                                    </span>
+                                    <a href="#" class="input-group-addon btn btn-default fileinput-exists" data-dismiss="fileinput">Remover</a>
+                                </div>
+                                <span class="help-block m-b-none">Selecione uma imagem nas dimensões 96 x 96</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-8 col-lg-offset-2">
+                                <br />
+                                <button class="btn btn-primary" id="btnSalvar" onclick="SalvarProduto()" type="button">Salvar</button>
+
+                            </div>
+                            <div class="col-lg-2">
+                                <br />
+                                <button class="btn btn-white" onclick="cancelar()" type="button">Cancelar</button>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+
+@section styles {
+
+    <link href="~/Content/SweetAlert/sweetalert.css" rel="stylesheet" />
+    <link href="~/Content/plugins/chosen/bootstrap-chosen-bootstrap-chosen.css" rel="stylesheet" />
+    <link href="~/Content/plugins/jasny/jasny-bootstrap.min.css" rel="stylesheet" />
+}
+
+@section scripts {
+
+
+    @Scripts.Render("~/plugins/sweetAlert")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    <script>
+        
+        $(document).ready(function () {
+
+            $('#cmbEmpresa').on('change', function () {
+
+                if (cmbEmpresa.value != "0") {
+                    $('.chosen-single').removeClass("combo-invalido");
+                }
+            });
+
+            $('#cmbMarca').on('change', function () {
+
+                if (cmbMarca.value != "0") {
+                    $('.chosen-single').removeClass("combo-invalido");
+                }
+            });
+
+            $('#txtNomeproduto').focusout(function () {
+
+                if (txtNomeproduto.value != "") {
+                    $('#txtNomeproduto').removeClass("campo-invalido");
+                }
+
+            });
+
+            var config = {
+                '.chosen-select': { width: "100%" },
+                '.chosen-select-deselect': { allow_single_deselect: true },
+                '.chosen-select-no-single': { disable_search_threshold: 10 },
+                '.chosen-select-no-results': { no_results_text: 'Oops, nothing found!' },
+                '.chosen-select-width': {}
+            }
+            for (var selector in config) {
+                $(selector).chosen(config[selector]);
+            }
+
+            CarregarProduto(@ViewBag.idProduto);
+        });
+
+        $("#cmbEmpresa").chosen().change(function () {
+            var idempresa = $(this).val();
+            CarregaMarcas(idempresa);
+        });
+
+        function CarregarProduto(idProduto) {
+
+            var uri = "/api/ProdutoAPI/Get/" + idProduto;
+            
+            $.getJSON(uri)
+                .done(function (data) {
+                    var produto = data.Produto;
+                    var idmarcaproduto = data.Produto.idmarca;
+
+                    var idempresaproduto = data.Produto.idempresa;
+                   
+                    $.each(data.Empresas, function (key, item) {
+                        if (idempresaproduto === item.idempresa) {
+                            $("#cmbEmpresa").append("<option value=" + item.idempresa + " selected>" + item.nome + "</option>");
+                            $("#cmbEmpresa").trigger('chosen:updated');
+                        } else {
+                            $("#cmbEmpresa").append("<option value=" + item.idempresa + ">" + item.nome + "</option>");
+                            $("#cmbEmpresa").trigger('chosen:updated');
+                        }
+                    });
+
+                    $.each(data.Marcas, function (key, item) {
+                        if (item.idMarca === idmarcaproduto) {
+                            $("#cmbMarca").append("<option value=" + item.idMarca + " selected>" + item.Nome + "</option>");
+                            $("#cmbMarca").trigger('chosen:updated');
+                        }
+                        else {
+                            $("#cmbMarca").append("<option value=" + item.idMarca + ">" + item.Nome + "</option>");
+                            $("#cmbMarca").trigger('chosen:updated');
+                        }
+                    });
+
+                    $("#txtNomeproduto").val(produto.nome);
+                    $("#txtDescricao").val(produto.descricao);
+                    $("#txtUrlsite").val(produto.urlsite);
+
+                    $.each(data.Produto.redessocias, function (key, item) {
+                        var idRedeTxt = item.idRedeSocial-1;
+                        $("#txtRS" + idRedeTxt).val(item.urlRedeSocial);
+                    });
+                    
+                    $('<div>', { html: carregaImage(produto.caminhoimagem) }).appendTo($('#divimage'));
+                
+                });
+
+        }
+
+        function carregaImage(item){
+            return "<div class='box-imagem'><a><img alt='image' src='" +item+ "'></a></div>"
+        }
+
+        function CarregaMarcas(idempresa) {
+
+            var uri = "/api/ProdutoAPI/GetMarcas?idempresa=" + idempresa;
+            $.getJSON(uri)
+                .done(function (data) {
+
+                    $("#cmbMarca").empty();
+                    $.each(data, function (key, item) {
+                        $("#cmbMarca").append("<option value=" + item.idMarca + ">" + item.Nome + "</option>");
+                        $("#cmbMarca").trigger('chosen:updated');
+                    });
+                });
+
+        }
+
+        function VerificaForm() {
+
+            var nomeValidacao = true;
+            var empresaValidacao = true;
+            var marcaValidacao = true;
+
+            if (cmbEmpresa.value == 0) {
+                $('.chosen-single').addClass("combo-invalido");
+                empresaValidacao = false;
+            }
+
+            if (cmbMarca.value == 0) {
+                $('.chosen-single').addClass("combo-invalido");
+                marcaValidacao = false;
+            }
+
+            if (txtNomeproduto.value == "") {
+                $(txtNomeproduto).addClass("campo-invalido");
+                nomeValidacao = false;
+            }
+
+            return nomeValidacao && empresaValidacao && marcaValidacao;
+
+        }
+
+        function SalvarProduto() {
+
+            if (VerificaForm()) {
+
+                var listaDeRedesSociais = new Array();
+
+                if ($("#txtRS0").val() != null) {
+
+                    var r = { "idredesocial": "1", "urlredesocial": $("#txtRS0").val() }
+
+                    listaDeRedesSociais.push(r);    
+                }
+                if ($("#txtRS1").val() != null) {
+
+                    var r = { "idredesocial": "2", "urlredesocial": $("#txtRS1").val() }
+
+                    listaDeRedesSociais.push(r);
+                }
+                if ($("#txtRS2").val() != null) {
+
+                    var r = { "idredesocial": "3", "urlredesocial": $("#txtRS2").val() }
+
+                    listaDeRedesSociais.push(r);
+                }
+                if ($("#txtRS3").val() != null) {
+
+                    var r = { "idredesocial": "4", "urlredesocial": $("#txtRS3").val() }
+
+                    listaDeRedesSociais.push(r);
+                }
+                if ($("#txtRS4").val() != null) {
+
+                    var r = { "idredesocial": "5", "urlredesocial": $("#txtRS4").val() }
+
+                    listaDeRedesSociais.push(r);
+                }
+
+                var produto = {
+                    idproduto: @ViewBag.idProduto,
+                    nome: $("#txtNomeproduto").val(),
+                    descricao: $("#txtDescricao").val(),
+                    urlsite: $("#txtUrlsite").val(),
+                    idmarca: $("#cmbMarca").val(),
+                    redessocias: listaDeRedesSociais,
+                }
+
+                var data = new FormData();
+
+                var files = $("#imagemMarca").get(0).files;
+
+                if (files.length > 0) {
+                    data.append("imagemProduto", files[0]);
+                }
+
+                data.append("produto", JSON.stringify(produto));
+
+                $.ajax({
+                    type: "PUT",
+                    url: "/api/ProdutoAPI/Put/"+@ViewBag.idProduto,
+                    contentType: false,
+                    processData: false,
+                    data: data,
+                    success: function (data) {
+
+                    },
+                    error: function (error) {
+                    jsonValue = jQuery.parseJSON(error.responseText);
+                    //jError('An error has occurred while saving the new part source: ' + jsonValue, { TimeShown: 3000 });
+                }
+                });
+
+               
+                window.location = "/Produto/";
+            }
+            
+            else {
+                ChamaSwal();
+            }
+        }
+
+        function ChamaSwal() {
+
+            swal({
+                title: "Não foi possível editar o produto.",
+                text: "Campos obrigatórios não preenchidos adequadamente.",
+                showConfirmButton: true,
+                confirmButtonText: "Ok"
+            },
+            function (isConfirm) {
+                if (isConfirm) {
+                    $('html, body').animate({ scrollTop: 0 }, 'slow');
+                }
+            });
+        }
+
+        function cancelar() {
+            window.location = "/Produto/";
+        }
+
+    </script>
+   
+
+}
+

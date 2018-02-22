@@ -1,0 +1,626 @@
+﻿
+@{
+    ViewBag.Title = "Mapa registro";
+}
+
+<style>
+    .slick_demo_2 .ibox-content {
+        margin: 0 5px;
+        padding: 5px;
+    }
+</style>
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Perfil do registro</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/Home">Home</a>
+            </li>
+            <li>
+                <a href="/MapaRegistro/">Mapa registro</a>
+            </li>
+            <li class="active">
+                <strong>Editar</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+
+    </div>
+</div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Dados da captura</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="form-horizontal" enctype="multipart/form-data" method="POST">
+
+
+                        <div class="form-group">
+
+                            <label class="col-lg-2 control-label">Empresa</label>
+                            <div class="col-lg-10" id="choosenEmpresas">
+
+                                <div class="input-group" style="width:100%;">
+                                    <select data-placeholder="Selecione as empresas..." class="chosen-select" id="cmbEmpresa" multiple tabindex="4" onchange="VerificaDuplicidadeRegistroEmpresa()"></select>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        @*<div class="form-group">
+                            <label class="col-lg-2 control-label">Empresa</label>
+                            <div class="col-lg-10">
+                                <select id="cmbEmpresa" data-placeholder="Selecione uma empresa" class="chosen-select cmbEmpresa" name="Empresa" tabindex="2" onchange="VerificaDuplicidadeRegistroEmpresa()">></select>
+                            </div>
+                        </div>*@
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Marca</label>
+                            <div class="col-lg-10">
+                                <input id="txtNomemarca" type="text" placeholder="Nome da marca" class="typeahead form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">CNPJ</label>
+                            <div id="listaCnpj" class="col-lg-10">
+                                <input id="txtcnpj" type="text" placeholder="CNPJ" class="form-control txtcnpj" data-mask="99.999.999/9999-99">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Produto</label>
+                            <div class="col-lg-10">
+                                <input id="txtNomeproduto" type="text" placeholder="Nome do produto" class="typeahead form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Numero do registro</label>
+                            <div class="col-lg-10">
+                                <input id="txtNumregistro" type="text" placeholder="Nome do produto" class="typeahead form-control" onblur="VerificaDuplicidadeRegistroEmpresa()">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Data de concessão</label>
+                            <div class="col-lg-10">
+                                <input id="txtDataConcessao" type="text" class="form-control" data-mask="99/99/9999" placeholder="dd/mm/yyyy">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Estado</label>
+                            <div class="col-lg-10">
+                                <select id="cmbEstado" data-placeholder="Selecione um estado" class="chosen-select" name="Estado" tabindex="2">></select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Área</label>
+                            <div class="col-lg-10">
+                                <select id="cmbArea" data-placeholder="Selecione uma área" class="chosen-select" name="Area" tabindex="2">></select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Espécie</label>
+                            <div class="col-lg-10">
+                                <select id="cmbEspecie" data-placeholder="Selecione uma espécie" class="chosen-select" name="Especie" tabindex="2">></select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Subespécie</label>
+                            <div class="col-lg-10">
+                                <select id="cmbSubespecie" data-placeholder="Selecione uma subespécie" class="chosen-select" name="Subespecie" tabindex="2">></select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Base</label>
+                            <div class="col-lg-10">
+                                <select id="cmbBase" data-placeholder="Selecione uma base" class="chosen-select" name="Base" tabindex="2">></select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Característica</label>
+                            <div class="col-lg-10">
+                                <select id="cmbCaracteristica" data-placeholder="Selecione uma característica" class="chosen-select" name="Caracteristica" tabindex="2">></select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Atributo</label>
+                            <div class="col-lg-10">
+                                <select id="cmbAtributo" data-placeholder="Selecione um atributo" class="chosen-select" name="Atributo" tabindex="2">></select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Complemento</label>
+                            <div class="col-lg-10">
+                                <select id="cmbComplemento" data-placeholder="Selecione um complemento" class="chosen-select" name="Complemento" tabindex="2">></select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Origem</label>
+                            <div class="col-lg-10">
+                                <select id="cmbOrigem" data-placeholder="Selecione uma origem" class="chosen-select" name="Origem" tabindex="2">></select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Status</label>
+                            <div class="col-lg-10">
+                                <select id="cmbStatus" data-placeholder="Selecione um status" class="chosen-select" name="Status" tabindex="2">
+                                    <option value="cadastrado">Cadastrado</option>
+                                    <option value="cancelado">Cancelado</option>
+                                    <option value="registrado">Registrado</option>
+                                    <option value="Suspenso">Suspenso</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-8 col-lg-offset-2">
+                                <br />
+                                <button class="btn btn-primary" id="btnSalvar" type="button">Salvar</button>
+                            </div>
+                            <div class="col-lg-2">
+                                <br />
+                                <button class="btn btn-white" onclick="cancelar()" type="button">Cancelar</button>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <br /><br /><br /><br />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section styles {
+
+    <link href="~/Content/SweetAlert/sweetalert.css" rel="stylesheet" />
+    <link href="~/Content/plugins/chosen/bootstrap-chosen-bootstrap-chosen.css" rel="stylesheet" />
+    <link href="~/Content/plugins/datapicker/datepicker3.css" rel="stylesheet" />
+    <link href="~/Content/plugins/jasny/jasny-bootstrap.min.css" rel="stylesheet" />
+}
+
+@section scripts {
+
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/sweetAlert")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/dataPicker")
+    <script src="~/Scripts/plugins/typeahead/bootstrap3-typeahead.js"></script>
+    <script src="~/Scripts/utils.js"></script>
+
+    <script>
+
+        var idMarcaMapa = null;
+
+        $(document).ready(function () {
+
+            $('#cmbEmpresa').on('change', function () {
+
+                if (cmbEmpresa.value != "0") {
+                    $('.chosen-single').removeClass("combo-invalido");
+                }
+
+                $("#txtNomemarca").typeahead('destroy');
+                carregaAutocompleteMarcas($("#cmbEmpresa").val());
+
+            });
+
+            $('#txtNomemarca').focusout(function () {
+
+                if (txtNomemarca.value != "") {
+                    $('#txtNomemarca').removeClass("campo-invalido");
+                }
+
+            });
+
+            $('#txtNomeproduto').focusout(function () {
+
+                if (txtNomeproduto.value != "") {
+                    $('#txtNomeproduto').removeClass("campo-invalido");
+                }
+
+            });
+
+            var config = {
+                '.chosen-select': { width: "100%" },
+                '.chosen-select-deselect': { allow_single_deselect: true },
+                '.chosen-select-no-single': { disable_search_threshold: 10 },
+                '.chosen-select-no-results': { no_results_text: 'Oops, nothing found!' },
+                '.chosen-select-width': {}
+            }
+            for (var selector in config) {
+                $(selector).chosen(config[selector]);
+            }
+
+            CarregarRegistro(@ViewBag.idRegistro);
+
+            $("#btnSalvar").click(function () { SalvarRegistro() });
+
+        });
+
+        function CarregarRegistro(idRegistro)  {
+
+            var uri = "/api/MapaRegistroAPI/Get/" + idRegistro;
+
+            $.getJSON(uri)
+               .done(function (data) {
+
+                   console.log(data);
+
+                   var registro = data.Registro;
+                   idMarcaMapa = data.Registro.idMarca;
+
+                   $("#txtNomemarca").val(registro.nomeMarca);
+                   $("#txtNomeproduto").val(registro.nomeProduto);
+                   $("#txtNumregistro").val(registro.numeroRegistro);
+                   $("#txtcnpj").val(registro.cnpj);
+                   $("#cmbStatus").val(registro.status).trigger('chosen:updated');
+
+                   var dataRegistro = registro.dataConcessao;
+
+                   if (dataRegistro != null) {
+                       var dataRegistro = formataDataJson(dataRegistro);
+                       $("#txtDataConcessao").val(dataRegistro);
+                   }
+
+                   var idEmpresaMapa = data.Registro.idEmpresa;
+                   var idEstadoMapa = registro.idEstado;
+                   var idAreaMapa = registro.idArea;
+                   var idEspecieMapa = registro.idEspecie;
+                   var idSubespecieMapa = registro.idSubEspecie;
+                   var idBaseMapa = registro.idBase;
+                   var idCaracteristicaMapa = registro.idCaracteristica;
+                   var idAtributoMapa = registro.idAtributo;
+                   var idComplementoMapa = registro.idComplemento;
+                   var idOrigemMapa = registro.idOrigem;
+
+
+                   //empresas
+
+                   $.each(data.Filtros.Empresas, function (key, item) {
+                        $("#cmbEmpresa").append("<option value=" + item.idItem + ">" + item.nome + "</option>");
+                   });
+                   $("#cmbEmpresa").trigger('chosen:updated');
+                   
+                   $.each(data.Registro.listaEmpresas,function(i,item){
+                       $("#cmbEmpresa option[value="+item+"]").attr("selected","selected");                       
+                   });
+                   $("#cmbEmpresa").trigger('chosen:updated');
+
+                   //end empresas
+
+
+                   if(idEmpresaMapa != null){
+                       carregaAutocompleteMarcas(idEmpresaMapa);
+                   }
+
+                   $("#cmbEstado").append("<option value=" + null + ">" + "Selecione um Estado" + "</option>");
+                   $.each(data.Filtros.Estados, function (key, item) {
+
+                       if (item.idItem === idEstadoMapa) {
+                           $("#cmbEstado").append("<option value=" + item.idItem + " selected>" + item.nome + "</option>");
+                           $("#cmbEstado").trigger('chosen:updated');
+                       }
+                       else {
+                           $("#cmbEstado").append("<option value=" + item.idItem + ">" + item.nome + "</option>");
+                           $("#cmbEstado").trigger('chosen:updated');
+                       }
+
+                   });
+
+                   $("#cmbArea").append("<option value=" + null + ">" + "Selecione uma Área" + "</option>");
+                   $.each(data.Filtros.Areas, function (key, item) {
+
+                       if (item.idItem === idAreaMapa) {
+                           $("#cmbArea").append("<option value=" + item.idItem + " selected>" + item.nome + "</option>");
+                           $("#cmbArea").trigger('chosen:updated');
+                       }
+                       else {
+                           $("#cmbArea").append("<option value=" + item.idItem + ">" + item.nome + "</option>");
+                           $("#cmbArea").trigger('chosen:updated');
+                       }
+
+                   });
+
+                   $("#cmbEspecie").append("<option value=" + null + ">" + "Selecione uma Espécie" + "</option>");
+                   $.each(data.Filtros.Especies, function (key, item) {
+
+                       if (item.idItem === idEspecieMapa) {
+                           $("#cmbEspecie").append("<option value=" + item.idItem + " selected>" + item.nome + "</option>");
+                           $("#cmbEspecie").trigger('chosen:updated');
+                       }
+                       else {
+                           $("#cmbEspecie").append("<option value=" + item.idItem + ">" + item.nome + "</option>");
+                           $("#cmbEspecie").trigger('chosen:updated');
+                       }
+
+                   });
+
+                   $("#cmbSubespecie").append("<option value=" + null + ">" + "Selecione uma Subespécie" + "</option>");
+                   $.each(data.Filtros.Subespecies, function (key, item) {
+
+                       if (item.idItem === idSubespecieMapa) {
+                           $("#cmbSubespecie").append("<option value=" + item.idItem + " selected>" + item.nome + "</option>");
+                           $("#cmbSubespecie").trigger('chosen:updated');
+                       }
+                       else {
+                           $("#cmbSubespecie").append("<option value=" + item.idItem + ">" + item.nome + "</option>");
+                           $("#cmbSubespecie").trigger('chosen:updated');
+                       }
+
+                   });
+
+                   $("#cmbBase").append("<option value=" + null + ">" + "Selecione uma Base" + "</option>");
+                   $.each(data.Filtros.Bases, function (key, item) {
+
+                       if (item.idItem === idBaseMapa) {
+                           $("#cmbBase").append("<option value=" + item.idItem + " selected>" + item.nome + "</option>");
+                           $("#cmbBase").trigger('chosen:updated');
+                       }
+                       else {
+                           $("#cmbBase").append("<option value=" + item.idItem + ">" + item.nome + "</option>");
+                           $("#cmbBase").trigger('chosen:updated');
+                       }
+
+                   });
+
+                   $("#cmbCaracteristica").append("<option value=" + null + ">" + "Selecione uma Caracteristica" + "</option>");
+                   $.each(data.Filtros.Caracteristicas, function (key, item) {
+
+                       if (item.idItem === idCaracteristicaMapa) {
+                           $("#cmbCaracteristica").append("<option value=" + item.idItem + " selected>" + item.nome + "</option>");
+                           $("#cmbCaracteristica").trigger('chosen:updated');
+                       }
+                       else {
+                           $("#cmbCaracteristica").append("<option value=" + item.idItem + ">" + item.nome + "</option>");
+                           $("#cmbCaracteristica").trigger('chosen:updated');
+                       }
+
+                   });
+
+                   $("#cmbAtributo").append("<option value=" + null + ">" + "Selecione um Atributo" + "</option>");
+                   $.each(data.Filtros.Atributos, function (key, item) {
+
+                       if (item.idItem === idAtributoMapa) {
+                           $("#cmbAtributo").append("<option value=" + item.idItem + " selected>" + item.nome + "</option>");
+                           $("#cmbAtributo").trigger('chosen:updated');
+                       }
+                       else {
+                           $("#cmbAtributo").append("<option value=" + item.idItem + ">" + item.nome + "</option>");
+                           $("#cmbAtributo").trigger('chosen:updated');
+                       }
+
+                   });
+
+                   $("#cmbComplemento").append("<option value=" + null + ">" + "Selecione um Complemento" + "</option>");
+                   $.each(data.Filtros.Complementos, function (key, item) {
+
+                       if (item.idItem === idComplementoMapa) {
+                           $("#cmbComplemento").append("<option value=" + item.idItem + " selected>" + item.nome + "</option>");
+                           $("#cmbComplemento").trigger('chosen:updated');
+                       }
+                       else {
+                           $("#cmbComplemento").append("<option value=" + item.idItem + ">" + item.nome + "</option>");
+                           $("#cmbComplemento").trigger('chosen:updated');
+                       }
+
+                   });
+
+                   $("#cmbOrigem").append("<option value=" + null + ">" + "Selecione uma Origem" + "</option>");
+                   $.each(data.Filtros.Origens, function (key, item) {
+
+                       if (item.idItem === idOrigemMapa) {
+                           $("#cmbOrigem").append("<option value=" + item.idItem + " selected>" + item.nome + "</option>");
+                           $("#cmbOrigem").trigger('chosen:updated');
+                       }
+                       else {
+                           $("#cmbOrigem").append("<option value=" + item.idItem + ">" + item.nome + "</option>");
+                           $("#cmbOrigem").trigger('chosen:updated');
+                       }
+
+                   });
+
+                   $("#txtNomemarca").typeahead({
+                       source: data.Filtros.Marcas, displayText: function (item)
+                       { return item.nome }, name: 'marcas'
+                   });
+
+                   $(document).on('click', '.typeahead', function () {
+                       var current = $("#txtNomemarca").typeahead("getActive");
+                       if (current) {
+                           idMarcaMapa = current.idItem
+                       }
+                   });
+
+                   $(document).keyup(function (e) {
+                       if (e.keyCode == 13) {
+                           var current = $("#txtNomemarca").typeahead("getActive");
+                           if (current) {
+                               idMarcaMapa = current.idItem
+                           }
+                       };
+                   });
+
+               });
+        }
+
+        function carregaAutocompleteMarcas(idEmpresa){
+
+            var uri = "/api/MapaRegistroAPI/GetRetornaMarcas?id="+idEmpresa;
+            $.getJSON(uri)
+                .done(function (data) {
+
+                    $("#txtNomemarca").typeahead({
+                        source: data, displayText: function (item)
+                        { return item.nome }, name: 'marcas'
+                    });
+
+                    $(document).on('click', '.typeahead', function () {
+                        var current = $("#txtNomemarca").typeahead("getActive");
+                        if (current) {
+                            idMarcaMapa = current.idItem
+                        }
+                    });
+
+                    $(document).keyup(function (e) {
+                        if (e.keyCode == 13) {
+                            var current = $("#txtNomemarca").typeahead("getActive");
+                            if (current) {
+                                idMarcaMapa = current.idItem
+                            }
+                        };
+                    });
+
+                });
+
+        }
+
+        function VerificaForm() {
+
+            var selectempresavalidacao = true;
+            var marcaValidacao = true;
+            var produtoValidacao = true;
+            var selectstatusvalidacao = true;
+
+            //validar nome
+            if (cmbEmpresa.value == 0) {
+                $("#cmbEmpresa_chosen a").addClass("combo-invalido");
+                selectempresavalidacao = false;
+            }
+
+            if (txtNomemarca.value == "") {
+                $(txtNomemarca).addClass("campo-invalido");
+                marcaValidacao = false;
+            }
+
+            if (txtNomeproduto.value == "") {
+                $(txtNomeproduto).addClass("campo-invalido");
+                produtoValidacao = false;
+            }
+
+            if (cmbStatus.value == 0) {
+                $("#cmbStatus_chosen a").addClass("combo-invalido");
+                selectstatusvalidacao = false;
+            }
+
+            return selectempresavalidacao && marcaValidacao && produtoValidacao && selectstatusvalidacao;
+        }
+
+        function SalvarRegistro() {
+
+            if (VerificaForm()) {
+
+                var dataRegistro = ConverteDataStringParaData($("#txtDataConcessao").val());
+
+                var mapaRegistro = {
+                    idRegistro: @ViewBag.idRegistro,
+                    listaEmpresas: $("#cmbEmpresa").val(),
+                    idestado: $("#cmbEstado").val(),
+                    idarea: $("#cmbArea").val(),
+                    idespecie: $("#cmbEspecie").val(),
+                    cnpj: $("#txtcnpj").val(),
+                    idsubespecie: $("#cmbSubespecie").val(),
+                    idbase: $("#cmbBase").val(),
+                    idcaracteristica: $("#cmbCaracteristica").val(),
+                    idatributo: $("#cmbAtributo").val(),
+                    idcomplemento: $("#cmbComplemento").val(),
+                    idorigem: $("#cmbOrigem").val(),
+                    idmarca: idMarcaMapa,
+                    nomeMarca: $("#txtNomemarca").val(),
+                    nomeProduto: $("#txtNomeproduto").val(),
+                    dataConcessao: dataRegistro,
+                    numeroRegistro: $("#txtNumregistro").val(),
+                    status: $("#cmbStatus").val()
+                }
+
+                $.ajax({
+                    type: "PUT",
+                    dataType: "json",
+                    url: "/api/MapaRegistroAPI/Put/",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(mapaRegistro),
+                    success: function (data) {
+                    },
+                    error: function (error) {
+                        jsonValue = jQuery.parseJSON(error.responseText);
+                    }
+                });
+
+                localStorage.setItem('MarcaRegistroVoltar','S');
+                window.location = "/MapaRegistro/";
+
+            }
+            else {
+                ChamaSwal();
+            }
+
+        }
+
+        function ChamaSwal() {
+
+            swal({
+                title: "Não foi possível editar o registro.",
+                text: "Campos obrigatórios não preenchidos adequadamente.",
+                showConfirmButton: true,
+                confirmButtonText: "Ok"
+            },
+            function (isConfirm) {
+                if (isConfirm) {
+                    $('html, body').animate({ scrollTop: 0 }, 'slow');
+                }
+            });
+        }
+
+        function cancelar() {
+            //window.location = "/MapaRegistro/";
+            localStorage.setItem('MarcaRegistroVoltar','S');
+            history.go(-1);
+        }
+
+        function VerificaDuplicidadeRegistroEmpresa() {
+            if ($('#txtNumregistro').val() != "" && $('#cmbEmpresa').length > 0 && $('#cmbEmpresa').val() != null) {
+
+                var FiltroRegistroEmpresa = {
+                    idEmpresas: $('#cmbEmpresa').val(),
+                    numeroRegistro: $('#txtNumregistro').val()
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "/api/MapaRegistroAPI/VerificaDuplicidadeRegistroEmpresa/",
+                    dataType: 'json',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(FiltroRegistroEmpresa),
+                    success: function (retorno) {
+                        if (retorno == '1') {
+                            swal({
+                                title: "Mapa Registro - Duplicidade!",
+                                text: "O número de registro já encontra-se associado a outra empresa",
+                                showConfirmButton: true,
+                                confirmButtonText: "Ok"
+                            },
+                            function (isConfirm) {
+                                if (isConfirm) {                                    
+                                    $('#txtNumregistro').val('')
+                                    $('#txtNumregistro').focus();
+                                }
+                            });
+                        }
+                    }
+                });
+
+            }
+        }
+
+    </script>
+}

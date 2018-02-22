@@ -1,0 +1,319 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C5765239-B97E-4971-A3A1-BBF82AE6543D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ZAdmin_DB</RootNamespace>
+    <AssemblyName>ZAdmin_DB</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.5.0.0\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Model\clientes.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\cliente_empresas.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\cliente_vertentes.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\cnpjempresa.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\cnpjmarca.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\empresaredessociais.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\empresas.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\empresa_expressoes_noticias.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\estados.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\fb_comentarios.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\fb_perfis.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\fb_posts.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\fontes_noticias.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\insta_comentarios.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\insta_perfis.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\insta_posts.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\mapa_areas.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\mapa_atributo.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\mapa_base.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\mapa_capturas.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\mapa_caracteristica.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\mapa_cnpjs.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\mapa_complemento.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\mapa_dadoscaptura.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\mapa_especies.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\mapa_log.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\mapa_origens.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\mapa_registros.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\mapa_registro_empresa.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\mapa_statusdadoscaptura.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\mapa_subespecie.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\marcaredessociais.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\marcas.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\marca_expressoes_noticias.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\municipios.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\noticias.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\noticias_empresa.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\noticia_imagens.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\produtoredessociais.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\produtos.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\promo_arquivos.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\promo_estadosabrangencia.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\promo_fb_posts.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\promo_insta_posts.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\promo_modalidades.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\promo_municipiosabrangencia.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\promo_orgaosreguladores.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\promo_promocoes.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\promo_promoempresas.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\promo_promonoticias.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\promo_regulamentoarquivos.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\promo_tw_posts.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\promo_yt_videos.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\redessociais.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\seae_abrang_estado.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\seae_abrang_municipio.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\seae_arquivos_proc.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\seae_empresa_processos.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\seae_mov_situacao.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\seae_processos.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\seae_processo_setor.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\seae_processo_solicitantes.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\seae_setores_proc.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\seae_situacoes.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\seae_subsetores_proc.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\setoresempresa.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\tw_perfis.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\tw_posts.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\usuarios.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\yt_canais.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\yt_comentarios.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\yt_videos.cs">
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\Zeeng.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Zeeng.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\Zeeng.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Zeeng.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\Zeeng.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Zeeng.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <EntityDeploy Include="Model\Zeeng.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>Zeeng.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="Model\Zeeng.edmx.diagram">
+      <DependentUpon>Zeeng.edmx</DependentUpon>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Model\Zeeng.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>Zeeng.edmx</DependentUpon>
+      <LastGenOutput>Zeeng.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Model\Zeeng.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>Zeeng.edmx</DependentUpon>
+      <LastGenOutput>Zeeng.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

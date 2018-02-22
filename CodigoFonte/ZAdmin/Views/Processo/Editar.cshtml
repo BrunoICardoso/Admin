@@ -1,0 +1,1248 @@
+﻿
+<style>
+    /*------------------------------*/
+    .timeline-itemdetalhe .ibox-title {
+        cursor: pointer;
+    }
+
+    .timeline-itemdetalhe .ibox-content {
+        display: none;
+    }
+
+    .timeline-detalhes {
+        display: none;
+    }
+
+    .timeline-item.aberto {
+        background-color: #f6f6f6;
+    }
+
+    .timeline-item-label {
+        margin-bottom: 10px;
+    }
+
+    .timeline-itemdetalhe {
+        margin: 10px 0;
+    }
+
+    .SelecionarModal {
+        border: 1px solid black;
+    }
+    /*------------------------------*/
+
+
+
+    .checkBoxAbrangencia {
+        margin-top: 7px;
+        margin-left: -12px;
+    }
+
+    .botoesEditar {
+        float: right;
+        /*margin-right: 100px;*/
+        margin-top: 50px;
+    }
+
+    .textAreaEditarProcesso {
+        /*resize: none;*/
+        width: 100%;
+    }
+
+    a.linkArquivo {
+        font-size: 17px;
+        color: #8E8888;
+    }
+
+        a.linkArquivo :hover {
+            color: #1AB394;
+        }
+
+    .chosen-container {
+        /*width: 400px !important;*/
+    }
+</style>
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Processos SEAE</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/Home">Home</a>
+            </li>
+            <li class="active">
+                <strong>Cadastro de Promoções SEAE</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+
+    </div>
+</div>
+
+
+<div class="wrapper wrapper-content animated fadeInRight">
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Cadastro de Promoções SEAE</h5>
+                </div>
+
+                <div class="ibox-content">
+
+                    <div class="form-horizontal">
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Nome</label>
+                            <div class="col-lg-10">
+                                <input id="txtNome" type="text" placeholder="Nome" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Nº Processo</label>
+
+                            <div class="col-lg-8">
+                                <input id="txtNroProcesso" type="text" placeholder="Número Processo" class="typeahead form-control">
+                            </div>
+
+                            <div class="col-lg-2" style="text-align:right;">
+                                <button class="btn btn-default" type="button" data-toggle="modal" data-target="#modalPesquisaProcesso"><i class="fa fa-search"></i>&nbsp; Pesquisar</button>
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <div class="col-lg-2">
+                                <label class="control-label" style="float: right;" for="status">Empresas</label>
+                            </div>
+
+                            <div class="col-lg-10" id="choosenEmpresas">
+
+                                <div class="input-group">
+                                    <select data-placeholder="Selecione as empresas..." class="chosen-select" id="CampoEmpresas" multiple tabindex="4">
+
+                                        <option value="ggggggg"> valor 1 </option>
+                                        <option value="ggggggg"> valor 2 </option>
+                                        <option value="ggggggg"> valor 3 </option>
+                                        <option value="ggggggg"> valor 4 </option>
+
+                                    </select>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Data do Registro</label>
+                            <div class="col-lg-2">
+                                <input id="TxtDataRegistro" type="text" class="form-control" data-mask="99/99/9999" placeholder="dd/mm/yyyy">
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <div class="col-md-2">
+                                <label class="control-label" style="float: right;" for="status">Vigência</label>
+                            </div>
+
+                            <div class="col-md-10">
+                                <div class="input-daterange input-group" id="selecaoDatas">
+                                    <input type="text" class="input-sm form-control" name="start" id="dtinicial" value="" />
+                                    <span class="input-group-addon">até</span>
+                                    <input type="text" class="input-sm form-control" name="end" id="dtfinal" value="" />
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Abrangência Nacional</label>
+                            <div class="col-lg-10">
+
+                                <div class="col-sm-10">
+                                    <div>
+                                        <label class="checkBoxAbrangencia">
+                                            <input id="checkBoxAbrangenciaNacional" type="checkbox" value="">
+                                        </label>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label class="col-lg-2 control-label">Abrangência Estados</label>
+                            <div class="col-lg-6" id="choosenEstados">
+
+                                <div class="input-group">
+                                    <select data-placeholder="Selecione os estados..." class="chosen-select" id="CampoEstados" multiple tabindex="4">
+
+                                        <option value="ggggggg"> valor 1 </option>
+                                        <option value="ggggggg"> valor 2 </option>
+                                        <option value="ggggggg"> valor 3 </option>
+                                        <option value="ggggggg"> valor 4 </option>
+
+                                    </select>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label class="col-lg-2 control-label">Abrangência Municipal</label>
+                            <div class="col-lg-6" id="choosenMunicipios">
+
+                                <div class="input-group">
+                                    <select data-placeholder="Selecione os municipios..." class="chosen-select" id="CampoMunicipios" multiple tabindex="4">
+
+                                        <option value="ggggggg"> valor 1 </option>
+                                        <option value="ggggggg"> valor 2 </option>
+                                        <option value="ggggggg"> valor 3 </option>
+                                        <option value="ggggggg"> valor 4 </option>
+
+                                    </select>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label class="col-lg-2 control-label">Valor total em prêmios</label>
+
+                            <div class="col-lg-10">
+
+                                <div class="input-group m-b">
+                                    <span class="input-group-addon">R$</span>
+                                    <input id="txtValorPremios" type="text" class="form-control">
+                                    @*<span class="input-group-addon">.00</span>*@
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Modalidade</label>
+                            <div class="col-lg-10">
+                                <input id="txtModalidade" type="text" placeholder="Modalidade" class="typeahead form-control">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Forma de contemplação</label>
+                            <div class="col-lg-10">
+                                <input id="txtFormaContemplacao" type="text" placeholder="Forma de contemplação" class="typeahead form-control">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Interessados</label>
+                            <div class="col-lg-10">
+                                <input id="txtInteressados" type="text" placeholder="Interessados" class="typeahead form-control">
+                            </div>
+                        </div>
+
+                        @* INICIO - Situações *@
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Situações</label>
+                            <div class="col-lg-10" id="divSituacao">
+                                <div class="ibox ">
+                                    <div class="ibox-title">
+                                        @*Lista de Situações*@
+                                        <div class="ibox-tools">
+                                            <a class="collapse-link">
+                                                <i class="fa fa-chevron-up"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="ibox-content">
+                                        <table id="tabelaSituacao" class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Descrição</th>
+                                                    <th>Excluir</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                        <div id="insertSituacao">
+
+                                            <div class="row">
+                                                <div class="col-md-5">
+                                                    <label>Siatuações</label>
+                                                    <select data-placeholder="Selecione uma situação" id="cmbSituacao" class="chosen-select"></select>
+                                                </div>
+
+                                                <div class="col-md-7" style="text-align:right; margin-top: 18px;">
+                                                    <button class="btn btn-primary" type="button" onclick="SalvarProcessoSituacao()" id="btnSituacao">Adicionar</button>
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        @* INICIO - setores / subsetores *@
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Setores \ Subsetores</label>
+                            <div class="col-lg-10" id="divSetoresSub">
+                                <div class="ibox ">
+                                    <div class="ibox-title">
+                                        @*Lista de Setores / Subsetores*@
+                                        <div class="ibox-tools">
+                                            <a class="collapse-link">
+                                                <i class="fa fa-chevron-up"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="ibox-content">
+                                        <table id="tabelaSetoresSub" class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Setor</th>
+                                                    <th>Subsetor</th>
+                                                    <th>Excluir</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                        <div id="insertSetorSub">
+
+                                            <div class="row">
+                                                <div class="col-md-5">
+                                                    <label>Setores</label>
+
+                                                    <select data-placeholder="Selecione um setor" id="cmbSetores" class="chosen-select" onchange="CarregaComboSubSetores()"></select>
+
+                                                </div>
+
+                                                <div class="col-md-5">
+                                                    <label>Subsetores</label>
+
+                                                    <select data-placeholder="Selecione um subsetor" id="cmbSubsetores" class="chosen-select"></select>
+
+                                                </div>
+
+                                                <div class="col-md-2" style="text-align:right;  margin-top: 18px;">
+                                                    <button class="btn btn-primary disabled" type="button" onclick="SalvarProcessoSetorSubsetor()" style="background-color:#F5F5F6; color:#000" id="btnSetorSubsetor">Adicionar</button>
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @* INICIO - setores / subsetores *@
+
+                        @* INICIO - documentos *@
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Documentos</label>
+                            <div class="col-lg-10" id="divDocumentos">
+                                <div class="ibox ">
+                                    <div class="ibox-title">
+                                        @*Lista de arquivos*@
+                                        <div class="ibox-tools">
+                                            <a class="collapse-link">
+                                                <i class="fa fa-chevron-up"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="ibox-content">
+                                        <table id="tabelaDocumentos" class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Nº Documento</th>
+                                                    <th>Coordenação</th>
+                                                    <th>Situação</th>
+                                                    <th>Baixar</th>
+                                                    <th>Excluir</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+
+                                        <div id="insertDocumento">
+                                            <div class="row" style="margin-bottom: 5px;">
+                                                <div class="col-md-2">
+                                                    <input type="hidden" id="txtIdProcessoDoc" value="@ViewBag.idProcesso" />
+                                                    <label>Nº Documento</label>
+                                                    <input type="text" id="txtNumDoc" class="form-control" />
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <label>Coordenação</label>
+                                                    <input type="text" id="txtCoordenacaoDoc" class="form-control" />
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <label>Situação</label>
+                                                    <input type="text" id="txtSituacaoDoc" class="form-control" />
+                                                </div>
+                                            </div>
+
+                                            <div class="row"  style="margin-bottom: 5px;">
+                                                <div class="col-md-8">
+                                                    <label>Link</label>
+                                                    <input type="text" id="txtLinkDoc" class="form-control" />
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label>Nome Arquivo</label>
+                                                    <input type="text" id="txtNomeArquivoDoc" class="form-control" />
+                                                </div>
+                                            </div>
+
+                                            <div class="row" >
+                                                <div class="col-md-10">
+                                                    <label>Texto</label>
+                                                    <textarea id="txtTextoArquivoDoc" class="form-control" rows="3" /></textarea>
+                                                </div>
+                                                <div class="col-md-2" style="text-align:right;">
+                                                    <button class="btn btn-primary" onclick="SalvarDocumento()" type="button" style="margin-top: 58px;">Adicionar</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @* FIM - documentos *@
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Resumo</label>
+                            <div class="col-lg-10">
+
+                                <textarea class="textAreaEditarProcesso" id="txtResumo" placeholder="Resumo" rows="15" cols="50"></textarea>
+
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Como participar</label>
+                            <div class="col-lg-10">
+
+                                <textarea class="textAreaEditarProcesso" id="txtComoParticipar" placeholder="Como participar" rows="15" cols="50"></textarea>
+
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Prêmios</label>
+                            <div class="col-lg-10">
+
+                                <textarea class="textAreaEditarProcesso" id="txtPremios" placeholder="Prêmios" rows="15" cols="50"></textarea>
+
+                            </div>
+                        </div>
+
+
+
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="botoesEditar">
+                                <button class="btn btn-primary" onclick="salvarPromocao()" id="btnSalvar" type="button" style="margin-right: 10px;">Salvar</button>
+                                <button class="btn btn-white" onclick="cancelar()" type="button">Cancelar</button>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Janelas modais *@
+<div class="modal inmodal" id="modalPesquisaProcesso" tabindex="-1" role="dialog" aria-hidden="true">
+    @Html.Partial("Promocao/_ModalPesquisaProcesso")
+</div>
+
+
+@section Styles {
+
+    <link href="~/Content/SweetAlert/sweetalert.css" rel="stylesheet" />
+    <link href="~/Content/plugins/chosen/chosen.css" rel="stylesheet" />
+    <link href="~/Content/plugins/chosen/bootstrap-chosen-bootstrap-chosen.css" rel="stylesheet" />
+    <link href="~/Content/plugins/datapicker/datepicker3.css" rel="stylesheet" />
+    <link href="~/Content/plugins/jasny/jasny-bootstrap.min.css" rel="stylesheet" />
+
+}
+
+@section Scripts {
+
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/sweetAlert")
+    @Scripts.Render("~/plugins/chosen")
+    <script src="~/Scripts/plugins/chosen/chosen.jquery.js"></script>
+    <script src="~/Scripts/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <script src="~/Scripts/utils.js"></script>
+    <script src="~/Scripts/plugins/paginacao/paginacao.js"></script>
+    <script>
+
+        var idProcesso = @ViewBag.idProcesso;
+
+        var config = {
+            '.chosen-select': {},
+            '.chosen-select-deselect': { allow_single_deselect: true },
+            '.chosen-select-no-single': { disable_search_threshold: 10 },
+            '.chosen-select-no-results': { no_results_text: 'Oops, nothing found!' },
+            '.chosen-select-width': { width: "300px" }
+        }
+
+        //Variaveis da Modal
+        //Variaveis da Modal
+        var _filtros = new Object();
+        var paginacaoProcessoModal = new Paginacao();
+        var quantidadePagModal = 10;
+        var paginaModal = 0;
+        var dataPadraoFinalModal = new Date();
+        var dataPadraoInicialModal = new Date();
+        var variavelIdProcessoAnterior;
+        var NumProcesso;
+        dataPadraoInicialModal.setDate(dataPadraoFinalModal.getDate() - 30);
+        $('#dtinicialModal').datepicker('setDate', dataPadraoInicialModal);
+        $('#dtfinalModal').datepicker('setDate', dataPadraoFinalModal);
+        $(".loadingPesquisaModal").hide();
+
+        for (var selector in config) {
+            $(selector).chosen(config[selector]);
+        }
+
+        // Habilita / desabilita botão adicionar de setores/subsetores
+        $("#cmbSetores").on('change', function(){
+            setTimeout(function(){
+                if($("#cmbSetores").val() != '0' && $("#cmbSetores").val() != null && $("#cmbSubsetores").val() != '0' && $("#cmbSubsetores").val() != null){
+                    $('#btnSetorSubsetor').removeClass('disabled').attr('onclick','SalvarProcessoSetorSubsetor()').removeAttr("style");
+                } else {
+                    $('#btnSetorSubsetor').addClass('disabled').removeAttr("onclick").attr('style','background-color:#F5F5F6; color:#000');
+                }
+            }, 500);
+        });
+
+        $(document).ready(function () {
+
+            $('#selecaoDatas').datepicker({
+                keyboardNavigation: false,
+                forceParse: false,
+                autoclose: true,
+                format: 'dd/mm/yyyy'
+            }).on('changeDate', function () {
+                //atualizaNoticias();
+            });
+
+            $(".chosen-select").width($("#choosenEmpresas").width());
+
+            $(window).resize(function () {
+                var opt = $(".chosen-select");
+
+                $(opt).width($("#choosenEmpresas").width());
+
+                $(opt).next().width($("#choosenEmpresas").width());
+            })
+
+            var config = {
+                '.chosen-select': {},
+                '.chosen-select-deselect': { allow_single_deselect: true },
+                '.chosen-select-no-single': { disable_search_threshold: 10 },
+                '.chosen-select-no-results': { no_results_text: 'Oops, nothing found!' },
+                '.chosen-select-width': { width: "95%" }
+            }
+
+            for (var selector in config) {
+                $(selector).chosen(config[selector]);
+            }
+            //end choosen
+
+            //Modal
+
+            //Botao Pesquisa Modal
+
+            $("#BtnPesquisaModal").click(function () {
+                variavelIdProcessoAnterior = null;
+                _filtros.palavraChave = $('#txtPalavrasChaveModal').val();
+                _filtros.dataIni = $('#dtinicialModal').datepicker('getDate');
+                _filtros.dataFim = $('#dtfinalModal').datepicker('getDate');
+
+                ModalPromocoes(paginaModal, quantidadePagModal);
+
+            });
+
+            // selecionar o Processo
+            $(document).on("click",".ModalPromocao",function () {
+
+                var variavelProcessoAtual = $(this).data('idprocesso');
+
+                if (variavelProcessoAtual != variavelIdProcessoAnterior) {
+
+                    $(this).toggleClass('content no-top-border SelecionarModal');
+
+                    if (variavelIdProcessoAnterior != undefined) {
+
+                        $('.ModalPromocao[data-idprocesso="' + variavelIdProcessoAnterior + '"]').toggleClass('content no-top-border SelecionarModal');
+
+                    }
+                }
+
+                NumProcesso = $(this).find('#numprocesso').data('numproc');
+
+                variavelIdProcessoAnterior = $(this).data('idprocesso');
+
+
+            });
+
+
+            // botao selecionar Modal
+            $(document).on("click", "#SelecionarProcesso", function () {
+                console.log('entro');
+                if (variavelIdProcessoAnterior == undefined) {
+
+                    ChamaSwal()
+
+                } else {
+
+
+
+                    swal({
+                        title: "Atenção",
+                        text: "Você tem certeza que deseja trocar esta promoção?",
+                        type: "warning",
+                        showCancelButton: true,
+                        cancelButtonText: "Cancelar",
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Sim",
+                        closeOnConfirm: false
+                    },
+                               function (isConfirm) {
+
+                                   if (isConfirm){
+                                       window.location.href ="/Processo/Editar/"+variavelIdProcessoAnterior;
+                                       $('#modalPesquisaProcesso').modal('hide');
+                                       $('#txtNroProcesso').val(NumProcesso)
+
+                                   }else{
+                                       //nothing
+                                   }
+
+                               });
+
+
+
+                }
+
+            });
+
+
+
+            //end modal
+
+            carregaEmpresas();
+            carregaEstados();
+            carregaMunicipios();
+            carregaDocumentos();
+            CarregaSetoresSubSetores();
+            retornaProcesso();
+            CarregaComboSetores();
+
+            //Situações
+            CarregaSituações();
+            CarregaComboSituacao();
+        });
+
+        function retornaProcesso(){
+
+            var url = "/api/ProcessoAPI/GetProcesso?idProcesso="+idProcesso+"";
+
+            $.ajax({
+                type: "GET",
+                url: url,
+                async: false,
+                success: function(data){
+                    console.log(data);
+                    carregaProcesso(data);
+                }
+            });
+
+        }
+
+        function carregaProcesso(processo){
+
+            $("#txtNome").val(processo.nome);
+            $("#txtNroProcesso").val(processo.numprocesso);
+            $("#TxtDataRegistro").val(formataDataJson(processo.dtprocesso));
+
+            if(processo.dtVigenciaIni!=null && processo.dtVigenciaFim!=null){
+
+                var dataVigenciaInicial = ConverteDataStringParaData(formataDataJson(processo.dtVigenciaIni));
+                var dataVigenciaFinal = ConverteDataStringParaData(formataDataJson(processo.dtVigenciaFim));
+
+            }else if(processo.dtVigenciaIni!=null){
+
+                var dataVigenciaInicial = ConverteDataStringParaData(formataDataJson(processo.dtVigenciaIni));
+                var dataVigenciaFinal = null;
+
+            } else{
+                var dataVigenciaInicial = null;
+                var dataVigenciaFinal = null;
+            }
+
+            $('#dtinicial').datepicker('setDate', dataVigenciaInicial);
+            $('#dtfinal').datepicker('setDate', dataVigenciaFinal);
+
+            if(processo.abrangenciaNacional){
+                $("#checkBoxAbrangenciaNacional").prop("checked",true);
+            }else{
+                $("#checkBoxAbrangenciaNacional").prop("checked",false);
+            }
+
+
+            $("#txtValorPremios").val(processo.valorTotalPremios);
+            $("#txtModalidade").val(processo.modalidade);
+            $("#txtFormaContemplacao").val(processo.formaContemplacao);
+            $("#txtInteressados").val(processo.interessados);
+
+            $("#txtResumo").val(processo.resumo);
+            $("#txtComoParticipar").val(processo.comoParticipar);
+            $("#txtPremios").val(processo.premios);
+
+
+            $.each(processo.empresas,function(i,item){
+
+                $("#CampoEmpresas option[value="+item+"]").attr("selected","selected");
+                $("#CampoEmpresas").trigger('chosen:updated');
+
+            });
+
+
+            $.each(processo.estados,function(i,item){
+
+                $("#CampoEstados option[value="+item+"]").attr("selected","selected");
+                $("#CampoEstados").trigger('chosen:updated');
+
+            });
+
+
+            $.each(processo.municipios,function(i,item){
+
+                $("#CampoMunicipios option[value="+item+"]").attr("selected","selected");
+                $("#CampoMunicipios").trigger('chosen:updated');
+
+            });
+
+
+        }
+
+        function carregaEmpresas()
+        {
+
+            var url = "/api/EmpresaAPI/GetItensComboEmpresa";
+
+            $.ajax({
+                type: "GET",
+                url: url,
+                async: false,
+                success: function(data){
+
+                    $("#CampoEmpresas").empty();
+                    $.each(data,function(i,item){
+                        $("#CampoEmpresas").append("<option value=" + item.idItem + ">" + item.nome + "</option>");
+
+                    });
+                    $("#CampoEmpresas").trigger('chosen:updated');
+
+                }
+            });
+
+        }
+
+        function carregaEstados(){
+
+            var url = "/api/ProcessoAPI/GetItensComboEstados";
+
+            $.ajax({
+                type: "GET",
+                url: url,
+                async: false,
+                success: function(data){
+
+                    $("#CampoEstados").empty();
+                    $.each(data,function(i,item){
+                        $("#CampoEstados").append("<option value=" + item.idItem + ">" + item.nome + "</option>");
+
+                    });
+                    $("#CampoEstados").trigger('chosen:updated');
+                }
+            });
+        }
+
+        function carregaMunicipios(){
+
+            var url = "/api/ProcessoAPI/GetItensComboMunicipios";
+
+            $.ajax({
+                type: "GET",
+                url: url,
+                async: false,
+                success: function(data){
+
+                    $("#CampoMunicipios").empty();
+                    $.each(data,function(i,item){
+                        $("#CampoMunicipios").append("<option value=" + item.idItem + ">" + item.nome + "</option>");
+
+                    });
+                    $("#CampoMunicipios").trigger('chosen:updated');
+                }
+            });
+        }
+
+        function retornaPromocao(){
+
+            var promocao = new Object();
+
+            promocao.idprocesso = idProcesso;
+            promocao.nome = $("#txtNome").val();
+            promocao.numprocesso = $("#txtNroProcesso").val();
+            promocao.empresas = $("#CampoEmpresas").val();
+            promocao.dtprocesso = ConverteDataParaDataJson(ConverteDataStringParaData($("#TxtDataRegistro").val()));
+            promocao.dtVigenciaIni = $("#dtinicial").datepicker("getDate");
+            promocao.dtVigenciaFim = $("#dtfinal").datepicker("getDate");
+
+            if ($('#checkBoxAbrangenciaNacional').is(":checked"))
+            {
+                promocao.abrangenciaNacional = true;
+
+
+            }else{
+                promocao.abrangenciaNacional = false;
+
+
+            }
+
+
+            promocao.estados = $("#CampoEstados").val();
+            promocao.municipios = $("#CampoMunicipios").val();
+            promocao.valorTotalPremios = $("#txtValorPremios").val();
+            promocao.modalidade = $("#txtModalidade").val();
+            promocao.formaContemplacao = $("#txtFormaContemplacao").val();
+            promocao.interessados = $("#txtInteressados").val();
+            promocao.resumo = $("#txtResumo").val();
+            promocao.comoParticipar = $("#txtComoParticipar").val();
+            promocao.premios = $("#txtPremios").val();
+
+            return promocao;
+
+        }
+
+        function salvarPromocao(){
+
+            var data = retornaPromocao();
+
+            var url = "/api/ProcessoAPI/SalvarPromocao"
+
+            $.ajax({
+                type: "POST",
+                url: url,
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(data),
+                async: false
+
+            }).done(function() {
+
+                swal({
+                    title: "Processo Atualizado!",
+                    text: "As alterações foram salvas com sucesso!",
+                    type: "success",
+                    showCancelButton: false,
+                    confirmButtonColor: "#18a689",
+                    confirmButtonText: "OK",
+                    closeOnConfirm: false,
+                },
+                function(isConfirm){
+                    if (isConfirm) {
+
+                        window.location = '/Processo/';
+
+                    }
+                });
+
+
+            });
+
+
+
+
+        }
+
+        function cancelar() {
+            window.location = "/Processo/";
+        }
+
+        function carregaDocumentos(){
+
+            $('#tabelaDocumentos').find('tbody').html('<tr><td colspan="5" align="center" >Carregando.. Aguarde!</td></tr>');
+
+            $.ajax({
+                type: "GET",
+                url: "/api/ProcessoAPI/GetListaArquivos/?idProcesso="+idProcesso,
+                async: false,
+                success: function(data){
+
+                    $('#tabelaDocumentos').find('tbody').html('');
+
+                    if(data.length > 0){
+                        var html = '';
+                        $.each(data, function(index, arq){
+                            html += '<tr>' +
+                                        '<td>'+arq.numdoc+'</td>' +
+                                        '<td>'+arq.coordenacao+'</td>' +
+                                        '<td>'+arq.situacao+'</td>' +
+                                        '<td style="text-align:center;" ><a class="linkArquivo" href="'+arq.link+'" target="_blank" ><i class="fa fa-download"></i></a></td>' +
+                                        '<td style="text-align:center;" ><a class="linkArquivo" onclick="ExcluirDocumentoMSG('+arq.idarquivo+')" ><i class="fa fa-trash-o"></i></a></td>' +
+                                    '</tr>';
+                        });
+
+                        $('#tabelaDocumentos').find('tbody').html(html);
+
+                    } else {
+                        $('#tabelaDocumentos').find('tbody').html('<tr><td colspan="5" style="text-align:center;" >Não há arquivos para este processo</td></tr>');
+                    }
+
+                }
+            });
+        }
+
+        function SalvarDocumento(){
+            var dados = new Object();
+            dados.idprocesso = $('#txtIdProcessoDoc').val();
+            dados.numdoc = $('#txtNumDoc').val();
+            dados.coordenacao = $('#txtCoordenacaoDoc').val();
+            dados.situacao = $('#txtSituacaoDoc').val();
+            dados.link = $('#txtLinkDoc').val();
+            dados.nomearquivo = $('#txtNomeArquivoDoc').val();
+            dados.textoarquivo = $('#txtTextoArquivoDoc').val();
+            dados.excluido = false;
+
+            $.ajax({
+                type: "POST",
+                url: "/api/ProcessoAPI/AdicionarDocumento/",
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(dados),
+                success: function(data){
+
+                    swal("Documento Salvo!", "Documento salvo com sucesso!", "success");
+                    $('input:text, textarea').val('');
+                    carregaDocumentos();
+                }
+            });
+        }
+
+        function ExcluirDocumentoMSG(idArquivo){
+            swal({
+                title: "Excluir Documento?",
+                text: "Você tem certeza que deseja excluir este documento?",
+                type: "warning",
+                showCancelButton: true,
+                cancelButtonText: "Cancelar",
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Sim",
+                closeOnConfirm: false
+            },
+                function () {
+                    ExcluirDocumento(idArquivo);
+
+                }
+            );
+        }
+
+        function ExcluirDocumento(idArquivo){
+            var dados = new Object();
+            dados.idarquivo = idArquivo;
+
+            $.ajax({
+                type: "POST",
+                url: "/api/ProcessoAPI/ExcluirDocumento/",
+                data: JSON.stringify(dados),
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    swal("Deletado!", "Documento excluído.", "success");
+
+                    carregaDocumentos();
+                },
+                error: function (error) {
+                    jsonValue = jQuery.parseJSON(error.responseText);
+                }
+            })
+        }
+
+        function CarregaSetoresSubSetores(){
+
+            $('#tabelaSetoresSub').find('tbody').html('<tr><td colspan="3" align="center" >Carregando.. Aguarde!</td></tr>');
+
+            $.ajax({
+                type: "GET",
+                url: "/api/ProcessoAPI/GetSetoresSubsetores/?idProcesso="+idProcesso,
+                async: false,
+                success: function(data){
+
+                    $('#tabelaSetoresSub').find('tbody').html('');
+
+                    if(data.length > 0){
+                        var html = '';
+                        $.each(data, function(index, setor){
+                            html += '<tr>' +
+                                        '<td>'+setor.codsetor+'.&nbsp;'+setor.descricaoSetor+'</td>' +
+                                        '<td>'+setor.codsubsetor+'.&nbsp;'+setor.descricaoSubSetor+'</td>' +
+                                        '<td style="text-align:center;" ><a class="linkArquivo" onclick="ExcluirSetorSubsetorMSG('+setor.idprocessosetor+')" ><i class="fa fa-trash-o"></i></a></td>' +
+                                    '</tr>';
+                        });
+
+                        $('#tabelaSetoresSub').find('tbody').html(html);
+
+                    } else {
+                        $('#tabelaSetoresSub').find('tbody').html('<tr><td colspan="3" style="text-align:center;" >Não há setores/subsetores para este processo</td></tr>');
+                    }
+
+                }
+            });
+        }
+
+        function CarregaComboSetores(){
+            var url = '/api/ProcessoAPI/GetSetores';
+
+            $.getJSON(url)
+                .done(function (data) {
+
+                    $("#cmbSetores").append("<option value='0'>" + "Selecione" + "</option>");
+                    $.each(data, function (key, item) {
+                        $("#cmbSetores").append('<option value="' + item.idsetor + '">' + item.codsetor + '.&nbsp;' + item.descricao + '</option>');
+                        $("#cmbSetores").trigger('chosen:updated');
+
+                    });
+
+                });
+        }
+
+        function CarregaComboSubSetores(){
+
+            if($("#cmbSetores").val() == '0'){
+                $("#cmbSubsetores").html('');
+                $("#cmbSubsetores").append("<option value='0'>" + "Selecione um subsetor" + "</option>");
+                $("#cmbSubsetores").trigger('chosen:updated');
+                return
+            }
+
+            var url = '/api/ProcessoAPI/GetSubsetores/?idSetor='+$("#cmbSetores").val();
+
+            $.getJSON(url)
+                .done(function (data) {
+
+                    $("#cmbSubsetores").html('');
+
+                    $.each(data, function (key, item) {
+                        $("#cmbSubsetores").append('<option value="' + item.idsubsetor + '">' + item.codsubsetor + '.&nbsp;' + item.descricao + '</option>');
+                        $("#cmbSubsetores").trigger('chosen:updated');
+
+                    });
+
+                });
+        }
+
+        function SalvarProcessoSetorSubsetor(){
+            var dados = new Object();
+            dados.idprocesso = $('#txtIdProcessoDoc').val();
+            dados.idsetor = $("#cmbSetores").val();
+            dados.idsubsetor = $("#cmbSubsetores").val();
+
+            $.ajax({
+                type: "POST",
+                url: "/api/ProcessoAPI/AdicionarProcessoSetorSubsetor/",
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(dados),
+                success: function(data){
+
+                    swal("Setor Salvo!", "Setor / Subsetor salvo com sucesso!", "success");
+                    CarregaSetoresSubSetores();
+                }
+            });
+        }
+
+        function ExcluirSetorSubsetorMSG(idprocessosetor){
+            swal({
+                title: "Excluir Setor/Subsetor?",
+                text: "Você tem certeza que deseja excluir este Setor/Subsetor?",
+                type: "warning",
+                showCancelButton: true,
+                cancelButtonText: "Cancelar",
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Sim",
+                closeOnConfirm: false
+            },
+               function () {
+                   ExcluirSetorSubsetor(idprocessosetor);
+
+               }
+           );
+        }
+
+        function ExcluirSetorSubsetor(idProcessoSetor){
+            var dados = new Object();
+            dados.idprocessosetor = idProcessoSetor;
+
+            $.ajax({
+                type: "POST",
+                url: "/api/ProcessoAPI/ExcluirSetorSubsetor/",
+                data: JSON.stringify(dados),
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    swal("Deletado!", "Setor/Subsetor excluído.", "success");
+
+                    CarregaSetoresSubSetores();
+                },
+                error: function (error) {
+                    jsonValue = jQuery.parseJSON(error.responseText);
+                }
+            })
+        }
+
+        //Situação ---------------------------------------------------
+
+        function CarregaComboSituacao(){
+            var url = '/api/ProcessoAPI/GetComboSituacoes';
+
+            $.getJSON(url)
+                .done(function (data) {
+
+                    $("#cmbSituacao").append("<option value='0'>" + "Selecione" + "</option>");
+                    $.each(data, function (key, item) {
+                        $("#cmbSituacao").append('<option value="' + item.idsituacao + '">'+item.descricao + '</option>');
+                        $("#cmbSituacao").trigger('chosen:updated');
+
+                    });
+
+                });
+        }
+
+        function CarregaSituações(){
+
+            $('#tabelaSituacao').find('tbody').html('<tr><td colspan="3" align="center" >Carregando.. Aguarde!</td></tr>');
+
+            $.ajax({
+                type: "POST",
+                url: "/api/ProcessoAPI/RetornaSituacoes/?idProcesso="+idProcesso,
+                async: false,
+                success: function(data){
+
+                    $('#tabelaSituacao').find('tbody').html('');
+
+                    if(data.length > 0){
+                        var html = '';
+                        $.each(data, function(index, situacao){
+                            html += '<tr>' +
+                                        '<td>'+situacao.descricao+'</td>' +
+
+                                        '<td style="text-align:center;" ><a class="linkArquivo" onclick="ExcluirSituacaoMSG('+situacao.idmovsituacao+')" ><i class="fa fa-trash-o"></i></a></td>' +
+                                    '</tr>';
+                        });
+
+                        $('#tabelaSituacao').find('tbody').html(html);
+
+                    } else {
+                        $('#tabelaSituacao').find('tbody').html('<tr><td colspan="3" style="text-align:center;" >Não há situação para este processo</td></tr>');
+                    }
+
+                }
+            });
+        }
+
+        function SalvarProcessoSituacao(){
+            var dados = new Object();
+            dados.idprocesso = $('#txtIdProcessoDoc').val();
+            dados.idsituacao = $("#cmbSituacao").val();
+            dados.dtsituacao = new Date();
+            $.ajax({
+                type: "POST",
+                url: "/api/ProcessoAPI/AdicionarMovSituacao/",
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(dados),
+                success: function(data){
+
+                    swal("Sitaução Salva!", "Situação salva com sucesso!", "success");
+                    CarregaSituações();
+                }
+            });
+        }
+
+        function ExcluirSituacaoMSG(idmovsituacao){
+            swal({
+                title: "Excluir Situação?",
+                text: "Você tem certeza que deseja excluir esta situação ?",
+                type: "warning",
+                showCancelButton: true,
+                cancelButtonText: "Cancelar",
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Sim",
+                closeOnConfirm: false
+            },
+               function () {
+                   ExcluirSituacao(idmovsituacao);
+
+               }
+           );
+        }
+
+        function ExcluirSituacao(idmovsituacao){
+            var dados = new Object();
+            dados.idmovsituacao = idmovsituacao;
+
+            $.ajax({
+                type: "POST",
+                url: "/api/ProcessoAPI/ExcluirSituacao/",
+                data: JSON.stringify(dados),
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    swal("Deletado!", "Situação excluída.", "success");
+
+                    CarregaSituações();
+                },
+                error: function (error) {
+                    jsonValue = jQuery.parseJSON(error.responseText);
+                }
+            })
+        }
+
+    </script>
+
+}

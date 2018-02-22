@@ -1,0 +1,867 @@
+﻿
+@model ZAdmin.ViewModel.PromocaoEditar
+
+@using ZAdmin.Utils
+
+<style>
+    /*------------------------------*/
+    .timeline-itemdetalhe .ibox-title {
+        cursor: pointer;
+    }
+
+    .timeline-itemdetalhe .ibox-content {
+        display: none;
+    }
+
+    .timeline-detalhes {
+        display: none;
+    }
+
+    .timeline-item.aberto {
+        background-color: #f6f6f6;
+    }
+
+    .timeline-item-label {
+        margin-bottom: 10px;
+    }
+
+    .timeline-itemdetalhe {
+        margin: 10px 0;
+    }
+
+    .SelecionarModal {
+        border: 1px solid black;
+    }
+
+    .loadingPesquisaModal {
+        /*display: none;*/
+        height: 300px;
+        padding-top: 150px;
+    }
+
+    /*------------------------------*/
+
+
+
+    .chosen-container {
+        width: 500px !important;
+    }
+
+    .botoes {
+        text-align: right;
+        margin-top: 10px;
+    }
+
+    .botao-gerar-print {
+        display: inline-flex;
+    }
+
+    .texto-botao {
+        padding-left: 10px;
+    }
+
+    .loading-gera-print {
+        display: none;
+    }
+
+    #icone-botao {
+        margin-top: 3px;
+    }
+
+    .fa-times {
+        color: #E37686;
+    }
+
+    .fa-check {
+        color: #1AB394;
+    }
+</style>
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Promoção</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/Home">Home</a>
+            </li>
+            <li class="active">
+                <strong>Edição de Promoção</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+
+    </div>
+</div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="ibox float-e-margins">
+
+            <div class="ibox-title">
+                <h5>Editar Promoção</h5>
+            </div>
+
+            <div class="ibox-content">
+
+                <div class="form-horizontal">
+
+                    <input type="hidden" id="idPromocao" value="@ViewBag.idPromocao" />
+                    <input type="hidden" id="idProcesso" value="@ViewBag.idProcesso" />
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Nome da Promoção</label>
+                        <div class="col-md-9">
+                            <input id="txtNome" type="text" placeholder="Nome" class="form-control" value="@Model.promocao.nome">
+                        </div>
+                    </div>
+
+                    @* DIVISÃO - ini *@
+                    <div class="form-group" style="border-bottom: 1px solid #C8CED2; margin: 5px 2px 20px -2px;">
+                        <label class="col-md-3 control-label">Registro da Promoção</label>
+                        <div class="col-md-9"></div>
+                    </div>
+                    @* DIVISÃO - fim *@
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Orgão regulador</label>
+                        <div class="col-md-9">
+                            <select id="cmbOrgaos" data-placeholder="Selecione um orgão" class="chosen-select" name="Orgão" tabindex="2"></select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Certificado de autorização</label>
+                        <div class="col-md-7">
+                            <input id="txtNumeroProcesso" type="text" placeholder="Certificado / Numero Processo" class="form-control" value="@Model.promocao.certificadoAutorizacao">
+                        </div>
+                        <div class="col-md-2" style="text-align:right;">
+                            <button class="btn btn-default" type="button" data-toggle="modal" data-target="#modalPesquisaProcesso"><i class="fa fa-search"></i>&nbsp; Pesquisar</button>
+                        </div>
+                    </div>
+
+                    @* DIVISÃO - ini *@
+                    <div class="form-group" style="border-bottom: 1px solid #C8CED2; margin: 5px 2px 20px -2px;">
+                        <label class="col-md-3 control-label">Dados da Promoção</label>
+                        <div class="col-md-9"></div>
+                    </div>
+                    @* DIVISÃO - fim *@
+
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            <label class="control-label" style="float: right;" for="status">Empresas interessadas</label>
+                        </div>
+
+                        <div class="col-md-9" id="choosenEmpresas">
+                            <div class="input-group">
+                                <select data-placeholder="Selecione as empresas..." class="chosen-select" id="CampoEmpresas" multiple tabindex="4"></select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Outros interessados</label>
+                        <div class="col-md-9">
+                            <input id="txtOutrosInteressados" type="text" placeholder="Nome" class="form-control" value="@Model.promocao.outrosInteressados">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Abrangência Nacional</label>
+                        <div class="col-md-9">
+
+                            <div class="col-sm-10">
+                                <div>
+                                    <label class="checkBoxAbrangencia">
+                                        <input id="checkAbrangenciaNacional" type="checkbox" value="" @(Model.promocao.abrangenciaNacional == true ? "checked" : "")>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+
+                        <label class="col-md-3 control-label">Estados de abrangência</label>
+                        <div class="col-md-6" id="choosenEstados">
+
+                            <div class="input-group">
+                                <select data-placeholder="Selecione os estados..." class="chosen-select" id="CampoEstados" multiple tabindex="4"></select>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Municípios de abrangência</label>
+                        <div class="col-md-6" id="choosenMunicipios">
+
+                            <div class="input-group">
+                                <select data-placeholder="Selecione os municipios..." class="chosen-select" id="CampoMunicipios" multiple tabindex="4"></select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Modalidade</label>
+                        <div class="col-md-9">
+                            <select id="cmbModalidades" data-placeholder="Selecione uma modalidade" class="chosen-select" name="Modalidade" tabindex="2"></select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            <label class="control-label" style="float: right;" for="status">Data do cadastro</label>
+                        </div>
+                        <div class="col-md-3">
+                            <input type="text" class="input-sm form-control" name="start" id="dtCadastro" value="@String.Format("{0:dd/MM/yyyy}",Model.promocao.dtCadastro)" />
+                        </div>
+                        <div class="col-md-9"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            <label class="control-label" style="float: right;" for="status">Vigência</label>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="input-daterange input-group" id="selecaoDatas">
+                                <input type="text" class="input-sm form-control" name="start" id="dtVigenciaIni" value="@String.Format("{0:dd/MM/yyyy}",Model.promocao.dtVigenciaIni)" />
+                                <span class="input-group-addon">até</span>
+                                <input type="text" class="input-sm form-control" name="end" id="dtVigenciaFim" value="@String.Format("{0:dd/MM/yyyy}",Model.promocao.dtVigenciaFim)" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Valor da Promoção</label>
+                        <div class="col-md-6">
+                            <input id="txtValorPremio" type="text" placeholder="Nome" class="form-control" value="@Model.promocao.valorPremio.ToString().Replace(",", ".")">
+                        </div>
+                        <div class="col-lg-3">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Site da promoção</label>
+                        <div class="col-lg-6">
+                            <input id="txtLinkSite" type="text" placeholder="Url promoção" class="form-control" value="@Model.promocao.linkSitePromocao">
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-default botao-gerar-print" type="button" onclick="printSite()">
+                                <div class="loading-gera-print sk-spinner sk-spinner-fading-circle">
+                                    <div class="sk-circle1 sk-circle"></div>
+                                    <div class="sk-circle2 sk-circle"></div>
+                                    <div class="sk-circle3 sk-circle"></div>
+                                    <div class="sk-circle4 sk-circle"></div>
+                                    <div class="sk-circle5 sk-circle"></div>
+                                    <div class="sk-circle6 sk-circle"></div>
+                                    <div class="sk-circle7 sk-circle"></div>
+                                    <div class="sk-circle8 sk-circle"></div>
+                                    <div class="sk-circle9 sk-circle"></div>
+                                    <div class="sk-circle10 sk-circle"></div>
+                                    <div class="sk-circle11 sk-circle"></div>
+                                    <div class="sk-circle12 sk-circle"></div>
+                                </div>
+                                <i id="icone-botao" class="fa fa-file-image-o" aria-hidden="true"></i>
+                                <span class="texto-botao">Gerar Print</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Facebook da promoção</label>
+                        <div class="col-md-9">
+                            <input id="txtLinkFacebook" type="text" placeholder="Url facebook" class="form-control" value="@Model.promocao.linkFacebook">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Instagram da promoção</label>
+                        <div class="col-md-9">
+                            <input id="txtLinkInstagram" type="text" placeholder="Url instagram" class="form-control" value="@Model.promocao.linkInstagram">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Twitter da promoção</label>
+                        <div class="col-md-9">
+                            <input id="txtLinkTwitter" type="text" placeholder="Url twitter" class="form-control" value="@Model.promocao.linkTwitter">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Youtube da promoção</label>
+                        <div class="col-md-9">
+                            <input id="txtLinkYoutube" type="text" placeholder="Url youtube" class="form-control" value="@Model.promocao.linkYoutube">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Mecânica da promoção</label>
+                        <div class="col-md-9">
+                            <textarea id="txtMecanica" class="form-control" rows="6">@Model.promocao.mecanicaPromo</textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Produtos participantes</label>
+                        <div class="col-md-9">
+                            <textarea id="txtProdutoParticipante" class="form-control" rows="6">@Model.promocao.produtosParticipantes</textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Prêmios</label>
+                        <div class="col-md-9">
+                            <textarea id="txtPremios" class="form-control" rows="6">@Model.promocao.premiosPromo</textarea>
+                        </div>
+                    </div>
+
+                    @* DIVISÃO - ini *@
+                    <div class="form-group" style="border-bottom: 1px solid #C8CED2; margin: 5px 2px 20px -2px;">
+                        <label class="col-md-3 control-label">Regulamento da Promoção</label>
+                        <div class="col-md-9"></div>
+                    </div>
+                    @* DIVISÃO - fim *@
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Link para o regulamento</label>
+                        <div class="col-md-9">
+                            <input id="txtLinkRegulamento" type="text" placeholder="Url regulamento" class="form-control" value="@Model.promocao.linkRegulamento">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @* Partial View do CRUD de arquivos *@
+                        @Html.Partial("Promocao/_PromocaoArquivosRegulamento")
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-3 control-label">Texto completo do regulamento</label>
+                        <div class="col-md-9">
+                            <textarea id="txtTextoRegulamento" class="form-control" rows="6">@Model.promocao.textoRegulamento</textarea>
+                        </div>
+                    </div>
+
+                    @* DIVISÃO - ini *@
+                    <div class="form-group" style="border-bottom: 1px solid #C8CED2; margin: 5px 2px 20px -2px;">
+                        <label class="col-md-12">Arquivos Associados</label>
+                    </div>
+                    @* DIVISÃO - fim *@
+
+                    <div class="form-group">
+                        @* Partial View do CRUD de arquivos *@
+                        @Html.Partial("Promocao/_PromocaoArquivosRelacionado")
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="botoes">
+                            <div class="col-md-2 col-md-offset-8">
+                                <button class="btn btn-primary" onclick="salvarPromocao()" id="btnSalvar" type="button" style="margin-right: 15px; width:100%">Salvar</button>
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-white" onclick="Cancelar()" type="button" style="width:100%">Cancelar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Janelas modais *@
+<div class="modal inmodal" id="modalPesquisaProcesso" tabindex="-1" role="dialog" aria-hidden="true">
+    @Html.Partial("Promocao/_ModalPesquisaProcesso")
+</div>
+
+
+@section Styles {
+
+    <link href="~/Content/SweetAlert/sweetalert.css" rel="stylesheet" />
+    <link href="~/Content/plugins/chosen/chosen.css" rel="stylesheet" />
+    <link href="~/Content/plugins/chosen/bootstrap-chosen-bootstrap-chosen.css" rel="stylesheet" />
+    <link href="~/Content/plugins/datapicker/datepicker3.css" rel="stylesheet" />
+    <link href="~/Content/plugins/jasny/jasny-bootstrap.min.css" rel="stylesheet" />
+
+}
+
+@section Scripts {
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/sweetAlert")
+    @Scripts.Render("~/plugins/chosen")
+    <script src="~/Scripts/plugins/chosen/chosen.jquery.js"></script>
+    <script src="~/Scripts/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <script src="~/Scripts/utils.js"></script>
+    <script src="~/Scripts/plugins/paginacao/paginacao.js"></script>
+    <script>
+
+        //var URLbase = location.href.split('/')[0] + '//' + location.href.split('/')[2];
+        //var URLImagensProcesso = '@Configuracoes.DiretorioArquivos/promocoes';
+        var URLArquivosProcesso = '@Configuracoes.DiretorioArquivos/promocoes';
+
+        var IdModalidade = @Model.promocao.idModalidade
+
+        $('#inputTextoLink').hide();
+
+        $('#dtCadastro').datepicker({
+            keyboardNavigation: false,
+            forceParse: false,
+            autoclose: true,
+            format: 'dd/mm/yyyy'
+        });
+
+        $('#selecaoDatas').datepicker({
+            keyboardNavigation: false,
+            forceParse: false,
+            autoclose: true,
+            format: 'dd/mm/yyyy'
+        });
+
+        $(document).on("click", "input[type='radio'][name='optradio']", function () {
+
+            var radio = $(this).val();
+
+            if (radio == 'arquivo') {
+                console.log(radio);
+                $('#inputFileArquivo').show();
+                $('#inputTextoLink').hide();
+            }
+
+            if (radio == 'link') {
+                console.log(radio);
+                $('#inputFileArquivo').hide();
+                $('#inputTextoLink').show();
+            }
+
+
+        });
+
+        var config = {
+            '.chosen-select': { width: "100%" },
+            '.chosen-select-deselect': { allow_single_deselect: true },
+            '.chosen-select-no-single': { disable_search_threshold: 10 },
+            '.chosen-select-no-results': { no_results_text: 'Oops, nothing found!' },
+            '.chosen-select-width': {}
+        }
+        for (var selector in config) {
+            $(selector).chosen(config[selector]);
+        }
+
+        var _Dados = {
+            idPromocao: $('#idPromocao').val(),
+            nome: null,
+            idOrgaoregulador: null,
+            certificadoAutorizacao: null,
+            idProcesso: null,
+            idNoticia: null,
+            idRedeSocial: null,
+            idModalidade:null,
+            nomeRedeSocial: null,
+            dtCadastro: null,
+            dtVigenciaIni: null,
+            dtVigenciaFim: null,
+            outrosInteressados: null,
+            abrangenciaNacional: false,
+            valorPremio: null,
+            linkSitePromocao: null,
+            linkFacebook: null,
+            linkInstagram: null,
+            linkTwitter: null,
+            linkYoutube: null,
+            mecanicaPromo: null,
+            produtosParticipantes: null,
+            premiosPromo: null,
+            linkRegulamento: null,
+            textoRegulamento: null,
+            excluido: false,
+            ListaEmpresas: null,
+            ListaEstados: null,
+            ListaMunicipios:null
+        }
+
+        // Update nos campos
+        // ============================================================
+        atualizaCampos();
+
+        $(".chosen-select").width($("#choosenEmpresas").width());
+        $(window).resize(function () {
+            var opt = $(".chosen-select");
+            $(opt).width($("#choosenEmpresas").width());
+            $(opt).next().width($("#choosenEmpresas").width());
+        });
+
+        //Variaveis da Modal
+        var _filtros = new Object();
+        var paginacaoProcessoModal = new Paginacao();
+        var quantidadePagModal = 10;
+        var paginaModal = 0;
+        var dataPadraoFinalModal = new Date();
+        var dataPadraoInicialModal = new Date();
+        var variavelIdProcessoAnterior;
+        var NumProcesso;
+        dataPadraoInicialModal.setDate(dataPadraoFinalModal.getDate() - 30);
+        $('#dtinicialModal').datepicker('setDate', dataPadraoInicialModal);
+        $('#dtfinalModal').datepicker('setDate', dataPadraoFinalModal);
+        $(".loadingPesquisaModal").hide();
+
+
+        $(document).ready(function () {
+
+            //Botao Pesquisa Modal
+            $("#BtnPesquisaModal").click(function () {
+
+                variavelIdProcessoAnterior = null;
+
+                _filtros.palavraChave = $('#txtPalavrasChaveModal').val();
+                _filtros.dataIni = $('#dtinicialModal').datepicker('getDate');
+                _filtros.dataFim = $('#dtfinalModal').datepicker('getDate');
+
+                ModalPromocoes(paginaModal, quantidadePagModal);
+
+            });
+
+            // selecionar o Processo
+            $(document).on("click", ".ModalPromocao", function () {
+
+                var variavelProcessoAtual = $(this).data('idprocesso');
+
+                if (variavelProcessoAtual != variavelIdProcessoAnterior) {
+
+                    $(this).toggleClass('content no-top-border SelecionarModal');
+
+                    if (variavelIdProcessoAnterior != undefined) {
+
+                        $('.ModalPromocao[data-idprocesso="' + variavelIdProcessoAnterior + '"]').toggleClass('content no-top-border SelecionarModal');
+
+                    }
+                }
+
+                NumProcesso = $(this).find('#numprocesso').data('numproc');
+
+                variavelIdProcessoAnterior = $(this).data('idprocesso');
+            });
+
+
+            // botao selecionar Modal
+            $(document).on("click", "#SelecionarProcesso", function () {
+
+                if (variavelIdProcessoAnterior == undefined) {
+                    ChamaSwal();
+
+                } else {
+
+                    //$('#idProcesso').attr('value', variavelIdProcessoAnterior);
+
+
+                    swal({
+                        title: "Atenção",
+                        text: "Você tem certeza que deseja trocar esta promoção?",
+                        type: "warning",
+                        showCancelButton: true,
+                        cancelButtonText: "Cancelar",
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Sim",
+                        closeOnConfirm: false
+                    },
+                               function (isConfirm) {
+
+                                   if (isConfirm){
+                                       window.location.href = "/Promocao/Editar/?idPromo=" + _Dados.idPromocao + "&idProc=" + variavelIdProcessoAnterior;
+                                       $('#modalPesquisaProcesso').modal('hide');
+                                       $('#txtNumeroProcesso').val(NumProcesso);
+
+                                   }else{
+                                       //nothing
+                                   }
+
+                               });
+                }
+
+            });
+
+
+            //document.getElementById("txtValorPremio").onblur = function () {                
+            //    if(!!this.value){
+            //    this.value = parseFloat(this.value)
+            //                   .toFixed(2)
+            //                   .toString()
+            //                   .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+            //    }
+            //}
+            $("#txtValorPremio").on('change paste keyup', function () {
+               
+                var valor = $("#txtValorPremio").val().toString().replace(",", "").replace(".", "");
+                var tmp = valor + '';
+                tmp = tmp.replace(/([0-9]{2})$/g, ",$1");
+                if (tmp.length > 6) {
+                    tmp = tmp.replace(/([0-9]{3}),([0-9]{2}$)/g, ".$1,$2");
+                    var resultado = tmp.split(",");
+
+                    resultado[0] = resultado[0].replace(".", "").replace(/\B(?=(\d{3})+(?!\d))/g, ",").replace(/,/g, '.');
+                    resultado.join();
+                    tmp = resultado;
+                }
+                $("#txtValorPremio").val("");
+                $("#txtValorPremio").val(tmp);
+
+            });
+
+        
+        });
+
+        CarregarComboOrgaos();
+        CarregaComboEmpresas();
+        carregaComboEstados();
+        carregaComboMunicipios();
+        CarregaComboModalidades();
+
+
+        CarregaArquivosRegulamento();
+        CarregaArquivosRelacionado();
+
+        function atualizaCampos() {
+            setTimeout(function () {
+                // Orgãos
+                // ----------------------
+                $("#cmbOrgaos").val(@Model.promocao.idOrgaoregulador).trigger('chosen:updated');
+
+                // Empresas
+                // ----------------------
+                var listaEmpresas = [];
+                @{
+                    foreach(var emp in Model.promocao.Empresas)
+                    {
+                    <text>
+                        listaEmpresas.push([@emp.idempresa]);
+                    </text>
+                }
+                }
+
+                $.each(listaEmpresas, function (i, item) {
+                    $("#CampoEmpresas option[value=" + item + "]").attr("selected", "selected");
+                    $("#CampoEmpresas").trigger('chosen:updated');
+                });
+
+                // Estados
+                // ----------------------
+                var listaEstados = [];
+                @{
+                foreach(var est in Model.promocao.Estados)
+                {
+                    <text>
+                listaEstados.push([ @est.id]);
+                </text>
+                }
+            }
+                $.each(listaEstados, function (i, item) {
+                    $("#CampoEstados option[value=" + item + "]").attr("selected", "selected");
+                    $("#CampoEstados").trigger('chosen:updated');
+                });
+
+                // Municipios
+                // ----------------------
+                var listaMunicipios = [];
+                @{
+                foreach(var mun in Model.promocao.Municipios)
+                {
+                    <text>
+                listaMunicipios.push([ @mun.id]);
+                </text>
+                }
+            }
+                $.each(listaMunicipios, function (i, item) {
+                    $("#CampoMunicipios option[value=" + item + "]").attr("selected", "selected");
+                    $("#CampoMunicipios").trigger('chosen:updated');
+                });
+
+                // Modalidaes
+                // ----------------------
+                if( IdModalidade)
+                    $("#cmbModalidades").val(IdModalidade).trigger('chosen:updated');
+
+            }, 100);
+        }
+
+        function CarregarComboOrgaos() {
+            var uri = "/api/PromocaoAPI/GetOrgaosRegulador/";
+
+            $.getJSON(uri)
+                .done(function (data) {
+
+                    $.each(data, function (key, item) {
+                        $("#cmbOrgaos").append("<option value=" + item.idorgao + " >" + item.nome + "</option>");
+                        $("#cmbOrgaos").trigger('chosen:updated');
+                    });
+                });
+
+        }
+
+        function CarregaComboEmpresas() {
+            var url = "/api/EmpresaAPI/GetItensComboEmpresa";
+
+            $.ajax({
+                type: "GET",
+                url: url,
+                async: false,
+                success: function (data) {
+
+                    $("#CampoEmpresas").empty();
+                    $.each(data, function (i, item) {
+                        $("#CampoEmpresas").append("<option value=" + item.idItem + ">" + item.nome + "</option>");
+
+                    });
+                    $("#CampoEmpresas").trigger('chosen:updated');
+
+                }
+            });
+        }
+
+        function carregaComboEstados() {
+
+            var url = "/api/ProcessoAPI/GetItensComboEstados";
+
+            $.ajax({
+                type: "GET",
+                url: url,
+                async: false,
+                success: function (data) {
+
+                    $("#CampoEstados").empty();
+                    $.each(data, function (i, item) {
+                        $("#CampoEstados").append("<option value=" + item.idItem + ">" + item.nome + "</option>");
+
+                    });
+                    $("#CampoEstados").trigger('chosen:updated');
+                }
+            });
+        }
+
+        function carregaComboMunicipios() {
+
+            var url = "/api/ProcessoAPI/GetItensComboMunicipios";
+
+            $.ajax({
+                type: "GET",
+                url: url,
+                async: false,
+                success: function (data) {
+
+                    $("#CampoMunicipios").empty();
+                    $.each(data, function (i, item) {
+                        $("#CampoMunicipios").append("<option value=" + item.idItem + ">" + item.nome + "</option>");
+
+                    });
+                    $("#CampoMunicipios").trigger('chosen:updated');
+                }
+            });
+        }
+
+        function CarregaComboModalidades() {
+            var url = "/api/PromocaoAPI/GetModalidades";
+
+            $.ajax({
+                type: "GET",
+                url: url,
+                async: false,
+                success: function (data) {
+
+                    $("#cmbModalidades").empty();
+                    $.each(data, function (i, item) {
+                        $("#cmbModalidades").append("<option value=" + item.idItem + ">" + item.nome + "</option>");
+
+                    });
+                    $("#cmbModalidades").trigger('chosen:updated');
+                }
+            });
+        }
+
+        function Cancelar() {
+            window.location = "/Promocao";
+        }
+
+        function salvarPromocao() {
+            _Dados.nome = $('#txtNome').val() != "" ? $('#txtNome').val() : null;
+            _Dados.idOrgaoregulador = $('#cmbOrgaos').val() != "" && $('#cmbOrgaos').val() != 0 ? $('#cmbOrgaos').val() : null;
+            _Dados.certificadoAutorizacao = $('#txtNumeroProcesso').val() != "" ? $('#txtNumeroProcesso').val() : null;
+            _Dados.idProcesso = $('#idProcesso').val() != "" ? $('#idProcesso').val() : null;
+            _Dados.idRedeSocial = $('#idRedeSocial').val() != "" ? $('#idRedeSocial').val() : null;
+            _Dados.nomeRedeSocial = $('#idRedeSocial').data('nomeredesocial');
+            _Dados.idNoticia = $('#idNoticia').val() != "" ? $('#idNoticia').val() : null;
+            _Dados.dtCadastro = $('#dtCadastro').val() != "" ? ConverteDataStringParaData($('#dtCadastro').val()) : null;
+            _Dados.dtVigenciaIni = $('#dtVigenciaIni').val() != "" ? ConverteDataStringParaData($('#dtVigenciaIni').val()) : null;
+            _Dados.dtVigenciaFim = $('#dtVigenciaFim').val() != "" ? ConverteDataStringParaData($('#dtVigenciaFim').val()) : null;
+            _Dados.outrosInteressados = $('#txtOutrosInteressados').val() != "" ? $('#txtOutrosInteressados').val() : null;
+            _Dados.abrangenciaNacional = $('#checkAbrangenciaNacional').is(':checked');
+            _Dados.valorPremio = $('#txtValorPremio').val() != "" ? $('#txtValorPremio').val().replace(/,/g, "") : null;
+            _Dados.linkSitePromocao = $('#txtLinkSite').val() != "" ? $('#txtLinkSite').val() : null;
+            _Dados.linkFacebook = $('#txtLinkFacebook').val() != "" ? $('#txtLinkFacebook').val() : null;
+            _Dados.linkInstagram = $('#txtLinkInstagram').val() != "" ? $('#txtLinkInstagram').val() : null;
+            _Dados.linkTwitter = $('#txtLinkTwitter').val() != "" ? $('#txtLinkTwitter').val() : null;
+            _Dados.linkYoutube = $('#txtLinkYoutube').val() != "" ? $('#txtLinkYoutube').val() : null;
+            _Dados.mecanicaPromo = $('#txtMecanica').val() != "" ? $('#txtMecanica').val() : null;
+            _Dados.produtosParticipantes = $('#txtProdutoParticipante').val() != "" ? $('#txtProdutoParticipante').val() : null;
+            _Dados.premiosPromo = $('#txtPremios').val() != "" ? $('#txtPremios').val() : null;
+            _Dados.linkRegulamento = $('#txtLinkRegulamento').val() != "" ? $('#txtLinkRegulamento').val() : null;
+            _Dados.textoRegulamento = $('#txtTextoRegulamento').val() != "" ? $('#txtTextoRegulamento').val() : null;
+            _Dados.excluido = false;
+
+            _Dados.ListaEmpresas = $('#CampoEmpresas').val();
+            _Dados.ListaEstados = $('#CampoEstados').val();
+            _Dados.ListaMunicipios = $('#CampoMunicipios').val();
+            _Dados.idModalidade = $('#cmbModalidades').val();
+
+            $.ajax({
+                type: "POST",
+                url: "/api/PromocaoAPI/EditarPromocao",
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(_Dados),
+                success: function (id) {
+                    if (id != "" && id != 0) {
+                        window.location = "/Promocao/";
+                    }
+                }
+            });
+        }
+
+        function printSite() {
+            $('#icone-botao').hide();
+            $('.loading-gera-print').show();
+            var url = $('#txtLinkSite').val();
+            var idPromo = $('#idPromocao').val();
+
+            $.ajax({
+                type: "POST",
+                url: "/api/PromocaoAPI/PrintSite/?linkSite=" + url + "&idPromo=" + idPromo,
+                success: function (data) {
+                    $('.loading-gera-print').hide();
+                    $('#icone-botao').removeClass("fa fa-file-image-o");
+
+                    if (data) {
+                        $('#icone-botao').removeClass("fa fa-times");
+                        $('#icone-botao').addClass("fa fa-check");
+                        $('#icone-botao').show("slow");
+                        CarregaArquivosRelacionado();
+                    }
+                    else {
+                        $('#icone-botao').removeClass("fa fa-check");
+                        $('#icone-botao').addClass("fa fa-times");
+                        $('#icone-botao').fadeIn();
+                    }
+
+                }
+            });
+        }
+
+    </script>
+
+
+}

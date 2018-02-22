@@ -1,0 +1,451 @@
+﻿
+<div class="modal-dialog modal-lg">
+    <div class="modal-content animated fadeIn">
+
+        <div class="modal-header">
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="control-label" for="product_name" style="float: left;">Palavras-chave</label>
+                        <input type="text" id="txtPalavrasChaveModal" name="product_name" value="" placeholder="" class="form-control input-mini">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label" for="status" style="float: left;">Selecione o período</label>
+                        
+                        <div class="input-daterange input-group" id="selecaoDatas" style="float: left;">
+                        
+                                <input type="text" class="input-sm form-control" name="start" id="dtinicialModal" value="">
+                                <span class="input-group-addon">até</span>
+                                <input type="text" class="input-sm form-control" name="end" id="dtfinalModal" value="">
+                        
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="col-md-2" style="top:20px; margin-right: -10px;">
+                    <button class="ladda-button btn btn-primary" data-style="expand-left" id="BtnPesquisaModal">
+                        <span class="ladda-label">Pesquisar</span>
+                        <span class="ladda-spinner"></span>
+                    </button>
+                </div>
+            
+            
+            </div>
+
+
+        </div>
+       
+       
+
+         <div class="modal-body" id="CarregarPromocao" style="height:600px; overflow-y: auto; background:white;"> 
+
+             <div class="loadingPesquisaModal">
+                 <div class="sk-spinner sk-spinner-three-bounce">
+                     <div class="sk-bounce1"></div>
+                     <div class="sk-bounce2"></div>
+                     <div class="sk-bounce3"></div>
+                 </div>
+             </div>
+
+             <div class="conteudo">
+
+
+
+
+             </div>
+            
+         
+         </div>
+
+        
+        
+        <div class="modal-footer row" style="text-align:center;">
+      
+            <div class="col-md-2 push-md-10" style="float: right;">
+                    <button type="button" class="ladda-button btn btn-primary" data-style="expand-left" id="SelecionarProcesso">Selecionar</button>
+                </div>
+
+                <div class="col-md-12" style="float: right;">
+                    <div class="paginacao_modal" style="margin-top:20px;">
+
+                    </div>
+                </div>
+
+
+            </div>
+
+    </div>
+</div>
+
+    <script>
+
+
+        function ModalPromocoes(pag, quantidade) {
+             
+            var filtro = new Object();
+            filtro.pesquisa = _filtros.palavraChave;
+            filtro.numproc = '';
+            filtro.dataInicial = _filtros.dataIni != null && _filtros.dataIni != "" ? ConverteDataParaDataJson(_filtros.dataIni) : new Date(1900, 01, 01);
+            filtro.dataFinal = _filtros.dataFim != null && _filtros.dataFim != "" ? ConverteDataParaDataJson(_filtros.dataFim) : new Date(2200, 01, 01);
+            filtro.ordenacao = false;
+            filtro.pag = pag;
+            filtro.quantidade = quantidade;
+            // $("#CarregarPromocao").empty();
+
+            $("#CarregarPromocao > .loadingPesquisaModal").show();
+            $("#CarregarPromocao > .conteudo").empty();
+
+            $.ajax({
+                type: "POST",
+                url: "/api/PromocaoAPI/RetornaPromocaoSeae/",
+                data: JSON.stringify(filtro),
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+
+                    TotalProcessos = data.TotalProcessos;
+
+
+                    if (TotalProcessos > 0) {
+                        $("#CarregarPromocao > .loadingPesquisaModal").hide();
+                        
+                        CarregaModal(data, pag, quantidade);
+                        
+
+                    } else {
+                        $(".loadingPesquisaModal").hide();
+                        var modeloResposta = [];
+                        modeloResposta.push('<div style="text-align:center;height: 300px;padding-top: 150px;" id="Informacao">');
+                        modeloResposta.push('<h1>Não há dados nessa pesquisa.</h1>');
+                        modeloResposta.push('</div>');
+
+                        var modelo = modeloResposta.join('');
+                        $("#CarregarPromocao > .conteudo").append(modelo);
+                        
+                    }
+                }
+                  
+            });
+
+        }         
+
+        function mudouPaginaProcessos(pagina) {
+
+             ModalPromocoes(pagina, quantidadePagModal)
+         }
+
+        function ChamaSwal() {
+
+             swal({
+                 title: "Atenção.",
+                 text: "Selecione um processo para o cadastro.",
+                 showConfirmButton: true,
+                 confirmButtonText: "Ok"
+             },
+             function (isConfirm) {
+                 if (isConfirm) {
+                     $('html, body').animate({ scrollTop: 0 }, 'slow');
+                 }
+             });
+         }
+
+        function CarregaModal(data, pag, quantidade) {
+         
+         
+             paginacaoProcessoModal.CriaPaginacao(".paginacao_modal", parseInt((TotalProcessos / 10) + 0.9), TotalProcessos, pag);
+             paginacaoProcessoModal.setMudouPagina(mudouPaginaProcessos);
+
+             $.each(data.ListaProcessos, function (e, item) {
+
+
+                 var modeloLinhaTempo = [];
+
+                 modeloLinhaTempo.push('<div class="timeline-item">');
+                 modeloLinhaTempo.push('<div class="row">');
+                 modeloLinhaTempo.push('<div class="col-md-3 date">');
+                 modeloLinhaTempo.push('<i class="fa fa-plus" style="float:right;"></i><br><br>');
+
+                 modeloLinhaTempo.push(item.dtprocesso != null ? '<strong>' + formataDataInvertida(item.dtprocesso) + '</strong>' : '<strong>Não há informação</strong>');
+                 modeloLinhaTempo.push('</div>');
+
+                 modeloLinhaTempo.push('<div class="col-md-10 content no-top-border ModalPromocao" data-idprocesso="' + item.idprocesso + '" Style=" cursor:pointer;">');
+                 // Linha Processo Nome
+                 modeloLinhaTempo.push('<div class="row">');
+                 modeloLinhaTempo.push('<div class="col-md-12 item-lista">');
+
+                 modeloLinhaTempo.push(item.nome != null && item.nome != "" ? '<label class="font-bold">Nome: ' + item.nome + '</label>' : '<label class="font-bold" >Processo Nº: ' + item.numprocesso + '</label>');
+
+                 modeloLinhaTempo.push('</div>');
+                 modeloLinhaTempo.push('</div>');
+                 //--------------------------------------------------------
+
+                 //Linha Processo, Vigencia e Valor
+                 modeloLinhaTempo.push('<div class="row">');
+                 modeloLinhaTempo.push('<div class="col-md-4 item-lista">');
+                 modeloLinhaTempo.push('<label class="font-bold" id="numprocesso" data-numproc="' + item.numprocesso + '">Processo nº</label>');
+                 modeloLinhaTempo.push(item.numprocesso != null && item.numprocesso != "" ? '<p>' + item.numprocesso + '</p>' : '<p>' + item.numprocesso + '</p>');
+                 modeloLinhaTempo.push('</div>');
+
+                 modeloLinhaTempo.push('<div class="col-md-4  item-lista">');
+                 modeloLinhaTempo.push('<label class="font-bold" id="DataVigencia" data-dtvigenciafim="' + item.dtvigenciaini + '" data-dtvigenciaini="' + item.dtvigenciafim + '" >Vigencia</label>');
+
+                 if (item.dtvigenciaini != null) {
+                     modeloLinhaTempo.push(item.dtvigenciafim == null ? '<p>' + formataDataInvertida(item.dtvigenciaini) + '</p>' : '<p>' + formataDataInvertida(item.dtvigenciaini) + ' à ' + formataDataInvertida(item.dtvigenciafim) + '</p>');
+                 } else {
+                     modeloLinhaTempo.push('<p> Não há informação na data de vigencia</p>');
+
+                 }
+
+                 modeloLinhaTempo.push('</div>');
+
+                 modeloLinhaTempo.push('<div class="col-md-4  item-lista">');
+                 modeloLinhaTempo.push('<label class="font-bold" id="ValorPremio" data-valorpremio="'+item.valortotalpremios+'">Valor total de premios</label>');
+
+                 modeloLinhaTempo.push(item.valortotalpremios != 0 ? '<p>R$ ' + formataNumero(item.valortotalpremios) + '</p>' : '<p>Não há informação no valor do prêmio</p>');
+
+                 modeloLinhaTempo.push('</div>');
+                 modeloLinhaTempo.push('</div>');
+                 //---------------------------------------------------------------
+
+                 // Linha Situacao e Setores
+                 modeloLinhaTempo.push('<div class="row">');
+                 modeloLinhaTempo.push('<div class="col-md-4 item-lista">');
+                 modeloLinhaTempo.push('<label class="font-bold">Situação</label>');
+
+                 modeloLinhaTempo.push(item.situacaoatual != null && item.situacaoatual != "" ? '<p>' + item.situacaoatual + '</p>' : '<p>Não há informação da situação</p>');
+
+                 modeloLinhaTempo.push('</div>');
+
+                 modeloLinhaTempo.push('<div class="col-md-8  item-lista">');
+
+                 modeloLinhaTempo.push('<label class="font-bold">Setores</label><br>');
+
+                 if (item.setores != 0) {
+
+                     $.each(item.setores, function (i, setor) {
+
+                         modeloLinhaTempo.push(setor.codsetor + '.' + setor.descsetor + '/' + setor.codsubsetor + '.' + setor.descsubsetor + '<br>');
+
+
+                     });
+
+                 }
+
+                 modeloLinhaTempo.push('</div>');
+                 modeloLinhaTempo.push('</div>');
+                 //-----------------------------------------------------
+
+                 // Linha Interessados
+                 modeloLinhaTempo.push('<div class="row">');
+                 modeloLinhaTempo.push('<div class="col-md-12  item-lista" id="textointeressados">');
+                 modeloLinhaTempo.push('<label class="font-bold">Interessados</label>');
+
+                 modeloLinhaTempo.push(item.interessados != null ? '<p>' + item.interessados + '</p>' : '<p> Não há informação nos interessados</p>');
+
+                 modeloLinhaTempo.push('</div>');
+                 modeloLinhaTempo.push('</div>');
+                 //-----------------------------------------------
+
+                 //Linha Abrangencia
+                 modeloLinhaTempo.push('<div class="row">');
+                 modeloLinhaTempo.push('<div class="col-md-12  item-lista">');
+                 modeloLinhaTempo.push('<label class="font-bold" id="abrangencia" data-abrandencian="'+item.abrangencia_nacional+'" >Abrangencia</label><br>');
+
+                 if (item.abrangencia_nacional == true) {
+
+                     modeloLinhaTempo.push('Nacional');
+
+                 } else if (item.abrangmunicipios != 0) {
+
+                     var listamunicipios = [];
+                     $.each(item.abrangmunicipios, function (i, muni) {
+
+                         listamunicipios.push(muni.nome + '/' + muni.uf);
+
+                     });
+
+                     modeloLinhaTempo.push(listamunicipios.join(', '));
+
+                 } else {
+                     modeloLinhaTempo.push('<p>Não há informação na abrangencia</p>');
+                 }
+
+                 modeloLinhaTempo.push('</div>');
+                 modeloLinhaTempo.push('</div>');
+                 //--------------------------------------------
+
+                 // linha Empresas
+                 modeloLinhaTempo.push('<div class="row">');
+                 modeloLinhaTempo.push('<div class="col-md-12  item-lista">');
+
+                 modeloLinhaTempo.push('<label class="font-bold">Empresas</label><br>');
+
+                 if (item.empresas != 0) {
+                     var listaempresas = [];
+                     $.each(item.empresas, function (i, empresa) {
+
+                         listaempresas.push(empresa.nome)
+                     });
+
+                     modeloLinhaTempo.push(listaempresas.join(', '));
+
+                 } else {
+
+                     modeloLinhaTempo.push('<p>Não há informação das empresas</p>');
+
+                 }
+
+                 modeloLinhaTempo.push('</div>');
+                 modeloLinhaTempo.push('</div>');
+                 //---------------------------------------
+
+                 // Linha Forma de Contramplcao
+                 modeloLinhaTempo.push('<div class="row">');
+                 modeloLinhaTempo.push('<div class="col-md-12  item-lista">');
+
+                 modeloLinhaTempo.push('<label class="font-bold">Forma de contemplação</label>');
+                 modeloLinhaTempo.push(item.formacontemplacao != null && item.formacontemplacao != "" ? '<p>' + item.formacontemplacao + '</p>' : '<p>Não há informação da comtemplação </p>');
+
+                 modeloLinhaTempo.push('</div>');
+                 modeloLinhaTempo.push('</div>');
+                 //-------------------------------------------------------------
+
+                 modeloLinhaTempo.push('<div class="row">');
+                 modeloLinhaTempo.push('<div class="col-md-12  item-lista">');
+
+                 modeloLinhaTempo.push('<label class="font-bold">Modalidade</label>');
+                 modeloLinhaTempo.push(item.modalidade != null && item.modalidade != "" ? '<p>' + item.modalidade + '</p>' : '<p>Não há informação da modalidade </p>');
+
+                 modeloLinhaTempo.push('</div>');
+                 modeloLinhaTempo.push('</div>');
+
+
+                 modeloLinhaTempo.push('<div class="row timeline-detalhes">');
+                 modeloLinhaTempo.push('<div class="col-md-12 timeline-itemdetalhe">');
+                 modeloLinhaTempo.push('<div class="ibox-title">');
+                 modeloLinhaTempo.push('<h5>Promoção</h5>');
+                 modeloLinhaTempo.push('<div class="ibox-tools">');
+                 modeloLinhaTempo.push('<a class="collapse-link">');
+                 modeloLinhaTempo.push('<i class="fa fa-chevron-down"></i>');
+                 modeloLinhaTempo.push('</a>');
+                 modeloLinhaTempo.push('</div>');
+                 modeloLinhaTempo.push('</div>');
+                 modeloLinhaTempo.push('<div class="ibox-content">');
+
+
+                 modeloLinhaTempo.push(item.resumo != null && item.resumo != "" ? '' + item.resumo + '' : 'Não há informação da promoção');
+
+                 modeloLinhaTempo.push('</div>');
+                 modeloLinhaTempo.push('</div>');
+                 modeloLinhaTempo.push('<div class="col-md-12 timeline-itemdetalhe">');
+                 modeloLinhaTempo.push('<div class="ibox-title">');
+                 modeloLinhaTempo.push('<h5>Como participar</h5>');
+                 modeloLinhaTempo.push('<div class="ibox-tools">');
+                 modeloLinhaTempo.push('<a class="collapse-link">');
+                 modeloLinhaTempo.push('<i class="fa fa-chevron-down"></i>');
+                 modeloLinhaTempo.push('</a>');
+                 modeloLinhaTempo.push('</div>');
+                 modeloLinhaTempo.push('</div>');
+                 modeloLinhaTempo.push('<div class="ibox-content" id="textoRegulamento">');
+
+                 modeloLinhaTempo.push(item.comoparticipar != null && item.comoparticipar != "" ? '' + item.comoparticipar + '' : 'Não há informação de como participar');
+
+                 modeloLinhaTempo.push('</div>');
+                 modeloLinhaTempo.push('</div>');
+                 modeloLinhaTempo.push('<div class="col-md-12 timeline-itemdetalhe">');
+                 modeloLinhaTempo.push('<div class="ibox-title">');
+                 modeloLinhaTempo.push('<h5>Premiações</h5>');
+                 modeloLinhaTempo.push('<div class="ibox-tools">');
+                 modeloLinhaTempo.push('<a class="collapse-link">');
+                 modeloLinhaTempo.push('<i class="fa fa-chevron-down"></i>');
+                 modeloLinhaTempo.push('</a>');
+                 modeloLinhaTempo.push('</div>');
+                 modeloLinhaTempo.push('</div>');
+                 modeloLinhaTempo.push('<div class="ibox-content" id="PremiosPromocao">');
+
+                 modeloLinhaTempo.push(item.premios != null && item.premios != "" ? '' + item.premios + '' : 'Não há informação do prêmio');
+
+                 modeloLinhaTempo.push('</div>');
+                 modeloLinhaTempo.push('</div>');
+                 modeloLinhaTempo.push('<div class="col-md-12 timeline-itemdetalhe">');
+                 modeloLinhaTempo.push('<div class="ibox-title">');
+                 modeloLinhaTempo.push('<h5>Documentos Complementares</h5>');
+                 modeloLinhaTempo.push('<div class="ibox-tools">');
+                 modeloLinhaTempo.push('<a class="collapse-link">');
+                 modeloLinhaTempo.push('<i class="fa fa-chevron-down"></i>');
+                 modeloLinhaTempo.push('</a>');
+                 modeloLinhaTempo.push('</div>');
+                 modeloLinhaTempo.push('</div>');
+                 modeloLinhaTempo.push('<div class="ibox-content">');
+                 modeloLinhaTempo.push('<table class="table links">');
+                 modeloLinhaTempo.push('<thead>');
+                 modeloLinhaTempo.push('<tr>');
+                 modeloLinhaTempo.push('<th>Nº do documento</th>');
+                 modeloLinhaTempo.push('<th>Coordenação</th>');
+                 modeloLinhaTempo.push('<th>Situação</th>');
+                 modeloLinhaTempo.push('<th>Download</th>');
+                 modeloLinhaTempo.push('</tr>');
+                 modeloLinhaTempo.push('</thead>');
+                 modeloLinhaTempo.push('<tbody>');
+
+                 if (item.arquivos) {
+                     $.each(item.arquivos, function (i, arquivo) {
+
+                         modeloLinhaTempo.push('<tr>');
+                         modeloLinhaTempo.push('<td>' + arquivo.numdoc + '</td>');
+                         modeloLinhaTempo.push('<td>' + arquivo.coordenacao + '</td>');
+                         modeloLinhaTempo.push('<td>' + arquivo.situacao + '</td>');
+                         modeloLinhaTempo.push('<td> <a href="' + arquivo.link + '" target="_blank"><div class="fa fa-download" style="color:gray;"></div></a></td>');
+                         modeloLinhaTempo.push('</tr>');
+
+                     });
+
+                 }
+
+                 modeloLinhaTempo.push('</tbody>');
+                 modeloLinhaTempo.push('</table');
+                 modeloLinhaTempo.push('</div>');
+                 modeloLinhaTempo.push('</div>');
+                 modeloLinhaTempo.push('</div>');
+                 modeloLinhaTempo.push('</div>');
+                 modeloLinhaTempo.push('</div>');
+                 modeloLinhaTempo.push('</div>');
+
+
+                 var modelo = modeloLinhaTempo.join('');
+                 $("#CarregarPromocao > .conteudo").append(modelo);
+             });
+             
+             $(".timeline-itemdetalhe .ibox-title").click(function () {
+
+                 if ($(this).find("i.fa").hasClass("fa-chevron-down")) {
+                     $(this).find("i.fa").addClass("fa-chevron-up").removeClass("fa-chevron-down");
+                     $(this).parent().find(".ibox-content").slideDown(500);
+                 }
+                 else {
+                     $(this).find("i.fa").addClass("fa-chevron-down").removeClass("fa-chevron-up");
+                     $(this).parent().find(".ibox-content").slideUp(500);
+                 }
+             });
+
+             $(".timeline-item i").click(function () {
+                 if ($(this).hasClass("fa-plus")) {
+                     $(this).parent().parent().find(".timeline-detalhes").slideDown(500);
+                     $(this).removeClass("fa-plus").addClass("fa-minus");
+                     $(this).parent().parent().parent().addClass("aberto");
+                 }
+                 else {
+                     $(this).parent().parent().find(".timeline-detalhes").slideUp(500);
+                     $(this).removeClass("fa-minus").addClass("fa-plus");
+                     $(this).parent().parent().parent().removeClass("aberto");
+                 }
+             });
+
+
+            }
+
+
+    </script>

@@ -1,0 +1,451 @@
+﻿
+
+@{
+    ViewBag.Title = "Mapa captura";
+}
+
+<style>
+    .slick_demo_2 .ibox-content {
+        margin: 0 5px;
+        padding: 5px;
+    }
+</style>
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Mapa Dados Captura</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/Home">Home</a>
+            </li>
+            <li>
+                <a href="/MapaRegistro/">Mapa Dados Captura</a>
+            </li>
+            <li class="active">
+                <strong>Editar</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+
+    </div>
+</div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Editar Mapa Dados Captura</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="form-horizontal" enctype="multipart/form-data" method="POST">
+
+                        @*<div class="form-group">
+                                <label class="col-lg-2 control-label">Empresa</label>
+                                <div class="col-lg-10">
+                                    <select id="cmbEmpresa" data-placeholder="Selecione uma empresa" class="chosen-select cmbEmpresa" name="Empresa" tabindex="2">></select>
+                                </div>
+                            </div>*@
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Empresa</label>
+                            <div class="col-lg-10" id="choosenEmpresas">
+
+                                <div class="input-group" style="width:100%;">
+                                    <select data-placeholder="Selecione as empresas..." class="chosen-select" id="cmbEmpresa" multiple tabindex="4"></select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Marca</label>
+                            <div class="col-lg-10">
+                                <input id="txtNomemarca" type="text" placeholder="Nome da marca" class="typeahead form-control">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Produto</label>
+                            <div class="col-lg-10">
+                                <input id="txtNomeproduto" type="text" placeholder="Nome do produto" class="typeahead form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Numero do registro</label>
+                            <div class="col-lg-10">
+                                <input id="txtNumregistro" type="text" placeholder="Nome do produto" class="typeahead form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">CNPJ</label>
+                            <div id="listaCnpj" class="col-lg-9">
+                                <input id="txtcnpj" type="text" placeholder="CNPJ" class="form-control txtcnpj" data-mask="99.999.999/9999-99">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Data de concessão</label>
+                            <div class="col-lg-10">
+                                <input id="txtDataConcessao" type="text" class="form-control" data-mask="99/99/9999" placeholder="dd/mm/yyyy">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Estado</label>
+                            <div class="col-lg-10">
+                                <select id="cmbEstado" data-placeholder="Selecione um Estado" class="chosen-select cmbEmpresa" name="Estado" tabindex="2"></select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Área</label>
+                            <div class="col-lg-10">
+                                <input id="txtArea" type="text" placeholder="Nome da Área" class="typeahead form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Espécie</label>
+                            <div class="col-lg-10">
+                                <input id="txtEspecie" type="text" placeholder="Nome do Espécie" class="typeahead form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Subespécie</label>
+                            <div class="col-lg-10">
+                                <input id="txtSubespecie" type="text" placeholder="Nome do Subespécie" class="typeahead form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Base</label>
+                            <div class="col-lg-10">
+                                <input id="txtBase" type="text" placeholder="Nome da Base" class="typeahead form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Característica</label>
+                            <div class="col-lg-10">
+                                <input id="txtCaracteristica" type="text" placeholder="Nome da Característica" class="typeahead form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Atributo</label>
+                            <div class="col-lg-10">
+                                <input id="txtAtributo" type="text" placeholder="Nome do Atributo" class="typeahead form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Complemento</label>
+                            <div class="col-lg-10">
+                                <input id="txtComplemento" type="text" placeholder="Nome do Complemento" class="typeahead form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Origem</label>
+                            <div class="col-lg-10">
+                                <input id="txtOrigem" type="text" placeholder="Nome da Origem" class="typeahead form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Modo Aplicação</label>
+                            <div class="col-lg-10">
+                                <input id="txtModoAplicacao" type="text" placeholder="Nome da Origem" class="typeahead form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Status</label>
+                            <div class="col-lg-10">
+                                <select id="cmbStatus" data-placeholder="Selecione um status" class="chosen-select" name="Status" tabindex="2">
+                                    <option value="cadastrado">Cadastrado</option>
+                                    <option value="cancelado">Cancelado</option>
+                                    <option value="registrado">Registrado</option>
+                                    <option value="Suspenso">Suspenso</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-8 col-lg-offset-2">
+                                <br />
+                                <button class="btn btn-primary" @*onclick="SalvaEdicao()"*@ id="btnSalvar" type="button">Salvar</button>
+
+                            </div>
+                            <div class="col-lg-2">
+                                <br />
+                                <button class="btn btn-white" onclick="cancelar()" type="button">Cancelar</button>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section styles {
+
+    <link href="~/Content/SweetAlert/sweetalert.css" rel="stylesheet" />
+    <link href="~/Content/plugins/chosen/bootstrap-chosen-bootstrap-chosen.css" rel="stylesheet" />
+    <link href="~/Content/plugins/datapicker/datepicker3.css" rel="stylesheet" />
+    <link href="~/Content/plugins/jasny/jasny-bootstrap.min.css" rel="stylesheet" />
+}
+
+@section scripts {
+
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/sweetAlert")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/dataPicker")
+    <script src="~/Scripts/plugins/typeahead/bootstrap3-typeahead.js"></script>
+    <script src="~/Scripts/utils.js"></script>
+
+    <script>
+
+        var idCapturaAtual = null;
+
+        $(document).ready(function () {
+
+            $('#cmbEmpresa').on('change', function () {
+
+                //if (cmbEmpresa.value != "0") {
+                //    //  $('.chosen-single').removeClass("combo-invalido");
+                //}
+
+                $("#txtNomemarca").typeahead('destroy');
+
+                var listaIdEmpresa;
+                if ($("#cmbEmpresa").val() == null || $("#cmbEmpresa").val() == "" ) {
+                    listaIdEmpresa = [];
+                } else {
+                    listaIdEmpresa = $("#cmbEmpresa").val();
+                }
+
+                CarregaAutocompleteMarcas(listaIdEmpresa);
+
+            });
+
+            var config = {
+                '.chosen-select': { width: "100%" },
+                '.chosen-select-deselect': { allow_single_deselect: true },
+                '.chosen-select-no-single': { disable_search_threshold: 10 },
+                '.chosen-select-no-results': { no_results_text: 'Oops, nothing found!' },
+                '.chosen-select-width': {}
+            }
+            for (var selector in config) {
+                $(selector).chosen(config[selector]);
+            }
+
+            CarregaCaptura(@ViewBag.idCaptura);
+            CarregaAutocompleteMarcas(0);
+
+        });
+
+        $("#btnSalvar").click(function () {
+            VerificaAssociacaoCnpjEmpresaMapa();
+        });
+
+        function cancelar() {
+            window.location = "/MapaCaptura/";
+
+            localStorage.setItem("capturasVoltarEditar", 1);
+
+        }
+
+        function CarregaCaptura(idCaptura) {
+
+            var uri = "/api/MapaCapturaAPI/GetRetornaCaptura/" + idCaptura;
+
+            $.getJSON(uri)
+             .done(function (data) {
+
+                 $("#txtNomemarca").val(data.Captura.marca);
+                 $("#txtNomeproduto").val(data.Captura.produto);
+                 $("#txtNumregistro").val(data.Captura.registro);
+                 $("#txtDataConcessao").val(data.Captura.dataConcessao);
+                 $("#txtEstado").val(data.Captura.uf);
+                 $("#txtArea").val(data.Captura.area);
+                 $("#txtEspecie").val(data.Captura.especie);
+                 $("#txtSubespecie").val(data.Captura.subEspecie);
+                 $("#txtBase").val(data.Captura.base);
+                 $("#txtCaracteristica").val(data.Captura.caracteristica);
+                 $("#txtAtributo").val(data.Captura.atributo);
+                 $("#txtComplemento").val(data.Captura.complemento);
+                 $("#txtOrigem").val(data.Captura.origem);
+                 $("#txtModoAplicacao").val(data.Captura.modoAplicacao);
+                 $("#txtcnpj").val(data.Captura.cnpj);
+
+
+                 $("#cmbEmpresa").append("<option value=" + 0 + ">" + "Selecione uma Empresa" + "</option>");
+                 $.each(data.Empresas, function (key, item) {
+
+                     $("#cmbEmpresa").append("<option value=" + item.idItem + ">" + item.nome + "</option>");
+                     $("#cmbEmpresa").trigger('chosen:updated');
+
+                 });
+
+                 $("#cmbEstado").append("<option value=" + null + ">" + "Selecione um Estado" + "</option>");
+                 $.each(data.Estados, function (key, item) {
+
+                     if (data.Captura.uf == item.nome) {
+                         $("#cmbEstado").append("<option value=" + item.nome + " selected>" + item.nome + "</option>");
+                         $("#cmbEstado").trigger('chosen:updated');
+                     }
+                     else {
+                         $("#cmbEstado").append("<option value=" + item.nome + ">" + item.nome + "</option>");
+                         $("#cmbEstado").trigger('chosen:updated');
+                     }
+                 });
+
+
+             });
+
+        }
+
+        function CarregaAutocompleteMarcas(listaIdEmpresa) {
+
+            var strlistaIdEmpresa = 0;
+
+            if(listaIdEmpresa != 0)
+                strlistaIdEmpresa = listaIdEmpresa.join('|');
+
+            //var uri = "/api/MapaCapturaAPI/GetRetornaMarcas?id=" + strlistaIdEmpresa;
+            var uri = "/api/MapaCapturaAPI/GetRetornaMarcasByEmpresas?strIds=" + strlistaIdEmpresa;
+
+            $.getJSON(uri)
+                .done(function (data) {
+
+                    $("#txtNomemarca").typeahead({
+                        source: data, displayText: function (item)
+                        { return item.nome }, name: 'marcas'
+                    });
+                });
+        }
+
+        function SalvaEdicao() {
+
+            var dataConcessao = ConverteDataStringParaData($("#txtDataConcessao").val());
+
+            var mapaCaptura = {
+                idDadosCaputura: @ViewBag.idCaptura,
+                area: $("#txtArea").val(),
+                especie: $("#txtEspecie").val(),
+                subEspecie: $("#txtSubespecie").val(),
+                uf: $("#cmbEstado").val(),
+                base:  $("#txtBase").val(),
+                caracteristica:  $("#txtCaracteristica").val(),
+                atributo: $("#txtAtributo").val(),
+                complemento: $("#txtComplemento").val(),
+                estabelecimento: $("#txtOrigem").val(),
+                cnpj: $("#txtcnpj").val(),
+                produto: $("#txtNomeproduto").val(),
+                dataConcessao : dataConcessao,
+                registro: $("#txtNumregistro").val(),
+                marca: $("#txtNomemarca").val(),
+                origem: $("#txtOrigem").val(),
+                modoAplicacao: $("#txtModoAplicacao").val(),
+                status: $("#cmbStatus").val()
+            }
+
+            $.ajax({
+                type: "PUT",
+                dataType: "json",
+                url: "/api/MapaCapturaAPI/Put/",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(mapaCaptura),
+                success: function (data) {
+
+                    swal({
+                        title: "Registro Salvo!",
+                        text: "Registro salvo com sucesso!",
+                        type: "success",
+                        showCancelButton: false,
+                        confirmButtonColor: "#18a689",
+                        confirmButtonText: "OK",
+                        closeOnConfirm: false,
+                    },
+                 function(isConfirm){
+                     if (isConfirm) {
+
+                         localStorage.setItem("capturasEditarSalvar", 1);
+
+                         window.location = "/MapaCaptura/";
+
+                     }
+                 });
+
+
+
+                },
+                error: function (error) {
+                    jsonValue = jQuery.parseJSON(error.responseText);
+                }
+            });
+
+        }
+
+        function VerificaAssociacaoCnpjEmpresaMapa(){
+
+            var dados = {
+                cnpj: $("#txtcnpj").val(),
+                listaEmpresas: $("#cmbEmpresa").val()
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/api/MapaCapturaAPI/VerificaAssociacaoCnpjEmpresaMapa",
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(dados),
+                success: function(retorno){
+                    if (retorno == '1') {
+                        swal({
+                            title: "Mapa Captura - Associação CNPJ / Empresa!",
+                            text: "Já existe este CNPJ associada a(s) empresa(s). Deseja editar mesmo assim?",
+                            type: "warning",
+                            showCancelButton: true,
+                            cancelButtonText: "Cancelar",
+                            confirmButtonColor: "#DD6B55",
+                            confirmButtonText: "Sim",
+                            closeOnConfirm: false
+                        },
+                        function (isConfirm) {
+                            if (isConfirm) {
+                                SalvaEdicao();
+
+                                swal({
+                                    title: "Mapa Captura editado!",
+                                    text: "As alterações foram editadas com sucesso.",
+                                    type: "success",
+                                    showCancelButton: false,
+                                    confirmButtonColor: "#18a689",
+                                    confirmButtonText: "OK",
+                                    closeOnConfirm: false
+                                });
+
+                                return;
+                            }
+                        });
+
+                    } else {
+                        SalvaEdicao();
+
+                        swal({
+                            title: "Mapa Captura editado!",
+                            text: "As alterações foram editadas com sucesso.",
+                            type: "success",
+                            showCancelButton: false,
+                            confirmButtonColor: "#18a689",
+                            confirmButtonText: "OK",
+                            closeOnConfirm: false
+                        });
+
+                        return;
+                    }
+                }
+            });
+        }
+
+    </script>
+}

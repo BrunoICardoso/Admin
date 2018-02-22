@@ -1,0 +1,322 @@
+﻿
+<style>
+    /*------------------------------*/
+    .timeline-itemdetalhe .ibox-title {
+        cursor: pointer;
+    }
+
+    .timeline-itemdetalhe .ibox-content {
+        display: none;
+    }
+
+    .timeline-detalhes {
+        display: none;
+    }
+
+    .timeline-item.aberto {
+        background-color: #f6f6f6;
+    }
+
+    .timeline-item-label {
+        margin-bottom: 10px;
+    }
+
+    .timeline-itemdetalhe {
+        margin: 10px 0;
+    }
+
+    .SelecionarModal {
+        border: 1px solid black;
+    }
+
+    .loadingPesquisaModal {
+        /*display: none;*/
+        height: 300px;
+        padding-top: 150px;
+    }
+
+    /*------------------------------*/
+
+    .botoes {
+        /*float: right;
+        margin-right: 100px;
+        margin-top: 50px;*/
+        text-align: right;
+        margin-top: 10px;
+    }
+
+    .modal-lg {
+        width: 1100px;
+    }
+</style>
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Promoção</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/Home">Home</a>
+            </li>
+            <li class="active">
+                <strong>Cadastro de Promoção</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+
+    </div>
+</div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+
+    <div class="row">
+        <div class="col-lg-12">
+
+            <div class="ibox float-e-margins">
+
+                <div class="ibox-title">
+                    <h5>Nova Promoção</h5>
+                </div>
+
+                <div class="ibox-content">
+
+                    <div class="form-horizontal">
+
+                        @* Campos ocultos preenchidos somente caso venham da lista de Promoções apartir do click na listagem *@
+                        <input type="hidden" value="@ViewBag.idNoticia" id="idNoticia" />
+                        <input type="hidden" value="@ViewBag.fontePesquisa" id="fontePesquisa" />
+                        <input type="hidden" value="@ViewBag.idPost" id="idRedeSocial" data-nomeredesocial="@ViewBag.Rede" />
+
+                        @* Id de processo SEAE caso tenha sido feito uma consulta  *@
+                        <input type="hidden" id="idProcesso" value="@ViewBag.idProcesso" />
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Nome</label>
+                            <div class="col-lg-10">
+                                <input id="txtNome" type="text" placeholder="Nome" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Orgão regulador</label>
+                            <div class="col-lg-10">
+                                <select id="cmbOrgaos" data-placeholder="Selecione um orgão" class="chosen-select" name="Orgão" tabindex="2"></select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Certificado de autorização</label>
+                            <div class="col-lg-8">
+                                <input id="txtNumeroProcesso" type="text" placeholder="Certificado / Numero Processo" class="form-control" value="@ViewBag.NumeroProcesso">
+                            </div>
+                            <div class="col-lg-2" style="text-align:right;">
+                                <button class="btn btn-default" type="button" data-toggle="modal" data-target="#modalPesquisaProcesso"><i class="fa fa-search"></i>&nbsp; Pesquisar</button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="botoes">
+                                <button class="btn btn-primary" onclick="salvarPromocao()" id="btnSalvar" type="button" style="margin-right: 10px;">Salvar</button>
+                                <button class="btn btn-white" onclick="cancelar()" type="button">Cancelar</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@* Janelas modais *@
+<div class="modal inmodal" id="modalPesquisaProcesso" tabindex="-1" role="dialog" aria-hidden="true">
+    @Html.Partial("Promocao/_ModalPesquisaProcesso")
+</div>
+
+@section Styles {
+
+    <link href="~/Content/SweetAlert/sweetalert.css" rel="stylesheet" />
+    <link href="~/Content/plugins/chosen/chosen.css" rel="stylesheet" />
+    <link href="~/Content/plugins/chosen/bootstrap-chosen-bootstrap-chosen.css" rel="stylesheet" />
+    <link href="~/Content/plugins/datapicker/datepicker3.css" rel="stylesheet" />
+    <link href="~/Content/plugins/jasny/jasny-bootstrap.min.css" rel="stylesheet" />
+
+}
+
+@section Scripts {
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/sweetAlert")
+    @Scripts.Render("~/plugins/chosen")
+    <script src="~/Scripts/plugins/paginacao/paginacao.js"></script>
+    <script src="~/Scripts/plugins/chosen/chosen.jquery.js"></script>
+    <script src="~/Scripts/plugins/datapicker/bootstrap-datepicker.js"></script>
+    <script src="~/Scripts/utils.js"></script>
+
+    <script>
+
+        // Variáveis
+        var config = {
+            '.chosen-select': { width: "100%" },
+            '.chosen-select-deselect': { allow_single_deselect: true },
+            '.chosen-select-no-single': { disable_search_threshold: 10 },
+            '.chosen-select-no-results': { no_results_text: 'Oops, nothing found!' },
+            '.chosen-select-width': {}
+        }
+        for (var selector in config) {
+            $(selector).chosen(config[selector]);
+        }
+
+        var _Dados = {
+            nome: "",
+            idOrgaoregulador: 0,
+            certificadoAutorizacao: "",
+            idProcesso: 0,
+            idNoticia: 0,
+            idRedeSocial: 0,
+            nomeRedeSocial: "",
+            dtCadastro: null,
+            dtVigenciaIni: null,
+            dtVigenciaFim: null,
+            valorPremio: 0,
+            outrosinteressados:null,
+            textoregulamento: null,
+            premiospromo:null,
+            abrangenciaNacional: false,
+            ListaEmpresas: {},
+            ListaEstados: {},
+            ListaMunicipios: {}
+        }
+        //Variaveis da Modal
+        var _filtros = new Object();
+        var paginacaoProcessoModal = new Paginacao();
+        var quantidadePagModal = 10;
+        var paginaModal = 0;
+        var dataPadraoFinalModal = new Date();
+        var dataPadraoInicialModal = new Date();
+        var variavelIdProcessoAnterior;
+        var NumProcesso;
+
+
+        dataPadraoInicialModal.setDate(dataPadraoFinalModal.getDate() - 30);
+        $('#dtinicialModal').datepicker('setDate', dataPadraoInicialModal);
+        $('#dtfinalModal').datepicker('setDate', dataPadraoFinalModal);
+        $(".loadingPesquisaModal").hide();
+
+        $(document).ready(function () {
+
+            //Botao Pesquisa Modal
+            $("#BtnPesquisaModal").click(function () {
+                variavelIdProcessoAnterior = null;
+             
+                _filtros.palavraChave = $('#txtPalavrasChaveModal').val();
+                _filtros.dataIni = $('#dtinicialModal').datepicker('getDate');
+                _filtros.dataFim = $('#dtfinalModal').datepicker('getDate');
+
+                ModalPromocoes(paginaModal, quantidadePagModal);
+
+            });
+
+            // selecionar o Processo
+            $(document).on("click", ".ModalPromocao", function () {
+
+                var variavelProcessoAtual = $(this).data('idprocesso');
+
+
+                if (variavelProcessoAtual != variavelIdProcessoAnterior) {
+
+                    $(this).toggleClass('content no-top-border SelecionarModal');
+
+                    if (variavelIdProcessoAnterior != undefined || variavelIdProcessoAnterior != null) {
+
+                        $('.ModalPromocao[data-idprocesso="' + variavelIdProcessoAnterior + '"]').toggleClass('content no-top-border SelecionarModal');
+
+                    }
+                }
+
+                NumProcesso = $(this).find('#numprocesso').data('numproc');
+
+                variavelIdProcessoAnterior = $(this).data('idprocesso');
+
+             
+
+            });
+
+
+            // botao selecionar Modal
+            $(document).on("click", "#SelecionarProcesso", function () {
+
+                if (variavelIdProcessoAnterior == undefined) {
+
+                    ChamaSwal()
+
+                } else {
+
+                    $('#txtNumeroProcesso').val(NumProcesso)
+                    $('#idProcesso').attr('value', variavelIdProcessoAnterior);
+                    $('#modalPesquisaProcesso').modal('hide');
+
+                }
+
+            });
+
+
+            CarregarComboOrgaos();
+        });
+
+        function CarregarComboOrgaos() {
+            var uri = "/api/PromocaoAPI/GetOrgaosRegulador/";
+
+            $.getJSON(uri)
+                .done(function (data) {
+
+                    $.each(data, function (key, item) {
+                        $("#cmbOrgaos").append("<option value=" + item.idorgao + " >" + item.nome + "</option>");
+                        $("#cmbOrgaos").trigger('chosen:updated');
+                    })
+
+                    $("#cmbOrgaos").val($("#cmbOrgaos option:first").val());
+                    $("#cmbOrgaos").trigger('chosen:updated');
+                });
+        }
+
+        function cancelar() {
+            window.location = "/Promocao";
+        }
+
+        function salvarPromocao() {
+
+            _Dados.nome = $('#txtNome').val() != "" ? $('#txtNome').val() : null;
+            _Dados.idOrgaoregulador = $('#cmbOrgaos').val() != "" && $('#cmbOrgaos').val() != 0 ? $('#cmbOrgaos').val() : null;
+            _Dados.certificadoAutorizacao = $('#txtNumeroProcesso').val() != "" ? $('#txtNumeroProcesso').val() : null;
+            _Dados.idProcesso = $('#idProcesso').val() != "" ? $('#idProcesso').val() : null;
+            _Dados.idRedeSocial = $('#idRedeSocial').val() != "" ? $('#idRedeSocial').val() : null;
+            _Dados.nomeRedeSocial = $('#idRedeSocial').data('nomeredesocial') != "" ? $('#idRedeSocial').data('nomeredesocial') : null;
+            _Dados.idNoticia = $('#idNoticia').val() != "" ? $('#idNoticia').val() : null;
+            _Dados.fontePesquisa = $('#fontePesquisa').val() != "" ? $('#fontePesquisa').val() : null;
+            $.ajax({
+                type: "POST",
+                url: "/api/PromocaoAPI/CadastrarPromocao",
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(_Dados),
+                success: function (id) {
+                    if (id != "" && id != 0) {
+                        var idPromo = id;
+
+                        if(_Dados.idProcesso == null)
+                            window.location = "/Promocao/Editar/?idPromo=" + idPromo;
+                        else
+                            window.location = "/Promocao/Editar/?idPromo=" + idPromo     + '&idProc=' + _Dados.idProcesso;
+                    }
+                }
+            });
+
+        }
+
+    </script>
+}

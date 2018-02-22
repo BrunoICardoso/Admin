@@ -1,0 +1,842 @@
+﻿
+@{
+    ViewBag.Title = "Cadastrar cliente";
+}
+
+<style>
+    .slick_demo_2 .ibox-content {
+        margin: 0 5px;
+        padding: 5px;
+    }
+
+    .boxVertentes {
+        padding: 5px;
+    }
+
+    .lblVertente {
+        margin-right: 15px;
+        font-size: 18px;
+        font-weight: 500;
+    }
+
+    .txt-empresas {
+        width: 250px;
+    }
+
+    .box-acesso-empresas {
+        margin-bottom: 15px;
+    }
+
+    .label-acesso-empresas {
+        font-weight: 500;
+        font-size: 16px;
+    }
+
+    .empresas-selecionadas {
+        min-height: 100px;
+        margin-bottom: 5px;
+    }
+
+    .tagEmpresa {
+        margin-right: 5px;
+        margin-bottom: 5px;
+    }
+
+    .contadorTags {
+        float: right;
+        font-size: 11px;
+        font-weight: 500;
+    }
+
+    .lblTodasEmpresas {
+        padding-top: 6px;
+        font-size: 16px;
+        font-weight: 500;
+    }
+</style>
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Perfil do cliente</h2>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/Home">Home</a>
+            </li>
+            <li>
+                <a href="/Cliente/">Cliente</a>
+            </li>
+            <li class="active">
+                <strong>Cadastrar</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+
+    </div>
+</div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>Dados do cliente</h5>
+                </div>
+                <div class="ibox-content">
+                    <div class="form-horizontal" enctype="multipart/form-data" method="POST">
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Nome</label>
+                            <div class="col-lg-10">
+                                <input id="txtNomecliente" type="text" placeholder="Nome do cliente" class="typeahead form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">CNPJ</label>
+                            <div id="listaCnpj" class="col-lg-10">
+                                <input id="txtcnpj" type="text" placeholder="CNPJ do cliente" class="form-control txtcnpj" data-mask="99.999.999/9999-99">
+                            </div>
+                        </div>
+                        <div id="cnpjLista"></div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Cep</label>
+                            <div class="col-lg-10">
+                                <input id="txtCep" type="text" placeholder="Cep do cliente" class="typeahead form-control" data-mask="99999-999">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Estado</label>
+                            <div class="col-lg-10">
+                                <select id="cmbEstado" placeholder="Selecione seu estado" class="chosen-select" name="estado"></select>
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Cidade</label>
+                            <div class="col-lg-10">
+                                <input id="txtCidade" type="text" placeholder="Cidade do cliente" class="typeahead form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Endereço</label>
+                            <div class="col-lg-10">
+                                <input id="txtEndereco" type="text" placeholder="Endereço do cliente" class="typeahead form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Inscrição Estadual</label>
+                            <div class="col-lg-9">
+                                <input id="txtEstadual" type="text" placeholder="Inscrição Estadual do cliente" class="typeahead form-control">
+                            </div>
+                            <div class="col-lg-1">
+                                <div class="checkbox i-checks"><label> <input id="checkEstadual" type="checkbox" value=""> <i></i> Isento</label></div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Inscrição Municipal</label>
+                            <div class="col-lg-9">
+                                <input id="txtMunicipal" type="text" placeholder="Inscrição Municipal do cliente" class="typeahead form-control">
+                            </div>
+                            <div class="col-lg-1">
+                                <div class="checkbox i-checks"><label> <input id="checkMunicipal" type="checkbox" value=""> <i></i> Isento</label></div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Nome contato</label>
+                            <div class="col-lg-10">
+                                <input id="txtNomecontato" type="text" placeholder="Nome do contato" class="typeahead form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Celular</label>
+                            <div class="col-lg-10">
+                                <input id="txtCelular" type="text" placeholder="(51)-9-9999-9999" class="typeahead form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Telefone</label>
+                            <div class="col-lg-10">
+                                <input id="txtTelefone" type="text" placeholder="Telefone do cliente" class="typeahead form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">E-mail</label>
+                            <div class="col-lg-10">
+                                <input id="txtEmail" type="text" placeholder="E-mail do cliente" class="typeahead form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Site</label>
+                            <div class="col-lg-10">
+                                <div class="input-group m-b">
+                                    <span class="input-group-addon">http://</span> <input id="txtUrlsite" type="text" placeholder="Site do cliente" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Data expiração</label>
+                            <div class="col-lg-4" style="display: inline-flex;">
+                                <div class="input-daterange input-group" id="selecaoDatas">
+                                    <input type="text" class="input-sm form-control txtData" name="start" id="txtDataExpiracao" value="" disabled/>
+                                    <span class="input-group-addon txtData"><i class="fa fa-calendar" aria-hidden="true"></i></span>                                    
+                                </div>
+                                <label class="lblTodasEmpresas">
+                                    <input id="cbTrial" type="checkbox" style="margin-left: 10px;"> Trial
+                                </label>
+                            </div>
+                            <div class="col-lg-offset-6">
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Vertentes</label>
+                            <div class="col-lg-10">
+                                <div class="avisoVertentes"></div>
+                                <div class="input-group m-b boxVertentes">
+                                    <div>
+                                        <label class="lblVertente"> <input class="cbVertente" type="checkbox" value="produtos">Lançamento de produtos</label>
+                                        <label class="lblVertente"> <input class="cbVertente" type="checkbox" value="presencaonline">Presença Online</label>
+                                        <label class="lblVertente"> <input class="cbVertente" type="checkbox" value="promocoes">Promoções</label>
+                                        <label class="lblVertente"> <input class="cbVertente" type="checkbox" value="noticias">Notícias</label>
+                                        <label class="lblVertente"> <input class="cbVertente" type="checkbox" value="redessocias">Redes Sociais</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-12 box-acesso-empresas">
+                            <label class="label-acesso-empresas">Empresas disponíveis para acesso</label>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Limite de empresas</label>
+                            <div class="col-lg-10" style="display: inline-flex;">
+                                <input id="txtLimiteEmpresas" type="text" placeholder="Limite de empresas" class="typeahead form-control txt-empresas" style="margin-right: 10px;" value="1">
+                                <label class="lblTodasEmpresas">
+                                    <input id="todasEmpresas" type="checkbox"> Todas empresas
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Empresas do setor</label>
+                            <div class="col-lg-4">
+                                <select id="cmbSetorEmpresas" placeholder="Selecione o setor" class="chosen-select" name="setor" tabindex="2"></select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Empresas</label>
+                            <div class="col-lg-4">
+                                <select id="cmbEmpresas" placeholder="Selecione a empresa" class="chosen-select" name="setor" tabindex="2"></select>
+                            </div>
+
+                        </div>
+                        <div class="form-group">
+                            <label class="col-lg-2 control-label">Empresas selecionadas</label>
+                            <div class="col-lg-8" id="box-empresas-selecionadas">
+                                <div class="empresas-selecionadas thumbnail">
+                                    @*<button type="button" class="btn btn-primary btn-xs">Mini button</button>*@
+                                </div>
+                                <label class="contadorTags"><span id="countTags"></span> Empresas selecionadas.</label>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-lg-8 col-lg-offset-2">
+                                <br />
+                                <button class="btn btn-primary" id="btnSalvar" type="button">Salvar</button>
+
+                            </div>
+                            <div class="col-lg-2">
+                                <br />
+                                <button class="btn btn-white" onclick="cancelar()" type="button">Cancelar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+
+
+
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+
+@section styles {
+
+    <link href="~/Content/SweetAlert/sweetalert.css" rel="stylesheet" />
+    <link href="~/Content/plugins/chosen/bootstrap-chosen-bootstrap-chosen.css" rel="stylesheet" />
+    <link href="~/Content/plugins/jasny/jasny-bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/plugins/iCheck/custom.css" rel="stylesheet" />
+    <link href="~/Content/plugins/datapicker/datepicker3.css" rel="stylesheet" />
+    <style type="text/css"></style>
+}
+
+
+@section scripts {
+
+    @Scripts.Render("~/plugins/sweetAlert")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/iCheck")
+    <script src="~/Scripts/validacoes.js"></script>
+    <script src="~/Scripts/plugins/typeahead/bootstrap3-typeahead.js"></script>
+    <script src="~/Scripts/utils.js"></script>
+
+    <script>
+
+        var limiteEmpresas = 0;
+
+        $(document).ready(function () {
+
+            //campos em vermelho//
+            $('#selecaoDatas').datepicker({
+                format: 'dd/mm/yyyy',
+                startView: 1,
+                todayBtn: "linked",
+                keyboardNavigation: false,
+                forceParse: false,
+                autoclose: true,
+            }).on('changeDate', function () {
+                //atualizaNoticias();
+            });
+
+            $('#checkEstadual').on('ifChecked', function (event) {
+                $(txtEstadual).removeClass("campo-invalido");
+                $("#txtEstadual").val('');
+                $("#txtEstadual").prop('disabled', true);
+            });
+
+            $('#checkMunicipal').on('ifChecked', function (event) {
+                $(txtMunicipal).removeClass("campo-invalido");
+                $("#txtMunicipal").val('');
+                $("#txtMunicipal").prop('disabled', true);
+
+            });
+
+            $('#checkEstadual').on('ifUnchecked', function (event) {
+                $("#txtEstadual").prop('disabled', false);
+            });
+
+            $('#checkMunicipal').on('ifUnchecked', function (event) {
+                $("#txtMunicipal").prop('disabled', false);
+            });
+
+            $("#txtEstadual").on('change', function () {
+                if (txtEstadual.value != "") {
+
+                    $(txtEstadual).removeClass("campo-invalido");
+                }
+            });
+
+            $("#txtMunicipal").on('change', function () {
+
+                if (txtMunicipal.value != "") {
+
+                    $(txtMunicipal).removeClass("campo-invalido");
+                }
+            });
+
+            $('#cmbEstado').on('change', function () {
+
+                if (cmbEstado.value != "0") {
+                    $('.chosen-single').removeClass("combo-invalido");
+                }
+            });
+
+            $('#txtCep').focusout(function () {
+
+                if (txtCep.value != "") {
+                    autoCompleteCEP();
+                    $('#txtCep').removeClass("campo-invalido");
+                }
+
+            });
+
+            $('#txtCidade').focusout(function () {
+
+                if (txtCidade.value != "") {
+                    $('#txtCidade').removeClass("campo-invalido");
+                }
+
+            });
+
+            $('#txtEndereco').focusout(function () {
+
+                if (txtEndereco.value != "") {
+                    $('#txtEndereco').removeClass("campo-invalido");
+                }
+
+            });
+
+            $('#txtNomecliente').focusout(function () {
+
+                if (txtNomecliente.value != "") {
+                    $('#txtNomecliente').removeClass("campo-invalido");
+                }
+
+            });
+
+            $("#cmbSetorEmpresas").on('change', function (key, element) {
+                var idSetor = $("#cmbSetorEmpresas").val();
+                carregaComboEmpresas(idSetor);
+            });
+
+            $("#cmbEmpresas").on('change', function (key, element) {
+                var idEmpresa = $("#cmbEmpresas").val();
+                var Nome = $("#cmbEmpresas option[value='" + idEmpresa + "']").text();
+                if (!verificaTag(idEmpresa)) {
+                    $(".empresas-selecionadas").append(tagEmpresa(Nome, idEmpresa));
+                }
+                verificaTotalTags();
+                atualizaContadorTags();
+            });
+
+            $("#txtLimiteEmpresas").change(function () {
+                verificaTotalTags();
+            });
+
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green',
+            });
+
+            $('#todasEmpresas').click(function () {
+                if ($('#todasEmpresas').is(':checked')) {
+                    
+                    $('#txtLimiteEmpresas').val("");
+                    $("#txtLimiteEmpresas").prop('disabled', true);
+                    $('.empresas-selecionadas').empty();
+                } else {
+                    $("#txtLimiteEmpresas").prop('disabled', false);
+                    
+                }
+            });
+
+            $("#cbTrial").on("change", function () {
+                if ($("#cbTrial").is(':checked')) {
+                    $("#txtDataExpiracao").prop('disabled', false);
+                    $("#txtDataExpiracao").val("");
+                } else {
+                    $("#txtDataExpiracao").prop('disabled', true);
+                    $("#txtDataExpiracao").val("");
+                }
+            });
+
+            $("#txtLimiteEmpresas").on('change', function (key, element) {
+                if ($("#txtLimiteEmpresas").val() <= 0 || !!!$("#txtLimiteEmpresas").val()) {
+                    $("#txtLimiteEmpresas").val(1);
+                }
+            });
+
+            var config = {
+                '.chosen-select': { width: "100%" },
+                '.chosen-select-deselect': { allow_single_deselect: true },
+                '.chosen-select-no-single': { disable_search_threshold: 10 },
+                '.chosen-select-no-results': { no_results_text: 'Oops, nothing found!' },
+                '.chosen-select-width': {}
+            }
+            for (var selector in config) {
+                $(selector).chosen(config[selector]);
+            }
+
+            SetaEventoChange();
+
+            $("#btnSalvar").click(function () { SalvarCliente() });
+
+            CarregaComboEstados();
+            carregaComboSetores();
+            carregaComboEmpresas(0);
+
+        });
+
+        function carregaComboSetores() {
+
+            var uri = "/api/SetorAPI/Get";
+            $.getJSON(uri)
+                .done(function (data) {
+
+                    $("#cmbSetorEmpresas").empty();
+                    $("#cmbSetorEmpresas").append("<option value=" + 0 + ">" + "Todos" + "</option>");
+                    $.each(data, function (key, item) {
+                        $("#cmbSetorEmpresas").append("<option value=" + item.idsetoresempresa + ">" + item.nome + "</option>");
+                        $("#cmbSetorEmpresas").trigger('chosen:updated');
+                    });
+                });
+        }
+
+        function carregaComboEmpresas(idSetor) {
+            var uri = "/api/EmpresaAPI/EmpresasSetor?idSetor=" + idSetor;
+            $.getJSON(uri)
+                .done(function (data) {
+                    console.log(data);
+                    $("#cmbEmpresas").empty();
+                    $.each(data, function (key, item) {
+                        $("#cmbEmpresas").append("<option value=" + item.idItem + ">" + item.nome + "</option>");
+                        $("#cmbEmpresas").trigger('chosen:updated');
+                    });
+                });
+        }
+
+        function tagEmpresa(Nome, idEmpresa) {
+            return "<button type='button' class='btn btn-primary btn-xs tagEmpresa' data-id='" + idEmpresa + "'  onclick='removeTagEmpresa(this)'>" + Nome + " <i class='fa fa-times' aria-hidden='true'></i></button>";
+        }
+
+        function removeTagEmpresa(elemento) {
+            $(elemento).remove();
+            atualizaContadorTags();
+            verificaTotalTags();
+        }
+
+        function verificaTag(idEmpresa) {
+            var resultado = false;
+            $(".tagEmpresa").each(function () {
+                if ($(this).attr("data-id") == idEmpresa) {
+                    resultado = true;
+                }
+            });
+            return resultado;
+        }
+
+        function retornaListaEmpresas() {
+            var empresas = [];
+            $(".tagEmpresa").each(function () {
+                empresas.push(parseInt($(this).attr("data-id")));
+            });
+            return empresas;
+        }
+
+        function atualizaContadorTags() {
+            $("#countTags").text($(".tagEmpresa").length);
+        }
+
+        function verificaTotalTags() {
+            if (!!$("#txtLimiteEmpresas").val())
+                if ($(".tagEmpresa").length >= $("#txtLimiteEmpresas").val()) {
+                    $("#cmbEmpresas").attr('disabled', true).trigger("chosen:updated");
+                } else {
+                    $("#cmbEmpresas").attr('disabled', false).trigger("chosen:updated");
+                }
+            else
+                $("#cmbEmpresas").attr('disabled', false).trigger("chosen:updated");
+        }
+
+        function CarregaComboEstados() {
+
+            var uri = "/api/ClienteAPI/GetRetornaEstados";
+            $.getJSON(uri)
+                .done(function (data) {
+                    $("#cmbEstado").empty();
+                    $("#cmbEstado").append("<option value=" + 0 + ">" + "Selecione um estado" + "</option>");
+                    $.each(data, function (key, item) {
+                        $("#cmbEstado").append("<option value=" + item.idestado + ">" + item.uf + "</option>");
+                        $("#cmbEstado").trigger('chosen:updated');
+                    });
+                });
+
+        }
+
+        function autoCompleteCEP() {
+
+            var cep = $("#txtCep").val().replace(/[^0-9]/, "");
+
+
+            if (cep.length != 8) {
+                return false;
+            }
+            else {
+
+                var url = "http://viacep.com.br/ws/" + cep + "/json/";
+
+                $.getJSON(url, function (dadosRetorno) {
+
+                    $("#txtEndereco").val(dadosRetorno.logradouro);
+                    $("#txtCidade").val(dadosRetorno.localidade);
+
+
+                    var idEstado = $("#cmbEstado option:contains('" + dadosRetorno.uf + "')").val();
+                    $("#cmbEstado").val(idEstado);
+                    $('#cmbEstado').trigger("chosen:updated");
+
+                    //$("#cmbEstado").append("<option value=" + idRetorno + "selected>" + dadosRetorno.uf + "</option>");
+                    //$("#cmbEstado").trigger('chosen:updated');
+                    retiravermelhos();
+                    return true
+
+
+                });
+            }
+
+
+
+        }
+
+        function retiravermelhos() {
+
+            if (txtCidade.value != "") {
+                $('#txtCidade').removeClass("campo-invalido");
+            }
+
+            if (txtEndereco.value != "") {
+                $('#txtEndereco').removeClass("campo-invalido");
+            }
+
+            if (cmbEstado.value != "0") {
+                $('.chosen-single').removeClass("combo-invalido");
+            }
+        }
+
+        function ExisteCNPJBanco(valcnpj, txtcnpj) {
+            var uri = "/api/ClienteAPI/GetVerificaCnpjClienteExistente";
+            uri = uri + "?cnpjCliente=" + valcnpj;
+
+            var cnpjCadastrado = false;
+
+            $.ajax({
+                url: uri,
+                async: false,
+                success: function (data) {
+                    if (data == true) {
+                        $(txtcnpj).addClass("cnpj-existente").removeClass("cnpj-valido").removeClass("cnpj-invalido");
+                        cnpjCadastrado = true;
+                    }
+                    else {
+                        $(txtcnpj).addClass("cnpj-valido").removeClass("cnpj-invalido").removeClass("cnpj-existente");
+                        cnpjCadastrado = false;
+                    }
+                }
+            });
+
+            return cnpjCadastrado;
+        }
+
+        function SetaEventoChange() {
+
+
+            $(".txtcnpj").unbind("change");
+
+            $(".txtcnpj").change(function () {
+
+                var valcnpj = $(this).val();
+
+                var valcmponto = valcnpj;
+
+                valcnpj = valcnpj.replace(/[^0-9]+/g, '');
+
+                if (validarCNPJ(valcnpj) == false) {
+                    $(this).addClass("cnpj-invalido").removeClass("cnpj-valido").removeClass("cnpj-existente");
+                }
+                else {
+                    ExisteCNPJBanco(valcmponto, this);
+                }
+
+
+            });
+        }
+
+        function VerificaForm() {
+
+            var nomevalidacao = true;
+            var cidadevalidacao = true;
+            var estadovalidacao = true;
+            var enderecovalidacao = true;
+            var estadualvalidacao = true;
+            var municipalvalidacao = true;
+            var CepValidacao = true;
+            var CnpjValidacao = true;
+            var validacaoVertentes = true;
+
+            var quantidadeEmpresas = true;
+            if (!$("#todasEmpresas").is(":checked")) {
+
+                if ($(".empresas-selecionadas > .tagEmpresa").length > $("#txtLimiteEmpresas").val()) {
+                    quantidadeEmpresas = false;
+                    
+                    $("#box-empresas-selecionadas").append('<div class="alert alert-danger alerta-limite-empresas col-md-4">O número de empresas selecionadas ultrapassa o limite de empresas definido! </div>');
+
+                    setTimeout(function () {
+                        $('.alerta-limite-empresas').remove();
+                    }, 10000);
+
+                }
+
+            }
+
+
+
+            $(".avisoVertentes").empty();
+            if ($(".cbVertente:checked").length < 1) {
+                validacaoVertentes = false;
+                ($(".avisoVertentes").append("<div class='alert alert-danger'>Nenhuma vertente foi selecionada!</div>"));
+            }
+
+
+            //validar nome
+            if (txtNomecliente.value == "") {
+                $(txtNomecliente).addClass("campo-invalido");
+                nomevalidacao = false;
+            }
+            if (txtCidade.value == "") {
+                $(txtCidade).addClass("campo-invalido");
+                cidadevalidacao = false;
+            }
+            if (txtEndereco.value == "") {
+                $(txtEndereco).addClass("campo-invalido");
+                enderecovalidacao = false;
+            }
+
+            if (txtCidade.value != "") {
+                CepValidacao = true;
+            }
+            else {
+                $(txtCep).addClass("campo-invalido");
+                CepValidacao = false;
+            }
+
+
+            if (!$("#checkMunicipal").is(":checked")) {
+
+                if (txtMunicipal.value == "") {
+                    $(txtMunicipal).addClass("campo-invalido");
+                    municipalvalidacao = false;
+                }
+
+            }
+            else {
+                $(txtMunicipal).removeClass("campo-invalido");
+                municipalvalidacao = true;
+            }
+
+            if (!$("#checkEstadual").is(":checked")) {
+
+                if (txtEstadual.value == "") {
+                    $(txtEstadual).addClass("campo-invalido");
+                    estadualvalidacao = false;
+                }
+
+            }
+            else {
+                $(txtEstadual).removeClass("campo-invalido");
+                estadualvalidacao = true;
+            }
+
+            if (cmbEstado.value == 0) {
+                $('.chosen-single').addClass("combo-invalido");
+                estadovalidacao = false;
+            }
+
+            //valida o CNPJ
+
+            $(".txtcnpj").each(function (i, e) {
+
+
+                var valcnpj = $(this).val();
+                var valcmponto = valcnpj;
+
+                //Limpa caractes especiais do CNPJ
+                valcnpj = valcnpj.replace(/[^0-9]+/g, '');
+
+                if ((i == 0)) {
+                    if (!validarCNPJ(valcnpj)) {
+                        $(e).addClass("cnpj-invalido").removeClass("cnpj-valido").removeClass("cnpj-existente");
+                        CnpjValidacao = false;
+                    } else if (ExisteCNPJBanco(valcmponto, e)) {
+                        CnpjValidacao = false;
+                    }
+                }
+
+
+            });
+
+            return quantidadeEmpresas && validacaoVertentes && nomevalidacao && cidadevalidacao && estadovalidacao && enderecovalidacao && estadualvalidacao && municipalvalidacao && CepValidacao && CnpjValidacao;
+        }
+
+        function SalvarCliente() {
+
+            if (VerificaForm()) {
+
+                var cliente = {
+                    nome: $("#txtNomecliente").val(),
+                    site: $("#txtUrlsite").val(),
+                    idestado: $("#cmbEstado").val(),
+                    endereco: $("#txtEndereco").val(),
+                    cidade: $("#txtCidade").val(),
+                    telefone: $("#txtTelefone").val(),
+                    celular: $("#txtCelular").val(),
+                    nomecontato: $("#txtNomecontato").val(),
+                    cnpj: $("#txtcnpj").val(),
+                    email: $("#txtEmail").val(),
+                    cep: $("#txtCep").val(),
+                    inscricaoEstadual: $("#txtEstadual").val(),
+                    inscricaoMunicipal: $("#txtMunicipal").val(),
+                    vertentes: [],
+                    quantidadeEmpresas: $("#txtLimiteEmpresas").val(),
+                    vertodasempresas: $('#todasEmpresas').is(':checked') && !!!$("#txtLimiteEmpresas").val() ? true : false,
+                    listaEmpresas: [],
+                    dataExpiracao: $("#txtDataExpiracao").val() != "" ? ConverteDataParaDataJson(ConverteDataStringParaData($("#txtDataExpiracao").val())) : null                 
+                }
+
+                $(".cbVertente").each(function (key, element) {
+                    if (element.checked) {
+                        cliente.vertentes.push($(element).val());
+                    }
+                });
+
+                cliente.listaEmpresas = retornaListaEmpresas();
+
+                $.ajax({
+                    type: "POST",
+                    url: "/api/ClienteAPI/Post",
+                    dataType: 'json',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(cliente),
+                    success: function (data) {
+                        if (!data.erro) {
+                            window.location.reload();
+                        } else {
+                            alert(data.mensagem);
+                        }
+                    }
+                });
+
+            }
+            else {
+                ChamaSwal();
+            }
+
+        }
+
+        function ChamaSwal() {
+
+            swal({
+                title: "Não foi possível cadastrar o cliente.",
+                text: "Campos obrigatórios não preenchidos adequadamente.",
+                showConfirmButton: true,
+                confirmButtonText: "Ok"
+            },
+            function (isConfirm) {
+                if (isConfirm) {
+                    $('html, body').animate({ scrollTop: 0 }, 'slow');
+                }
+            });
+        }
+
+        function cancelar() {
+            window.location = "/Cliente/";
+        }
+
+
+    </script>
+}
